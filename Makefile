@@ -1,5 +1,5 @@
 ## all@可选的命令参数，执行build和run命令。
-all: clean commit
+all: help
 
 
 ## clean@清理编译、日志和缓存等数据。
@@ -21,16 +21,6 @@ commit:
 	@git add .
 	@git commit -m $(message)
 	@echo "\033[0;31m 💿 Commit完毕\033[0m"
-
-
-## install@[本地]安装并启动服务。
-.PHONY:install
-install:
-	@pkill $(AppName)
-	@sudo cp -rp ./release /tmp/ && mv /tmp/;
-	@/tmp/xxxx -d=true
-	@echo "\033[31m ✅  服务已启动\033[0m";
-	@ps aux|grep $(AppName)
 
 
 ## push <msg>@提交并推送到Git仓库(格式:make push msg=备注内容,msg为可选参数)。
