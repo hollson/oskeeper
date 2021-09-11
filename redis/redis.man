@@ -1,0 +1,124 @@
+#!/bin/bash
+
+DEFAULT_VERSION=6.2.5                                    # 默认版本号
+STABLE_VERSION=""                                        # 稳定版本号
+CURRENT_VERSION=""                                       # 当前版本号
+INSTALL_PATH=/usr/local/redis                            # 服务安装路径
+STABLE_URL=https://download.redis.io/redis-stable.tar.gz # 稳定版下载地址
+
+#============================================================================
+ERROR=" 🚫 "
+SUCCESS=" ✅ "
+WARN=" ⚠️  "
+INFO=" 📢 "
+RED="\033[31m"    # Error message
+GREEN="\033[32m"  # Success message
+YELLOW="\033[33m" # Warning message
+BLUE="\033[36m"   # Info message
+RESET='\033[0m'
+
+# 打印块(需手动RESET)
+echoBlock() {
+    echo -e "${1}${@:2}"
+}
+# echoBlock "hello ${GREEN}world ${RESET}"
+
+# 打印行
+echoLine() {
+    echo -e "${1}${@:2}${RESET}" 1>&2
+}
+# echoLine ${RED} "不加引号"
+# echoLine "${INFO}" "建议加引号"
+# echoLine "${GREEN}建议内容连接"
+# echoLine "👏支持 ${RED}😄Emoji"
+
+#============================================================================
+
+# 安装Make依赖
+makeRely() {
+    yum install -y gcc-c++
+    yum install -y pcre pcre-devel
+    yum install -y zlib zlib-devel
+    yum install -y openssl openssl-devel
+}
+
+# 已安装的版本
+currentVersion() {
+    TMP_VERSION=$(redis-server --version 2>/dev/null)
+    if [[ $? != 0 ]]; then
+        echoLine "${RED}${ERROR}当前系统未发现Redis服务"
+        return 1
+    fi
+    CURRENT_VERSION=$(echo "${TMP_VERSION}" | awk '{print $3}' | grep -o '[0-9]\.[0-9]\.[0-9]')
+}
+
+# 最新Stable版本号
+stableVersion() {
+    stable_url=https://download.redis.io/redis-stable/src/version.h
+    STABLE_VERSION=$(curl -sSL ${stable_url} | grep -o '[0-9]\.[0-9]\.[0-9]')
+    if [[ ${STABLE_VERSION} == "" ]]; then
+        echoLine "${RED}${ERROR}获取stable版本号异常:${stable_url}"
+        return 1
+    fi
+}
+
+# 添加Path变量
+appandPath() {
+    if [[ $(env | grep ${INSTALL_PATH}) == "" ]]; then
+        echo "export PATH=${INSTALL_PATH}/bin:\$PATH" >>/etc/profile
+        if [[ $? == 0 ]]; then
+            trap "source /etc/profile   #回车刷新环境变量" EXIT
+            echoLine ${BLUE} "已附加Path变量"
+            #/bin/bash source /etc/profile
+            return 0
+        fi
+        echoLine ${YELLOW} "添加Path变量失败"
+        exit 1
+    else
+        echoLine "${WARN}${YEEELOW}Path变量已存在"
+    fi
+}
+
+# CPU架构
+archAffix() {
+    case "$(uname -m)" in
+    i686 | i386) echo '32' ;;
+    x86_64 | amd64) echo '64' ;;
+    armv5tel) echo 'arm32-v5' ;;
+    armv6l) echo 'arm32-v6' ;;
+    armv7 | armv7l) echo 'arm32-v7a' ;;
+    armv8 | aarch64) echo 'arm64-v8a' ;;
+    mips64le) echo 'mips64le' ;;
+    mips64) echo 'mips64' ;;
+    mipsle) echo 'mips32le' ;;
+    mips) echo 'mips32' ;;
+    ppc64le) echo 'ppc64le' ;;
+    ppc64) echo 'ppc64' ;;
+    riscv64) echo 'riscv64' ;;
+    s390x) echo 's390x' ;;
+    *) colorEcho $RED " 不支持当前CPU架构！" exit 1 ;;
+    esac
+    return 0
+}
+
+help() {
+    echo "Usage:"
+}
+
+main() {
+    # archAffix
+    currentVersion
+    if [[ $? == 0 ]]; then
+        echoBlock "${SUCCESS}已安装版本: ${BLUE}${CURRENT_VERSION}${RESET}"
+    fi
+
+    stableVersion
+    if [[ $? == 0 ]]; then
+        echoBlock "${INFO}最新Stable版本: ${BLUE}${STABLE_VERSION}${RESET}"
+    fi
+
+    appandPath
+
+    echoLine "${BLUE}================= Done ! =================\n"
+}
+main
