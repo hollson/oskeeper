@@ -2,4 +2,6 @@ bin
 .DS_Store
 .idea
 .vscode
+_gen
+target
 

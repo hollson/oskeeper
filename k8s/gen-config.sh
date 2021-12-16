@@ -10,7 +10,13 @@ function replace_files() {
         do
             value=${kvs[$key]}
             value=${value//\//\\\/}
-            sed -i "s/{{$key}}/${value}/g" $file
+            if [ $(uname) == "Lunux" ];then
+                sed -i "s/{{$key}}/${value}/g" $file
+            fi
+
+            if [ $(uname) == "Darwin" ];then
+                sed -i '' "s/{{$key}}/${value}/g" $file
+            fi
         done
         return 0
     fi
@@ -55,7 +61,8 @@ echo "===================="
 
 echo "====替换配置文件===="
 for element in `ls`
-do  
+do
+    echo "====>"$element
     dir_or_file=$element
     if [ ! -d $dir_or_file ];then
         continue 
