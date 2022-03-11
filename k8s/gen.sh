@@ -1,6 +1,6 @@
 #!/bin/bash
 
-declare -A kvs=()
+declare kvs=()
 
 function replace_files() {
     local file=$1 
@@ -57,12 +57,12 @@ while read line;do
     echo "$key=$value"
     kvs["$key"]="$value"
 done < ../config.properties
+
 echo "===================="
 
 echo "====替换配置文件===="
 for element in `ls`
 do
-    echo "====>"$element
     dir_or_file=$element
     if [ ! -d $dir_or_file ];then
         continue 
