@@ -52,7 +52,7 @@ echox() {
 cpu() {
     case "$(uname -m)" in
     i686 | i386) echo 'x32' ;;
-    # x86_64 | amd64) echo 'x64' ;;
+    x86_64 | amd64) echo 'x64' ;;
     armv5tel) echo 'arm32-v5' ;;
     armv6l) echo 'arm32-v6' ;;
     armv7 | armv7l) echo 'arm32-v7a' ;;
