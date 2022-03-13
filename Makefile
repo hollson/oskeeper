@@ -1,4 +1,4 @@
-## all@可选的命令参数，执行build和run命令。
+# Makefile语法参考：https://makefiletutorial.com/
 all: help
 
 
@@ -36,6 +36,6 @@ help:Makefile
 	@echo "Usage:\n  make [command]"
 	@echo
 	@echo "Available Commands:"
-	@sed -n "s/^##//p" $< | column -t -s '@' |grep --color=auto "^[[:space:]][a-z]\+[[:space:]]"
+	@sed -n "s/^##//p" $< | column -t -s '@' |grep --color=auto "^[[:space:]][a-zA-Z0-9]\+[[:space:]]"
 	@echo
-	@echo "For more to see https://makefiletutorial.com/"
+	@echo "For more to see https://github.com/hollson/"
