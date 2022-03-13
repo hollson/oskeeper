@@ -2,6 +2,7 @@
 
 # =================================================================
 #  Shell通用函数库
+#  更多详情，请参考 https://github.com/hollson/oskeeper
 # =================================================================
 
 ## echox@输出彩色字符
@@ -141,6 +142,3 @@ function load() {
     esac
 }
 load
-
-# https://www.jb51.net/article/54488.htm
-# https://www.jb51.net/article/48057.htm
