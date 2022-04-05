@@ -2,8 +2,11 @@
 
 # =================================================================
 #  Shell通用函数库
+#  查看函数列表： ./util.sh list
 #  更多详情，请参考 https://github.com/hollson/oskeeper
 # =================================================================
+
+cmd=$1                          # 命令参数
 
 # Reset        = 0 // 重置
 # Bold         = 1 // 加粗
@@ -31,7 +34,7 @@
 # BackMagenta  = 45 // 「背景」品红/洋紫
 # BackCyan     = 46 // 「背景」青色
 # BackWhite    = 47 // 「背景」白色
-## echox@输出彩色字符
+## echox@打印彩色字符
 echox() {
     PLAIN='\033[0m'
     txt=${*:2}
@@ -75,8 +78,8 @@ echox() {
 
 # =================================================================
 
-## cpu@查看CPU架构
-cpu() {
+## arch@查看CPU架构
+arch() {
     case "$(uname -m)" in
     i686 | i386) echo 'x32' ;;
     x86_64 | amd64) echo 'x64' ;;
@@ -144,7 +147,7 @@ function compare() {
 
 # =================================================================
 
-## help@帮助说明
+## usage@通用帮助说明
 function usage() {
     echox blue solid "======================================================"
     echox blue solid "         欢迎使用「SHELL-BOX」shell通用库"
@@ -153,19 +156,30 @@ function usage() {
     echo -e "用法：\n box [command] <param>"
     echo
     echo "Available Commands:"
-    echox magenta " 函数  \t说明"
+    echox magenta " 命令\t简写\t说明"
     sed -n "s/^##//p" "$0" | column -t -s '@-' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
     echo
     echo -e "更多详情，请参考 https://github.com/hollson\n"
 }
 
-# 加载初始项
-function load() {
-    case $0 in
-    run) run ;;
-    dok | docker) docker ;;
-    ver | version) version ;;
-    *) usage ;;
-    esac
+function list() {
+    echox blue solid "======== 函数库列表 ========"
+    echox magenta " 命令\t  说明"
+    sed -n "s/^##//p" "$0" | column -t -s '@-' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
+    echo
 }
-#load
+
+function version() {
+    echox bule "v1.0.0"
+}
+
+# 加载初始项
+# shellcheck disable=SC2120
+function load() {
+  case $cmd in
+    run) run ;;
+    list) list ;;
+    ver | version) version ;;
+  esac
+}
+load
