@@ -5,6 +5,32 @@
 #  更多详情，请参考 https://github.com/hollson/oskeeper
 # =================================================================
 
+# Reset        = 0 // 重置
+# Bold         = 1 // 加粗
+# Faint        = 2 // 模糊
+# Italic       = 3 // 斜体
+# Underline    = 4 // 下划线
+# BlinkSlow    = 5 // 慢速闪烁
+# BlinkRapid   = 6 // 快速闪烁
+# ReverseVideo = 7 // 反白/反向显示
+# Concealed    = 8 // 隐藏/暗格
+# CrossedOut   = 9 // 删除
+# FontBlack    = 30 // 「字体」黑色
+# FontRed      = 31 // 「字体」红色
+# FontGreen    = 32 // 「字体」绿色
+# FontYellow   = 33 // 「字体」黄色
+# FontBlue     = 34 // 「字体」蓝色
+# FontMagenta  = 35 // 「字体」品红/洋紫
+# FontCyan     = 36 // 「字体」青色
+# FontWhite    = 37 // 「字体」白色
+# BackBlack    = 40 // 「背景」黑色
+# BackRed      = 41 // 「背景」红色
+# BackGreen    = 42 // 「背景」绿色
+# BackYellow   = 43 // 「背景」黄色
+# BackBlue     = 44 // 「背景」蓝色
+# BackMagenta  = 45 // 「背景」品红/洋紫
+# BackCyan     = 46 // 「背景」青色
+# BackWhite    = 47 // 「背景」白色
 ## echox@输出彩色字符
 echox() {
     PLAIN='\033[0m'
@@ -16,32 +42,33 @@ echox() {
     fi
 
     case $1 in
-    black | Black) color="\033[${style}30m" ;;                 # 黑色(默认)
-    red | RED) color="\033[${style}31m" ;;                     # 红色
-    green | GREEN) color="\033[${style}32m" ;;                 # 绿色
-    yellow | YELLOW) color="\033[${style}33m" ;;               # 黄色
-    blue | BLUE) color="\033[${style}34m" ;;                   # 蓝色
-    magenta | MAGENTA) color="\033[${style}35m" ;;             # 洋紫
-    cyan | CYAN) color="\033[${style}36m" ;;                   # 青色
-    err | error | ERROR) color="\033[${style}31m❌ " ;;         # 「 错误 」
-    ok | OK | success | SUCCESS) color="\033[${style}32m✅ " ;; # 「 成功 」
-    warn | WARN) color="\033[${style}33m⛔️ " ;;                # 「 警告 」
-    info | INFO) color="\033[${style}34m🔔 " ;;                 # 「 提示 」
+    black | Black) color="\033[${style}30m" ;;                   # 黑色(默认)
+    red | RED) color="\033[${style}31m" ;;                       # 红色
+    green | GREEN) color="\033[${style}32m" ;;                   # 绿色
+    yellow | YELLOW) color="\033[${style}33m" ;;                 # 黄色
+    blue | BLUE) color="\033[${style}34m" ;;                     # 蓝色
+    magenta | MAGENTA) color="\033[${style}35m" ;;               # 洋紫
+    cyan | CYAN) color="\033[${style}36m" ;;                     # 青色
+
+    err | error | ERROR) color="\033[${style}31m❌  " ;;         # 「 错误 」
+    ok | OK | success | SUCCESS) color="\033[${style}32m✅  " ;; # 「 成功 」
+    warn | WARN) color="\033[${style}33m⛔️ " ;;                  # 「 警告 」
+    info | INFO) color="\033[${style}34m🔔 " ;;                  # 「 提示 」
     *) color="\033[${style}30m" ;;
     esac
-    # 格式：echo -e "\033[风格;前景色;背景色m内容\033[0m"
+    # 格式：echo -e "\033[风格;字体;背景m内容\033[0m"
     echo -e "${color}${txt}${PLAIN}"
 }
 
 # 测试：
-# echox black SOLD "黑色粗体文字"
-# echox RED SOLD "红色粗体文字"
-# echox GREEN "绿色文字"
-# echox YELLOW "黄色文字"
-# echox BLUE "蓝色文字"
-# echox MAGENTA "洋紫文字"
-# echox CYAN "青色文字"
-# echox error 1 "错误信息"
+# echox black SOLD "字体+样式"
+# echox RED SOLD "字体+样式"
+# echox GREEN "字体"
+# echox YELLOW "字体"
+# echox BLUE "字体"
+# echox MAGENTA "字体"
+# echox CYAN "字体"
+# echox error 1 "错误信息+样式"
 # echox ok "成功信息"
 # echox warn "警告信息"
 # echox info "提示消息"
@@ -120,13 +147,13 @@ function compare() {
 ## help@帮助说明
 function usage() {
     echox blue solid "======================================================"
-    echox blue solid "        欢迎使用「SHELL-BOX」shell通用库"
+    echox blue solid "         欢迎使用「SHELL-BOX」shell通用库"
     echox blue solid "======================================================"
 
     echo -e "用法：\n box [command] <param>"
     echo
     echo "Available Commands:"
-    echo -e "\033[35m 函数  \t说明:\033[0m"
+    echox magenta " 函数  \t说明"
     sed -n "s/^##//p" "$0" | column -t -s '@-' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
     echo
     echo -e "更多详情，请参考 https://github.com/hollson\n"
@@ -141,4 +168,4 @@ function load() {
     *) usage ;;
     esac
 }
-load
+#load

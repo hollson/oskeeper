@@ -30,11 +30,3 @@ service[14]="FavoriteServer"
 service[15]="MaintenanceServer"
 service[16]="MatchServer"
 service[17]="PushCenter"
-#service[18]="PhysicsServer \
-# -ip 192.168.39.8 \
-# -port 443 \
-# -namespace default \
-# -key ./conf/agones/client.key \
-# -cert ./conf/agones/client.crt \
-# -cacert ./conf/agones/ca.crt \
-# -agones=false"

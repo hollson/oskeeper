@@ -152,7 +152,7 @@ function install() {
 ## deploy-dep@发布为打包文件
 function deploy() {
     check_env
-    cd $REWORLD_CODE
+    cd "$REWORLD_CODE" || exit
     make deploy
     cd -
 }
@@ -160,7 +160,7 @@ function deploy() {
 ## run-run@启动服务
 function run() {
     echo " ⚽  启动服务..."
-    cd $app_root
+    cd "$app_root" || exit
     for key in ${!service[*]}; do
         ./reworld-server ${service[$(expr ${key})]} &
     done
@@ -188,7 +188,7 @@ function stop() {
 function status() {
     ps -ef | grep -v 'grep' | grep -E 'reworld-server|UID' --color=auto
     count=$(ps -ef | grep -c 'reworld-server')
-    echo -e "当前Reworld服务进程数： \033[1;31m $(expr $count - 1) \033[0m.\n"
+    echo -e "当前Reworld服务进程数： \033[1;31m $(("$count" - 1)) \033[0m.\n"
 }
 
 ## update-upd@在线更新源码和服务(默认dev环境)
