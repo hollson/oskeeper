@@ -3,14 +3,14 @@
 # =================================================================
 #  Shell通用函数库
 #  查看函数列表： ./util.sh list
+#  下载/更新脚本：curl -Ssl -O https://raw.githubusercontent.com/hollson/oskeeper/b63438f5bd7af8c9b659496e4ed51b64858a5737/lib/util.sh
 #  更多详情，请参考 https://github.com/hollson/oskeeper
 # =================================================================
 
-cmd=$1                          # 命令参数
-
+cmd=$1 # 命令参数
 
 ## echox@打印彩色字符
-echox() {
+function echox() {
     # Reset        = 0 // 重置
     # Bold         = 1 // 加粗
     # Faint        = 2 // 模糊
@@ -47,17 +47,17 @@ echox() {
     fi
 
     case $1 in
-    black | Black) color="\033[${style}30m" ;;                   # 黑色(默认)
-    red | RED) color="\033[${style}31m" ;;                       # 红色
-    green | GREEN) color="\033[${style}32m" ;;                   # 绿色
-    yellow | YELLOW) color="\033[${style}33m" ;;                 # 黄色
-    blue | BLUE) color="\033[${style}34m" ;;                     # 蓝色
-    magenta | MAGENTA) color="\033[${style}35m" ;;               # 洋紫
-    cyan | CYAN) color="\033[${style}36m" ;;                     # 青色
+    black | Black) color="\033[${style}30m" ;;     # 黑色(默认)
+    red | RED) color="\033[${style}31m" ;;         # 红色
+    green | GREEN) color="\033[${style}32m" ;;     # 绿色
+    yellow | YELLOW) color="\033[${style}33m" ;;   # 黄色
+    blue | BLUE) color="\033[${style}34m" ;;       # 蓝色
+    magenta | MAGENTA) color="\033[${style}35m" ;; # 洋紫
+    cyan | CYAN) color="\033[${style}36m" ;;       # 青色
 
     err | error | ERROR) color="\033[${style}31m❌  " ;;         # 「 错误 」
     ok | OK | success | SUCCESS) color="\033[${style}32m✅  " ;; # 「 成功 」
-    warn | WARN) color="\033[${style}33m⛔️ " ;;                  # 「 警告 」
+    warn | WARN) color="\033[${style}33m⛔️ " ;;                 # 「 警告 」
     info | INFO) color="\033[${style}34m🔔 " ;;                  # 「 提示 」
     *) color="\033[${style}30m" ;;
     esac
@@ -80,8 +80,17 @@ echox() {
 
 # =================================================================
 
+## next@是否继续
+function next() {
+    read -r -p "是否继续?(y/n) " next
+    [ "$next" = 'Y' ] || [ "$next" = 'y' ] || exit 1
+}
+# next
+
+# =================================================================
+
 ## arch@查看CPU架构
-arch() {
+function arch() {
     case "$(uname -m)" in
     i686 | i386) echo 'x32' ;;
     x86_64 | amd64) echo 'x64' ;;
@@ -178,10 +187,10 @@ function version() {
 # 加载初始项
 # shellcheck disable=SC2120
 function load() {
-  case $cmd in
+    case $cmd in
     run) run ;;
     list) list ;;
     ver | version) version ;;
-  esac
+    esac
 }
 load
