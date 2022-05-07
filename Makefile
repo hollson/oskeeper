@@ -1,9 +1,14 @@
-# Makefile语法参考：https://makefiletutorial.com/
+#==================================================================
+# Reference:
+#	https://shields.io/
+#	https://makefiletutorial.com/
+#==================================================================
+
 all: help
 
 
 ## clean@清理编译、日志和缓存等数据。
-.PHONY:clean
+.PHONY: clean
 clean:
 	@rm -rf ./logs;
 	@rm -rf ./log;
@@ -36,6 +41,6 @@ help:Makefile
 	@echo "Usage:\n  make [command]"
 	@echo
 	@echo "Available Commands:"
-	@sed -n "s/^##//p" $< | column -t -s '@' |grep --color=auto "^[[:space:]][a-zA-Z0-9]\+[[:space:]]"
+	@sed -n "s/^##//p" $< | column -t -s '@' |grep --color=auto "^[[:space:]][a-zA-Z0-9_]\+[[:space:]]"
 	@echo
-	@echo "For more to see https://github.com/hollson/"
+	@echo "更多内容,请参考： https://github.com/hollson\n"

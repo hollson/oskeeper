@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # =================================================================
-#  Shell通用函数库
-#  查看函数列表： ./util.sh list
-#  下载/更新脚本：curl -Ssl -O https://raw.githubusercontent.com/hollson/oskeeper/b63438f5bd7af8c9b659496e4ed51b64858a5737/lib/util.sh
-#  更多详情，请参考 https://github.com/hollson/oskeeper
+# Shell开发工具库(Shell Development Kit)
+# 查看函数列表： ./sdk.sh list
+# 下载/更新脚本：
+#     curl -Ssl -O https://raw.githubusercontent.com/hollson/oskeeper/master/lib/sdk.sh && chmod +x ./sdk.sh
+# 更多详情，请参考 https://github.com/hollson/oskeeper
 # =================================================================
 
 cmd=$1 # 命令参数
@@ -82,7 +83,7 @@ function echox() {
 
 ## next@是否继续
 function next() {
-    read -r -p "是否继续?(y/n) " next
+    read -r -p "是否继续?(Y/n) " next
     [ "$next" = 'Y' ] || [ "$next" = 'y' ] || exit 1
 }
 # next
@@ -188,9 +189,9 @@ function version() {
 # shellcheck disable=SC2120
 function load() {
     case $cmd in
-    run) run ;;
     list) list ;;
     ver | version) version ;;
     esac
+    [[ $0 == "./sdk.sh" ]] && usage
 }
 load
