@@ -1,2 +1,4 @@
-# osper
-系统运维笔记
+# System Operating Kit
+
+![gdk](./favicon.svg?description=1&language=1&pattern=Floating%20Cogs&theme=Light)
+
