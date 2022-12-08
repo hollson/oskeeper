@@ -7,6 +7,7 @@
 #     curl -Ssl -O https://raw.githubusercontent.com/hollson/oskeeper/master/lib/sdk.sh && chmod +x ./sdk.sh
 # 更多详情，请参考 https://github.com/hollson/oskeeper
 # =================================================================
+
 SDK_NAME=$(basename "$0") # 当前脚本名称(固定为sdk.sh)
 SDK_VERSION="v1.0.0"      # 当前sdk版本
 SDK_CMD=$1                # 命令参数
@@ -147,13 +148,13 @@ function contain() {
 function compare() {
   if test "$1" -lt "$2"; then
     echo -1
-#    RESULT=-1 # 小于
+    #    RESULT=-1 # 小于
   elif test "$1" -eq "$2"; then
     echo 0
-#    RESULT=0 # 等于
+    #    RESULT=0 # 等于
   else
     echo 1
-#    RESULT=1 # 大于
+    #    RESULT=1 # 大于
   fi
 }
 
@@ -187,6 +188,16 @@ function list() {
 
 function version() {
   echox blue SOLD "sdk $SDK_VERSION"
+}
+
+function lock() {
+#  sudo chmod 555 ./sdk.sh
+  sudo chattr +i ./sdk.sh
+}
+
+function unlock() {
+#  sudo chmod 555 ./sdk.sh
+  sudo chattr -i ./sdk.sh
 }
 
 # 加载初始项
