@@ -145,16 +145,16 @@ function contain() {
 # =================================================================
 
 ## compare@比较两个数的大小
+# -1: a < b
+#  0: a = b
+#  1: a > b
 function compare() {
   if test "$1" -lt "$2"; then
     echo -1
-    #    RESULT=-1 # 小于
   elif test "$1" -eq "$2"; then
     echo 0
-    #    RESULT=0 # 等于
   else
     echo 1
-    #    RESULT=1 # 大于
   fi
 }
 
@@ -191,12 +191,12 @@ function version() {
 }
 
 function lock() {
-#  sudo chmod 555 ./sdk.sh
+  #  sudo chmod 555 ./sdk.sh
   sudo chattr +i ./sdk.sh
 }
 
 function unlock() {
-#  sudo chmod 555 ./sdk.sh
+  #  sudo chmod 555 ./sdk.sh
   sudo chattr -i ./sdk.sh
 }
 
