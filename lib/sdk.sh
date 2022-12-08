@@ -164,8 +164,8 @@ function compare() {
 
 # =================================================================
 
-## usage@通用帮助说明
-function usage() {
+## help@帮助说明
+function help() {
   echox blue solid "========================================================="
   echox blue solid "         欢迎使用sdk(Shell Development Kit) v1.0.0"
   echox blue solid "========================================================="
@@ -207,7 +207,7 @@ function load() {
     case $SDK_CMD in
     list) list ;;
     ver | version) version ;;
-    *) usage ;;
+    *) help ;;
     esac
   fi
 }
