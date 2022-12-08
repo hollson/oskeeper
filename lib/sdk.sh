@@ -146,11 +146,14 @@ function contain() {
 ## compare@比较两个数的大小
 function compare() {
   if test "$1" -lt "$2"; then
-    RESULT=-1 # 小于
+    echo -1
+#    RESULT=-1 # 小于
   elif test "$1" -eq "$2"; then
-    RESULT=0 # 等于
+    echo 0
+#    RESULT=0 # 等于
   else
-    RESULT=1 # 大于
+    echo 1
+#    RESULT=1 # 大于
   fi
 }
 
