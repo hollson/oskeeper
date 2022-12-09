@@ -4,4 +4,6 @@ bin
 .vscode
 _gen
 target
-
+.log
+tmp
+logs

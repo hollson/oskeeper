@@ -2,26 +2,30 @@
 # shellcheck disable=SC1090
 import() { . "$1" &>/dev/null; }
 
-# ============================================================================================
+# =========================================================================================
+# Shell开发工具库(Shell Development Kit)
+# 查看函数列表： ./sdk.sh list
+# 下载/更新脚本：
+#   curl -Ssl -O https://raw.githubusercontent.com/hollson/oskeeper/master/lib/sdk.sh && chmod +x ./sdk.sh
+# 更多详情，请参考 https://github.com/hollson/oskeeper
+# =========================================================================================
 
 # 全局变量
 cmd=$1                            #二级命令
 params="${@:2}"                   #二级命令参数
+
 BACK_PATH="./backup"              # 备份目录
 LOG_PATH="./dump.log"             # 日志文件(可通过环境变量(SDK_LOG_PATH)覆盖)
 MIN_SIZE=1048576                  # 文件最小字节(1M)
+
+SIZE_1K=1024                      # 容量大小(1K)
+SIZE_1M=1048576                   # 容量大小(1M)
+SIZE_1G=1073741824                # 容量大小(1G)
+
 ConsoleLog=on                     # 是否打印控制台日志(on/off)
 CronSPEC="*/1 * * * *"            # 1分钟执行1次
 ReportURL="http://localhost:8080" # 上报中心URL
-TEST_VERBOSE=on                   #打印单元测试过程
-
-# =================================================================
-# Shell开发工具库(Shell Development Kit)
-# 查看函数列表： ./sdk.sh list
-# 下载/更新脚本：
-#     curl -Ssl -O https://raw.githubusercontent.com/hollson/oskeeper/master/lib/sdk.sh && chmod +x ./sdk.sh
-# 更多详情，请参考 https://github.com/hollson/oskeeper
-# =================================================================
+TEST_VERBOSE=off                  #打印单元测试过程
 
 BASE_NAME=$(basename "$0") # 脚本名称
 SDK_VERSION="v1.0.0"       # 当前sdk版本
@@ -29,7 +33,7 @@ SDK_CMD=$1                 # 命令参数
 
 # =================================================================
 
-import sdk_unit_test.sh
+import sdk_ut.sh
 
 ## echox@打印彩色字符
 function echox() {

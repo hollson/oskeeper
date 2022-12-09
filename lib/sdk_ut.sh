@@ -6,9 +6,12 @@
 # 127: 命令不存在
 function unittest() {
   set +e
-  #    $1 &>/dev/null
+  if [ "$TEST_VERBOSE" == "on" ]; then
+    $1
+  else
+    $1 &>/dev/null
+  fi
 
-  $1
   result=$?
   if [ $result -eq 127 ]; then
     echox error 1 "[NotFound] \t [$1]\t 函数或命令不存在"

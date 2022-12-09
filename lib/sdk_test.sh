@@ -59,14 +59,14 @@ function testNext() {
 #unittest "${@:1}"
 
 
-unittest $(testList)
+#unittest $(testList)
 
 
-#unittest testLog
-#unittest testContain
-#unittest testCompare
-#unittest testOK
-#unittest testErr
-#unittest testNotfound
+unittest testLog
+unittest testContain
+unittest testCompare
+unittest testOK
+unittest testErr
+unittest testNotfound
 
 #grep test ./sdk_next.sh
