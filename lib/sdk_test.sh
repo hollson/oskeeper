@@ -1,13 +1,19 @@
 #!/bin/bash
-# shellcheck disable=SC1090
-import() { . "$1" &>/dev/null; }
+source sdk.sh
 
-import sdk.sh
-#set -e
-params="${@:1}" #二级命令参数
+function testOK() {
+  echox info 1 "this is testOK"
+  return 0
+}
+
+function testErr() {
+  #  $FUNCNAME
+  echo "$FUNCNAME"
+  echox error 1 "this is testErr"
+  return 99
+}
 
 function testEchox() {
-  # 测试：
   echox black SOLD "字体+样式"
   echox RED SOLD "字体+样式"
   echox GREEN "字体"
@@ -21,33 +27,46 @@ function testEchox() {
   echox info "提示消息"
 }
 
-function testOK() {
-  echox info 1 "this is testOK"
-  return 0
+function testDateTime() {
+  dateTime
 }
 
-function testErr() {
-  echox error 1 "this is testErr"
-  return 99
+function testCompare() {
+  compare 2 1
+  compare 1 1
+  compare 1 2
 }
 
-# 126: 不可执行
-# 127: 命令不存在
-function testx() {
-  set +e
-  $1 &>/dev/null
-  # shellcheck disable=SC2181
-  result=$?
-
-  if [ $result -eq 127 ]; then
-    echox error 1 "【NotFound】函数或命令不存在-$1"
-#    return
-  fi
-  if [ $result -ne 0 ]; then
-    echox error 1 "【UT】\t 不通过【$1】$?"
-    exit 1
-  fi
-  echox success 1 "【UT】\t 通过【$1】"
+function testContain() {
+  contain "linux" "lin"
+  contain "linux" "abc"
+  contain "linux" "linuxlinux"
 }
 
-testx $params
+function testLog() {
+  log hello world
+  logInfo "提示信息"
+  logWarn "警告提醒"
+  logError "一般错误"
+  logFail "致命错误"
+}
+
+function testNext() {
+  next "${@:1}"
+  echo done
+}
+# 加载单元测试处理程序
+#unittest "${@:1}"
+
+
+unittest $(testList)
+
+
+#unittest testLog
+#unittest testContain
+#unittest testCompare
+#unittest testOK
+#unittest testErr
+#unittest testNotfound
+
+#grep test ./sdk_next.sh

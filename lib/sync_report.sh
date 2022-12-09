@@ -23,54 +23,6 @@ import ./script/sdk.sh
 import ./sdk.sh
 # ============================================================================================
 
-function init() {
-  if [ -n "$SDK_LOG_PATH" ]; then
-    LOG_PATH="$SDK_LOG_PATH"
-  fi
-}
-init
-
-function dateTime() {
-  echo "$(date '+%Y-%m-%d %H:%M:%S')"
-}
-
-# 打印日志
-# log "普通日志"
-# log info  "提示信息"
-# log warn " 警告提醒"
-# log error "一般错误，如: 用户执行结果失败、参数错误等"
-# log fail  "致命错误，如: 系统不兼容、命令错误等异常"
-function log() {
-  content="[$(dateTime)] $1"
-  if [ $1 == "info" ] || [ $1 == "warn" ] || [ $1 == "error" ] || [ $1 == "fail" ]; then
-    content="[$(dateTime)] [$1] $2"
-  fi
-  if [ $ConsoleLog == "on" ]; then
-    echo "$content"
-  fi
-  echo -e "$content" >>$LOG_PATH
-}
-
-# 提示信息
-function logInfo() {
-  log info "${@:1}"
-}
-
-# 警告提醒
-function logWarn() {
-  log warn "${@:1}"
-}
-
-# 一般错误
-function logError() {
-  log error "${@:1}"
-}
-
-# 致命错误
-function logFail() {
-  log fail "${@:1}"
-}
-
 #删除空行
 #function delLine() {
 #  sed -i '/hello/d' test_temp
@@ -181,4 +133,3 @@ loadF
 
 #* * * * * sleep 10; echo $(date) >> /home/hollson/udcp/source/udcp-monitor/script/a.txt
 #*/1 * * * * /home/hollson/udcp/source/udcp-monitor/script/sync_report.sh
-

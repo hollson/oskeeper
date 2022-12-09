@@ -1,4 +1,19 @@
 #!/bin/bash
+# shellcheck disable=SC1090
+import() { . "$1" &>/dev/null; }
+
+# ============================================================================================
+
+# 全局变量
+cmd=$1                            #二级命令
+params="${@:2}"                   #二级命令参数
+BACK_PATH="./backup"              # 备份目录
+LOG_PATH="./dump.log"             # 日志文件(可通过环境变量(SDK_LOG_PATH)覆盖)
+MIN_SIZE=1048576                  # 文件最小字节(1M)
+ConsoleLog=on                     # 是否打印控制台日志(on/off)
+CronSPEC="*/1 * * * *"            # 1分钟执行1次
+ReportURL="http://localhost:8080" # 上报中心URL
+TEST_VERBOSE=on                   #打印单元测试过程
 
 # =================================================================
 # Shell开发工具库(Shell Development Kit)
@@ -8,9 +23,13 @@
 # 更多详情，请参考 https://github.com/hollson/oskeeper
 # =================================================================
 
-SDK_NAME=$(basename "$0") # 当前脚本名称(固定为sdk.sh)
-SDK_VERSION="v1.0.0"      # 当前sdk版本
-SDK_CMD=$1                # 命令参数
+BASE_NAME=$(basename "$0") # 脚本名称
+SDK_VERSION="v1.0.0"       # 当前sdk版本
+SDK_CMD=$1                 # 命令参数
+
+# =================================================================
+
+import sdk_unit_test.sh
 
 ## echox@打印彩色字符
 function echox() {
@@ -58,7 +77,7 @@ function echox() {
   magenta | MAGENTA) color="\033[${style}35m" ;; # 洋紫
   cyan | CYAN) color="\033[${style}36m" ;; # 青色
 
-  err | error | ERROR) color="\033[${style}31m❌  " ;; # 「 错误 」
+  err | fail | error | ERROR) color="\033[${style}31m❌  " ;; # 「 错误 」
   ok | OK | success | SUCCESS) color="\033[${style}32m✅  " ;; # 「 成功 」
   warn | WARN) color="\033[${style}33m⛔️ " ;; # 「 警告 」
   info | INFO) color="\033[${style}34m🔔 " ;; # 「 提示 」
@@ -83,10 +102,59 @@ function echox() {
 
 # =================================================================
 
+function init() {
+  if [ -n "$SDK_LOG_PATH" ]; then
+    LOG_PATH="$SDK_LOG_PATH"
+  fi
+}
+init
+
+function dateTime() {
+  date "+%Y-%m-%d %H:%M:%S"
+}
+
+# 打印日志
+# log "普通日志"
+# log info  "提示信息"
+# log warn " 警告提醒"
+# log error "一般错误，如: 用户执行结果失败、参数错误等"
+# log fail  "致命错误，如: 系统不兼容、命令错误等异常"
+function log() {
+  content="[$(dateTime)] $1"
+  if [ $1 == "info" ] || [ $1 == "warn" ] || [ $1 == "error" ] || [ $1 == "fail" ]; then
+    content="[$(dateTime)] [$1] $2"
+  fi
+  if [ $ConsoleLog == "on" ]; then
+    echox "$1" BOLD "$content"
+  fi
+  echo -e "$content" >>$LOG_PATH
+}
+
+# 提示信息
+function logInfo() {
+  log info "${@:1}"
+}
+
+# 警告提醒
+function logWarn() {
+  log warn "${@:1}"
+}
+
+# 一般错误
+function logError() {
+  log error "${@:1}"
+}
+
+# 致命错误
+function logFail() {
+  log fail "${@:1}"
+}
+
 ## next@是否继续
 function next() {
+  echo $1
   read -r -p "是否继续?(Y/n) " next
-  [ "$next" = 'Y' ] || [ "$next" = 'y' ] || exit 1
+  [ "$next" = 'Y' ] || [ "$next" = 'y' ] || exit 0
 }
 # next
 
@@ -116,7 +184,12 @@ function arch() {
 # arch
 
 # =================================================================
-
+# 加减乘除模
+#expr 9 + 3
+#expr 9 - 3
+#expr 9 \* 3
+#expr 9 / 3
+#expr 9 % 2
 ## sum@求两数之和
 function sum() {
   RESULT=$(($1 + $2))
@@ -128,23 +201,19 @@ function sum() {
 
 # =================================================================
 
-## contain@字符串是否包含子串
+## contain@是否包含子串
 function contain() {
   ret=$(echo "$1" | grep "$2")
   if [[ "$ret" != "" ]]; then
-    RESULT=1 # 存在
+    echo true
   else
-    RESULT=0 # 不包含
+    echo false
   fi
 }
 
-# 测试：
-# contain "linux" "lin"
-# echo "🎯 contain: $RESULT"
-
 # =================================================================
 
-## compare@比较两个数的大小
+## compare@比较大小
 # -1: a < b
 #  0: a = b
 #  1: a > b
@@ -157,10 +226,6 @@ function compare() {
     echo 1
   fi
 }
-
-# # 测试：
-# compare 2 1
-# echo "🎯 compare: $RESULT"
 
 # =================================================================
 
@@ -200,15 +265,22 @@ function unlock() {
   sudo chattr -i ./sdk.sh
 }
 
-# 加载初始项
-# shellcheck disable=SC2120
-function load() {
-  if [ "$SDK_NAME" == "sdk.sh" ]; then
+# Main函数
+function main() {
+  if [ "$BASE_NAME" == "sdk.sh" ]; then
     case $SDK_CMD in
     list) list ;;
+    ut | test) ut ;;
     ver | version) version ;;
     *) help ;;
     esac
   fi
 }
-load
+main
+
+#sed -i '/hello/d' ./a.txt # 删除关键字行
+#sed -i '1d' a.txt         # 删首行
+#sed -i '2d' a.txt         # 删除第2行
+#sed -i '$d' a.txt         # 删除尾行
+#sed -i 's/[ ]*//g' a.txt  # 删除空格
+#sed -i '/^$/d' a.txt      # 删除空行
