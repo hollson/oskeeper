@@ -6,7 +6,7 @@ import() { . "$1" &>/dev/null; }
 # Shell开发工具库(Shell Development Kit)
 # 查看函数列表： ./sdk.sh list
 # 下载/更新脚本：
-#   curl -Ssl -O https://raw.githubusercontent.com/hollson/oskeeper/master/lib/sdk.sh && chmod +x ./sdk.sh
+#   curl -Ssl -O https://github.com/hollson/oskeeper/releases/download/v1.0.0/sdk.sh && chmod +x ./sdk.sh
 # 更多详情，请参考 https://github.com/hollson/oskeeper
 # =========================================================================================
 
