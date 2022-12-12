@@ -184,8 +184,6 @@ function contain() {
   fi
 }
 
-# =================================================================
-
 ## compare@比较大小
 # -1: a < b
 #  0: a = b
@@ -200,12 +198,21 @@ function compare() {
   fi
 }
 
-# =================================================================
+function version() {
+  echox blue SOLD "sdk $SDK_VERSION"
+}
+
+function list() {
+  echox blue solid "======== 函数库列表 ========"
+  echox magenta " 命令\t  说明"
+  sed -n "s/^##//p" "$0" | column -t -s '@-' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
+  echo
+}
 
 ## help@帮助说明
 function help() {
   echox blue solid "========================================================="
-  echox blue solid "         欢迎使用sdk(Shell Development Kit) v1.0.0"
+  echox blue solid "         欢迎使用sdk(Shell Development Kit) $SDK_VERSION"
   echox blue solid "========================================================="
 
   echo -e "用法：\n sdk [command] <param>"
@@ -217,26 +224,7 @@ function help() {
   echo -e "更多详情，请参考 https://github.com/hollson\n"
 }
 
-function list() {
-  echox blue solid "======== 函数库列表 ========"
-  echox magenta " 命令\t  说明"
-  sed -n "s/^##//p" "$0" | column -t -s '@-' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
-  echo
-}
 
-function version() {
-  echox blue SOLD "sdk $SDK_VERSION"
-}
-
-function lock() {
-  #  sudo chmod 555 ./sdk.sh
-  sudo chattr +i ./sdk.sh
-}
-
-function unlock() {
-  #  sudo chmod 555 ./sdk.sh
-  sudo chattr -i ./sdk.sh
-}
 
 # Main函数
 function main() {
