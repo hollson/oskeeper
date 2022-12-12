@@ -13,6 +13,11 @@ function testErr() {
   return 99
 }
 
+function testSum() {
+  sum 1 2
+  sum 111 222
+}
+
 function testEchox() {
   echox black SOLD "字体+样式"
   echox RED SOLD "字体+样式"
@@ -58,15 +63,13 @@ function testNext() {
 # 加载单元测试处理程序
 #unittest "${@:1}"
 
-
 #unittest $(testList)
 
-
-unittest testLog
-unittest testContain
-unittest testCompare
-unittest testOK
-unittest testErr
-unittest testNotfound
-
+#unittest testLog
+#unittest testContain
+#unittest testCompare
+#unittest testOK
+#unittest testErr
+#unittest testNotfound
+unittest testSum
 #grep test ./sdk_next.sh

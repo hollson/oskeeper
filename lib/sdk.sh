@@ -11,29 +11,52 @@ import() { . "$1" &>/dev/null; }
 # =========================================================================================
 
 # 全局变量
-cmd=$1                            #二级命令
-params="${@:2}"                   #二级命令参数
+cmd=$1                     #二级命令
+params="${@:2}"            #二级命令参数
 
-BACK_PATH="./backup"              # 备份目录
-LOG_PATH="./dump.log"             # 日志文件(可通过环境变量(SDK_LOG_PATH)覆盖)
-MIN_SIZE=1048576                  # 文件最小字节(1M)
+SIZE1K=1024                # 容量大小(1K)
+SIZE1M=1048576             # 容量大小(1M)
+SIZE1G=1073741824          # 容量大小(1G)
 
-SIZE_1K=1024                      # 容量大小(1K)
-SIZE_1M=1048576                   # 容量大小(1M)
-SIZE_1G=1073741824                # 容量大小(1G)
-
-ConsoleLog=on                     # 是否打印控制台日志(on/off)
-CronSPEC="*/1 * * * *"            # 1分钟执行1次
-ReportURL="http://localhost:8080" # 上报中心URL
-TEST_VERBOSE=off                  #打印单元测试过程
+LOG_PATH="./dump.log"      # 日志文件(可通过环境变量(SDK_LOG_PATH)覆盖)
+ConsoleLog=on              # 是否打印控制台日志(on/off)
+TEST_VERBOSE=on            #打印单元测试过程
 
 BASE_NAME=$(basename "$0") # 脚本名称
 SDK_VERSION="v1.0.0"       # 当前sdk版本
 SDK_CMD=$1                 # 命令参数
 
-# =================================================================
-
 import sdk_ut.sh
+
+function init() {
+  if [ -n "$SDK_LOG_PATH" ]; then
+    LOG_PATH="$SDK_LOG_PATH"
+  fi
+}
+init
+# =========================================================================================
+
+## arch@查看CPU架构
+function arch() {
+  case "$(uname -m)" in
+  i686 | i386) echo 'x32' ;;
+  x86_64 | amd64) echo 'x64' ;;
+  armv5tel) echo 'arm32-v5' ;;
+  armv6l) echo 'arm32-v6' ;;
+  armv7 | armv7l) echo 'arm32-v7a' ;;
+  armv8 | aarch64) echo 'arm64-v8a' ;;
+  mips64le) echo 'mips64le' ;;
+  mips64) echo 'mips64' ;;
+  mipsle) echo 'mips32le' ;;
+  mips) echo 'mips32' ;;
+  ppc64le) echo 'ppc64le' ;;
+  ppc64) echo 'ppc64' ;;
+  riscv64) echo 'riscv64' ;;
+  s390x) echo 's390x' ;;
+  *) echox err "未知CPU架构" ;;
+  esac
+  return 0
+}
 
 ## echox@打印彩色字符
 function echox() {
@@ -91,28 +114,7 @@ function echox() {
   echo -e "${color}${txt}${PLAIN}"
 }
 
-# 测试：
-# echox black SOLD "字体+样式"
-# echox RED SOLD "字体+样式"
-# echox GREEN "字体"
-# echox YELLOW "字体"
-# echox BLUE "字体"
-# echox MAGENTA "字体"
-# echox CYAN "字体"
-# echox error 1 "错误信息+样式"
-# echox ok "成功信息"
-# echox warn "警告信息"
-# echox info "提示消息"
-
-# =================================================================
-
-function init() {
-  if [ -n "$SDK_LOG_PATH" ]; then
-    LOG_PATH="$SDK_LOG_PATH"
-  fi
-}
-init
-
+## dateTime@打印当前时间
 function dateTime() {
   date "+%Y-%m-%d %H:%M:%S"
 }
@@ -154,40 +156,13 @@ function logFail() {
   log fail "${@:1}"
 }
 
-## next@是否继续
+## next@阻塞并确定是否继续
 function next() {
   echo $1
   read -r -p "是否继续?(Y/n) " next
   [ "$next" = 'Y' ] || [ "$next" = 'y' ] || exit 0
 }
-# next
 
-# =================================================================
-
-## arch@查看CPU架构
-function arch() {
-  case "$(uname -m)" in
-  i686 | i386) echo 'x32' ;;
-  x86_64 | amd64) echo 'x64' ;;
-  armv5tel) echo 'arm32-v5' ;;
-  armv6l) echo 'arm32-v6' ;;
-  armv7 | armv7l) echo 'arm32-v7a' ;;
-  armv8 | aarch64) echo 'arm64-v8a' ;;
-  mips64le) echo 'mips64le' ;;
-  mips64) echo 'mips64' ;;
-  mipsle) echo 'mips32le' ;;
-  mips) echo 'mips32' ;;
-  ppc64le) echo 'ppc64le' ;;
-  ppc64) echo 'ppc64' ;;
-  riscv64) echo 'riscv64' ;;
-  s390x) echo 's390x' ;;
-  *) echox err "未知CPU架构" ;;
-  esac
-  return 0
-}
-# arch
-
-# =================================================================
 # 加减乘除模
 #expr 9 + 3
 #expr 9 - 3
@@ -196,16 +171,10 @@ function arch() {
 #expr 9 % 2
 ## sum@求两数之和
 function sum() {
-  RESULT=$(($1 + $2))
+  echo $(($1 + $2))
 }
 
-# 测试：
-# sum -2 -3
-# echo "🎯 sum: $RESULT"
-
-# =================================================================
-
-## contain@是否包含子串
+## contain@是否包含子串,如：contain src sub
 function contain() {
   ret=$(echo "$1" | grep "$2")
   if [[ "$ret" != "" ]]; then

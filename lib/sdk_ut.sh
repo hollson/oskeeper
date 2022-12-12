@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # 单元测试
 # 加载单元测试: unittest "${@:1}"
 # 126: 不可执行
@@ -22,7 +23,7 @@ function unittest() {
     return
   fi
   #  echo $result
-  echox success 1 "[UT] \t [$1]\t 失败"
+#  echox success 1 "[UT] \t [$1]\t 失败"
 }
 
 # 单元测试列表
