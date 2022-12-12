@@ -14,17 +14,19 @@ import() { . "$1" &>/dev/null; }
 cmd=$1                     #二级命令
 params="${@:2}"            #二级命令参数
 
+# shellcheck disable=SC2034
 SIZE1K=1024                # 容量大小(1K)
+# shellcheck disable=SC2034
 SIZE1M=1048576             # 容量大小(1M)
+# shellcheck disable=SC2034
 SIZE1G=1073741824          # 容量大小(1G)
 
 LOG_PATH="./dump.log"      # 日志文件(可通过环境变量(SDK_LOG_PATH)覆盖)
 ConsoleLog=on              # 是否打印控制台日志(on/off)
-TEST_VERBOSE=on            #打印单元测试过程
+UtVerbose=off              #打印单元测试过程
 
 BASE_NAME=$(basename "$0") # 脚本名称
 SDK_VERSION="v1.0.0"       # 当前sdk版本
-SDK_CMD=$1                 # 命令参数
 
 import sdk_ut.sh
 
@@ -224,12 +226,10 @@ function help() {
   echo -e "更多详情，请参考 https://github.com/hollson\n"
 }
 
-
-
 # Main函数
 function main() {
   if [ "$BASE_NAME" == "sdk.sh" ]; then
-    case $SDK_CMD in
+    case $cmd in
     list) list ;;
     ut | test) ut ;;
     ver | version) version ;;

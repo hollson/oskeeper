@@ -7,23 +7,23 @@
 # 127: 命令不存在
 function unittest() {
   set +e
-  if [ "$TEST_VERBOSE" == "on" ]; then
+  if [[ "$TEST_VERBOSE" == "on" || "$UtVerbose" == "on" ]]; then
     $1
   else
     $1 &>/dev/null
   fi
 
   result=$?
+#  echo "$result"
   if [ $result -eq 127 ]; then
     echox error 1 "[NotFound] \t [$1]\t 函数或命令不存在"
     return
   fi
-  if [ $result -ne 0 ]; then
-    echox error 1 "[UT] \t [$1]\t 成功"
+  if [ $result -eq 0 ]; then
+    echox success 1 "[UT] \t [$1]\t 成功"
     return
   fi
-  #  echo $result
-#  echox success 1 "[UT] \t [$1]\t 失败"
+  echox error 1 "[UT] \t [$1]\t 失败"
 }
 
 # 单元测试列表
