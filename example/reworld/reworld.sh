@@ -203,7 +203,7 @@ function update() {
     fi
 
     cd $REWORLD_CODE
-    echo -e "\033[1;32m 卐 同步远程仓库...\033[0m"
+    echo -e "\033[1;32m  同步远程仓库...\033[0m"
     if [[ ! $(git pull) ]]; then
         echo -e "\033[1;31m 源码同步失败,退出更新服务...\033[0m"
         exit 1

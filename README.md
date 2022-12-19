@@ -35,16 +35,48 @@ Available Commands:
 更多详情，请参考 https://github.com/hollson
 ```
 
-## Others
-**Unnit Test**
+## Unit Test
+**打印单元测试过程**
+```shell
+export TEST_VERBOSE=on
+```
+**查看单元测试函数列表**
+```shell
+> $ ./sdk_test.sh list
+======== 单元测试函数列表 ========
+testArch
+testCompare
+testContain
+testDateTime
+testEchox
+testErr
+testLog
+testOK
+testOS
+testSum
+```
+**执行某个单元测试**
+```shell
+> $ ./sdk_test.sh testOK
+✅  [UT]          [testOK]        成功
+> $ ./sdk_test.sh testErr
+❌  [UT]          [testErr]       失败
+sybs@shs:lib$ 
+```
+**执行所有单元测试**
 ```shell
 > $ ./sdk_test.sh 
-✅  [UT]          [testLog]       成功
-✅  [UT]          [testContain]   成功
+✅  [UT]          [testArch]      成功
 ✅  [UT]          [testCompare]   成功
-✅  [UT]          [testOK]        成功
+✅  [UT]          [testContain]   成功
+✅  [UT]          [testDateTime]  成功
+✅  [UT]          [testEchox]     成功
 ❌  [UT]          [testErr]       失败
-❌  [NotFound]    [testNotfound]  函数或命令不存在
+✅  [UT]          [testLog]       成功
+✅  [UT]          [testOK]        成功
+✅  [UT]          [testOS]        成功
 ✅  [UT]          [testSum]       成功
 ```
 
+
+## Others

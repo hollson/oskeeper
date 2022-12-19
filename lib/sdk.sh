@@ -2,28 +2,25 @@
 # shellcheck disable=SC1090
 import() { . "$1" &>/dev/null; }
 
-# =========================================================================================
+# ==========================================================================
 # Shell开发工具库(Shell Development Kit)
 # 查看函数列表： ./sdk.sh list
 # 下载/更新脚本：
 #   curl -Ssl -O https://github.com/hollson/oskeeper/releases/download/v1.0.0/sdk.sh && chmod +x ./sdk.sh
 # 更多详情，请参考 https://github.com/hollson/oskeeper
-# =========================================================================================
+# ==========================================================================
 
 # 全局变量
-cmd=$1                     #二级命令
-params="${@:2}"            #二级命令参数
+cmd=$1        # 二级命令
+params=${*:2} # 二级命令参数
 
-# shellcheck disable=SC2034
-SIZE1K=1024                # 容量大小(1K)
-# shellcheck disable=SC2034
-SIZE1M=1048576             # 容量大小(1M)
-# shellcheck disable=SC2034
-SIZE1G=1073741824          # 容量大小(1G)
+SIZE1K=1024       # 容量大小(1K)
+SIZE1M=1048576    # 容量大小(1M)
+SIZE1G=1073741824 # 容量大小(1G)
 
-LOG_PATH="./dump.log"      # 日志文件(可通过环境变量(SDK_LOG_PATH)覆盖)
-ConsoleLog=on              # 是否打印控制台日志(on/off)
-UtVerbose=off              #打印单元测试过程
+ConsoleLog=on        # 是否打印控制台日志(on/off)
+LogPath="./dump.log" # 日志文件(环境变量: $SDK_LOG_PATH)
+TestVerbose=off      # 打印单元测试过程(环境变量: $TEST_VERBOSE,如: export TEST_VERBOSE=on)
 
 BASE_NAME=$(basename "$0") # 脚本名称
 SDK_VERSION="v1.0.0"       # 当前sdk版本
@@ -32,11 +29,11 @@ import sdk_ut.sh
 
 function init() {
   if [ -n "$SDK_LOG_PATH" ]; then
-    LOG_PATH="$SDK_LOG_PATH"
+    LogPath="$SDK_LOG_PATH"
   fi
 }
 init
-# =========================================================================================
+# =================================通用函数=====================================
 
 ## arch@查看CPU架构
 function arch() {
@@ -55,9 +52,13 @@ function arch() {
   ppc64) echo 'ppc64' ;;
   riscv64) echo 'riscv64' ;;
   s390x) echo 's390x' ;;
-  *) echox err "未知CPU架构" ;;
+  *) echox warn "unknown" && return 1 ;;
   esac
   return 0
+}
+
+function os() {
+  uname -s
 }
 
 ## echox@打印彩色字符
@@ -98,18 +99,18 @@ function echox() {
   fi
 
   case $1 in
-  black | Black) color="\033[${style}30m" ;; # 黑色(默认)
-  red | RED) color="\033[${style}31m" ;; # 红色
-  green | GREEN) color="\033[${style}32m" ;; # 绿色
-  yellow | YELLOW) color="\033[${style}33m" ;; # 黄色
-  blue | BLUE) color="\033[${style}34m" ;; # 蓝色
+  black | Black) color="\033[${style}30m" ;;     # 黑色(默认)
+  red | RED) color="\033[${style}31m" ;;         # 红色
+  green | GREEN) color="\033[${style}32m" ;;     # 绿色
+  yellow | YELLOW) color="\033[${style}33m" ;;   # 黄色
+  blue | BLUE) color="\033[${style}34m" ;;       # 蓝色
   magenta | MAGENTA) color="\033[${style}35m" ;; # 洋紫
-  cyan | CYAN) color="\033[${style}36m" ;; # 青色
+  cyan | CYAN) color="\033[${style}36m" ;;       # 青色
 
-  err | fail | error | ERROR) color="\033[${style}31m❌  " ;; # 「 错误 」
+  err | fail | error | ERROR) color="\033[1;31m❌  " ;;        # 「 错误 」
   ok | OK | success | SUCCESS) color="\033[${style}32m✅  " ;; # 「 成功 」
-  warn | WARN) color="\033[${style}33m⛔️ " ;; # 「 警告 」
-  info | INFO) color="\033[${style}34m🔔 " ;; # 「 提示 」
+  warn | WARN) color="\033[${style}33m⛔️ " ;;                 # 「 警告 」
+  info | INFO) color="\033[${style}34m🔔 " ;;                  # 「 提示 」
   *) color="\033[${style}30m" ;;
   esac
   # 格式：echo -e "\033[风格;字体;背景m内容\033[0m"
@@ -128,41 +129,34 @@ function dateTime() {
 # log error "一般错误，如: 用户执行结果失败、参数错误等"
 # log fail  "致命错误，如: 系统不兼容、命令错误等异常"
 function log() {
-  content="[$(dateTime)] $1"
-  if [ $1 == "info" ] || [ $1 == "warn" ] || [ $1 == "error" ] || [ $1 == "fail" ]; then
-    content="[$(dateTime)] [$1] $2"
+  content="[$(dateTime)] ${*:1}"
+  if [ "$1" == "info" ] || [ "$1" == "warn" ] || [ "$1" == "error" ] || [ "$1" == "fail" ]; then
+    content="[$(dateTime)] [$1] ${*:2}"
   fi
   if [ $ConsoleLog == "on" ]; then
-    echox "$1" BOLD "$content"
+    echox "$1" "$content"
   fi
-  echo -e "$content" >>$LOG_PATH
+  echo -e "$content" >>"$LogPath"
 }
 
 # 提示信息
 function logInfo() {
-  log info "${@:1}"
+  log info "${*:1}"
 }
 
 # 警告提醒
 function logWarn() {
-  log warn "${@:1}"
+  log warn "${*:1}"
 }
 
 # 一般错误
 function logError() {
-  log error "${@:1}"
+  log error "${*:1}"
 }
 
 # 致命错误
 function logFail() {
-  log fail "${@:1}"
-}
-
-## next@阻塞并确定是否继续
-function next() {
-  echo $1
-  read -r -p "是否继续?(Y/n) " next
-  [ "$next" = 'Y' ] || [ "$next" = 'y' ] || exit 0
+  log fail "${*:1}"
 }
 
 # 加减乘除模
@@ -178,12 +172,17 @@ function sum() {
 
 ## contain@是否包含子串,如：contain src sub
 function contain() {
-  ret=$(echo "$1" | grep "$2")
-  if [[ "$ret" != "" ]]; then
+  if [[ $1 == *$2* ]]; then
     echo true
-  else
-    echo false
+    return 0
   fi
+  echo false
+}
+
+## next@阻塞并确定是否继续
+function next() {
+  read -r -p "是否继续?(Y/n) " next
+  [ "$next" = 'Y' ] || [ "$next" = 'y' ] || exit 0
 }
 
 ## compare@比较大小
@@ -200,15 +199,78 @@ function compare() {
   fi
 }
 
-function version() {
-  echox blue SOLD "sdk $SDK_VERSION"
-}
-
 function list() {
   echox blue solid "======== 函数库列表 ========"
   echox magenta " 命令\t  说明"
   sed -n "s/^##//p" "$0" | column -t -s '@-' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
   echo
+}
+
+# =================================单元测试=====================================
+# 单元测试
+# 加载单元测试: unitTest "${@:1}"
+# 126: 不可执行
+# 127: 命令不存在
+function unitTest() {
+  set +e
+  if [[ "$TEST_VERBOSE" == "on" || "$TestVerbose" == "on" ]]; then
+    $1
+  else
+    $1 &>/dev/null
+  fi
+
+  result=$?
+  #  echo "$result"
+  if [ $result -eq 127 ]; then
+    echox error 1 "[NotFound] \t [$1]\t 函数或命令不存在"
+    return
+  fi
+  if [ $result -eq 0 ]; then
+    echox success 1 "[UT] \t [$1]\t 成功"
+    return
+  fi
+  echox error 1 "[UT] \t [$1]\t 失败"
+}
+
+# 单元测试列表
+function unitList() {
+  # typeset -F | awk '{print $3}' | grep "^test"
+  # typeset -f | awk '/ \(\) $/ && /^test/ {print $1}'
+
+  # 包含" test"且排除unitList
+  typeset -F | awk '/ test/ && !/unitList/ {print $3}'
+  echo
+}
+
+# 启动单元测试，如:
+# ./sdk_test.sh
+# ./sdk_test.sh list
+# ./sdk_test.sh testOK
+# ./sdk_test.sh testErr
+function unitLaunch() {
+  if [ "$cmd" == "list" ]; then
+    echox blue solid "======== 单元测试函数列表 ========"
+    unitList
+    return 0
+  fi
+
+  # 执行某个单元测试函数
+  if [ "$cmd" != "" ]; then
+    unitTest "$cmd"
+    return
+  fi
+
+  #默认执行所有单元测试
+  all=$(unitList)
+  for v in ${all[*]}; do
+    unitTest "$v"
+  done
+}
+
+# =================================类库帮助=====================================
+
+function version() {
+  echox blue SOLD "sdk $SDK_VERSION"
 }
 
 ## help@帮助说明
@@ -228,7 +290,7 @@ function help() {
 
 # Main函数
 function main() {
-  if [ "$BASE_NAME" == "sdk.sh" ]; then
+  if [[ "$BASE_NAME" == "sdk.sh" ]]; then
     case $cmd in
     list) list ;;
     ut | test) ut ;;
@@ -238,6 +300,13 @@ function main() {
   fi
 }
 main
+
+function _xxx() {
+  echo "$params"
+  echo $SIZE1K
+  echo $SIZE1M
+  echo $SIZE1G
+}
 
 #sed -i '/hello/d' ./a.txt # 删除关键字行
 #sed -i '1d' a.txt         # 删首行
