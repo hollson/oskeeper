@@ -1,0 +1,7 @@
+# 忽略文件
+*md
+!*server
+*.go
+tmp
+temp
+log?

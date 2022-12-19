@@ -1,0 +1,18 @@
+FROM alpine
+WORKDIR /app  && \
+    COPY ./deploy/* . && \
+    EXPOSE 8080  && \
+    ENV GO_VERSION 1.19.1 && \
+    ENV GIN_MODE debug && \
+    ENV GIT_VERSION $(git rev-parse HEAD) && \
+    RUN export GIT_VERSION=$(git rev-parse HEAD) && \
+    #RUN declare -r a=$(git rev-parse HEAD)
+    RUN apk --update add --no-cache && \
+    RUN echo "https://mirror.tuna.tsinghua.edu.cn/alpine/edge/releases" >> /etc/apk/repositories && \
+    RUN apk add vim && \
+    #RUN find . -name *.go -exec rm -rf {} \ #删除源文件
+    #RUN find -type d -empty |xargs rm -rf;  #删除空目录
+    ENV TZ=Asia/Shanghai && \
+    RUN ln -snf /usr/share/zoneinfo/ /etc/localtime && echo  > /etc/timezone && \
+    # 运行时命令
+    CMD ./hello-server 

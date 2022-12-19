@@ -65,11 +65,11 @@ function testNext() {
 
 #unittest $(testList)
 
-#unittest testLog
-#unittest testContain
-#unittest testCompare
-#unittest testOK
-#unittest testErr
-#unittest testNotfound
+unittest testLog
+unittest testContain
+unittest testCompare
+unittest testOK
+unittest testErr
+unittest testNotfound
 unittest testSum
 #grep test ./sdk_next.sh
