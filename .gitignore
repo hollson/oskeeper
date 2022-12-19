@@ -6,4 +6,5 @@ _gen
 target
 .log
 tmp
+temp
 logs
