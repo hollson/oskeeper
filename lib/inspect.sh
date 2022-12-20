@@ -35,3 +35,14 @@ dmidecode | grep "Product"
 prtconf | head
 
 #https://www.cnblogs.com/miaojx/p/15667856.html
+
+top -l 1 | head -n 10
+top -l 1 | head -n 10 | grep PhysMem
+
+top -l 1 | head -n 10 | awk "/PhysMem/{print}"
+
+function Info() {
+  sysctl -n machdep.cpu.brand_string
+  sysctl -n machdep.cpu.core_count
+  sysctl -n machdep.cpu.thread_count
+}

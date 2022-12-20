@@ -14,7 +14,7 @@ func main() {
 			"name":    os.Getenv("APP_NAME"),
 			"version": os.Getenv("APP_VERSION"),
 			"commit":  os.Getenv("GIT_COMMIT"),
-			"time":time.Now().Format("2006-01-02 15:04:05"),
+			"time":    time.Now().Format("2006-01-02 15:04:05"),
 		})
 	})
 
