@@ -13,36 +13,17 @@ dmidecode | grep "Product"
 4、查看内存条信息及使用情况（内存的插槽数,已经使用多少插槽.每条内存多大）
 # dmidecode -t memory | grep Size
 
-5、查看查看物理CPU个数
-# cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
-
-6、每个物理CPU中core的个数(即核数)
-# cat /proc/cpuinfo| grep "cpu cores"| uniq
-
-7、查看逻辑CPU的个数
-# cat /proc/cpuinfo| grep "processor"| wc -l
-
-8、查看cpu的型号
-# cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
-
 9、显示硬件系统部件 - (SMBIOS / DMI)
 # dmidecode -q
 
-10、宿主机查看序列号
-# esxcli hardware platform get
 
-11、小型机查看序列号
-prtconf | head
+# 厂商信息
+sudo dmidecode -s system-product-name
+
+# 是否为容器(物理机，虚拟机，container，pod)
+cat /proc/1/cgroup|grep -E "kubepods|docker"
+
+
 
 #https://www.cnblogs.com/miaojx/p/15667856.html
 
-top -l 1 | head -n 10
-top -l 1 | head -n 10 | grep PhysMem
-
-top -l 1 | head -n 10 | awk "/PhysMem/{print}"
-
-function Info() {
-  sysctl -n machdep.cpu.brand_string
-  sysctl -n machdep.cpu.core_count
-  sysctl -n machdep.cpu.thread_count
-}
