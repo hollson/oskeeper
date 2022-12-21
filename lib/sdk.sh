@@ -1,4 +1,10 @@
 #!/bin/bash
+# Description: login info scripts
+# Auth: kaliarch
+# Email: kaliarch@163.com
+# function: show user info
+# Date: 2020-03-08 13:36
+# Version: 1.0
 # shellcheck disable=SC1090
 import() { . "$1" &>/dev/null; }
 
@@ -14,18 +20,20 @@ import() { . "$1" &>/dev/null; }
 cmd=$1        # 二级命令
 params=${*:2} # 二级命令参数
 
-SIZE1K=1024       # 容量大小(1K)
-SIZE1M=1048576    # 容量大小(1M)
-SIZE1G=1073741824 # 容量大小(1G)
+readonly SIZE1K=1024       # 容量大小(1K)
+readonly SIZE1M=1048576    # 容量大小(1M)
+readonly SIZE1G=1073741824 # 容量大小(1G)
 
 ConsoleLog=on        # 是否打印控制台日志(on/off)
 LogPath="./dump.log" # 日志文件(环境变量: $SDK_LOG_PATH)
 TestVerbose=off      # 打印单元测试过程(环境变量: $TEST_VERBOSE,如: export TEST_VERBOSE=on)
 
+OS=$(uname -s)
 BASE_NAME=$(basename "$0") # 脚本名称
 SDK_VERSION="v1.0.0"       # 当前sdk版本
 
 import sdk_ut.sh
+import base.sh
 
 function init() {
   if [ -n "$SDK_LOG_PATH" ]; then
@@ -57,11 +65,10 @@ function arch() {
   return 0
 }
 
-function os() {
-  uname -s
-}
-
 ## echox@打印彩色字符
+#for i in {1..8};do echo -e "\033[$i;31;40m hello shell \033[0m";done
+#for i in {30..37};do echo -e "\033[$i;40m hello shell \033[0m";done
+#for i in {40..47};do echo -e "\033[47;${i}m hello shell \033[0m";done
 function echox() {
   # Reset        = 0 // 重置
   # Bold         = 1 // 加粗
@@ -115,11 +122,6 @@ function echox() {
   esac
   # 格式：echo -e "\033[风格;字体;背景m内容\033[0m"
   echo -e "${color}${txt}${PLAIN}"
-}
-
-## dateTime@打印当前时间
-function dateTime() {
-  date "+%Y-%m-%d %H:%M:%S"
 }
 
 # 打印日志
@@ -222,23 +224,24 @@ function unitTest() {
   result=$?
   #  echo "$result"
   if [ $result -eq 127 ]; then
-    echox error 1 "[NotFound] \t [$1]\t 函数或命令不存在"
+    printf "\033[1;31m[UT]\t\t⛔️\t\t\033[0m \033[30;41m%-20s\033[0m \t\t 函数/命令不存在\n" "$1"
+    # echox error 1 "[NotFound] \t [$1]\t 函数/命令不存在"
     return
   fi
   if [ $result -eq 0 ]; then
-    echox success 1 "[UT] \t [$1]\t 成功"
+
+    printf "\033[1;32m[UT]\t\t✅\t\t\033[0m \033[30;42m%-20s\033[0m\t\t 成功\n" "$1"
+    # echox success 1 "[UT] \t [$1]\t 成功"
     return
   fi
-  echox error 1 "[UT] \t [$1]\t 失败"
+
+  printf "\033[1;31m[UT]\t\t❌\t\t\033[0m \033[30;41m%-20s\033[0m\t\t 失败\n" "$1"
+  # echox error 1 "[UT] \t [$1]\t 失败"
 }
 
 # 单元测试列表
 function unitList() {
-  # typeset -F | awk '{print $3}' | grep "^test"
-  # typeset -f | awk '/ \(\) $/ && /^test/ {print $1}'
-
-  # 包含" test"且排除unitList
-  typeset -F | awk '/ test/ && !/unitList/ {print $3}'
+  typeset -F | awk '/test[A-Z]+/ && !/testList/ {print $3}'
   echo
 }
 
@@ -248,6 +251,7 @@ function unitList() {
 # ./sdk_test.sh testOK
 # ./sdk_test.sh testErr
 function unitLaunch() {
+  set +e
   if [ "$cmd" == "list" ]; then
     echox blue solid "======== 单元测试函数列表 ========"
     unitList
@@ -262,14 +266,16 @@ function unitLaunch() {
 
   #默认执行所有单元测试
   all=$(unitList)
+
+  # shellcheck disable=SC2048
   for v in ${all[*]}; do
     unitTest "$v"
   done
 }
 
 # =================================类库帮助=====================================
-
 function version() {
+
   echox blue SOLD "sdk $SDK_VERSION"
 }
 
@@ -302,6 +308,7 @@ function main() {
 main
 
 function _xxx() {
+  echo "$OS"
   echo "$params"
   echo $SIZE1K
   echo $SIZE1M

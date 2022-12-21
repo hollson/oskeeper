@@ -2,8 +2,16 @@
 
 source ./sdk.sh
 
+#Mac(达尔文)系统
+function darwin() {
+  if [ "$OS" == "Darwin" ]; then
+    return 0
+  fi
+  return 1
+}
+
 #https://www.runoob.com/linux/linux-filesystem.html
-function macOS() {
+function macOS2() {
   echo -e "操作系统: \t $(uname -rms)"
   echo -e "内存信息: \t $(top -l 1 | head -n 10 | sed -n "s/PhysMem: //p")"
   echo -e "CPU型号: \t $(sysctl -n machdep.cpu.brand_string)"
@@ -36,24 +44,29 @@ function linuxOS() {
 
 # 安装器
 function installer() {
-  set +e
+  #  set +e
   arr=(dnf yum apt apt-get apk brew)
   for v in "${arr[@]}"; do
     which "$v" && return 0
   done
   return 127
 }
-
-$(installer) --version
+#$(installer) --version
 
 # 检查当前系统是否为虚拟化环境
-# VT-x:     物理机
-# Xen/Kvm:  开源虚拟化软件
-# VMware:   付费虚拟化软件
-# hyper-v:  微软虚拟化组件
+# VT-x/host: 物理机
+# Xen/Kvm:   开源虚拟化软件
+# VMware:    付费虚拟化软件
+# hyper-v:   微软虚拟化组件
 # Kubepods： K8s容器化
-# Docker:   Docker容器化
+# Docker:    Docker容器化
 function virtualize() {
+
+  if darwin; then
+    echo "host"
+    return
+  fi
+
   if grep -q "kubepods" /proc/1/cgroup; then
     echo "Kubepods"
     return 0
@@ -75,6 +88,10 @@ virtualize
 # Debian GNU/Linux 11 (bullseye)
 # uos 20
 function osRelease() {
+  if darwin; then
+    sw_vers | awk -F: '/Product/{print $2}' | xargs
+    return 0
+  fi
   awk -F= '/^NAME=|^VERSION="/{print $2}' /etc/os-release | xargs
 }
 # osRelease
@@ -86,3 +103,6 @@ function has() {
 
 # 字符串操作
 # https://blog.csdn.net/qq_23091073/article/details/83066518
+
+#printgf("33[01;40;32m HELLO 33[01;40;37m")
+

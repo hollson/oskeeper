@@ -2,7 +2,7 @@
 source sdk.sh
 
 function testArch() {
-    arch
+  arch
 }
 
 #function testNext() {
@@ -26,6 +26,9 @@ function testSum() {
   sum 111 222
 }
 
+function test() {
+  echo "ddd"
+}
 function testEchox() {
   echox black SOLD "字体+样式"
   echox RED SOLD "字体+样式"
@@ -65,11 +68,11 @@ function testLog() {
   logFail "致命错误"
 }
 
-
 function testOS() {
-    os
+  os
 }
 
+# (针对性)单元测试
 #unitTest testOK
 #unitTest testErr
 #unitTest testArch
@@ -79,7 +82,9 @@ function testOS() {
 #unitTest testContain
 #unitTest testCompare
 #unitTest testSum
-#unitTest testNotfound
 
-# 启动单元测试
+# (自动化)单元测试
 unitLaunch
+
+# 命令不存在
+unitTest testNotfound
