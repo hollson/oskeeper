@@ -1,13 +1,5 @@
 #!/bin/bash
-# Description: login info scripts
-# Auth: kaliarch
-# Email: kaliarch@163.com
-# function: show user info
-# Date: 2020-03-08 13:36
-# Version: 1.0
-# shellcheck disable=SC1090
 import() { . "$1" &>/dev/null; }
-
 # ==========================================================================
 # Shell开发工具库(Shell Development Kit)
 # 查看函数列表： ./sdk.sh list
@@ -252,30 +244,41 @@ function unitList() {
 # ./sdk_test.sh testErr
 function unitLaunch() {
   set +e
+  if [ "$cmd" == "" ]; then
+    echox BLUE 1 "执行单元测试, 命令如："
+    printf "单元测试列表: \t\033[34m %s \033[0m\n" "./sdk_test.sh list"
+    printf "执行具体函数: \t\033[34m %s \033[0m\n" "./sdk_test.sh testOK"
+    printf "执行具体函数: \t\033[34m %s \033[0m\n" "./sdk_test.sh testErr"
+    printf "执行全部测试: \t\033[34m %s \033[0m\n" "./sdk_test.sh all"
+    echo
+    echo -n "可打印单元测试过程:  "
+    echox BLUE "export TEST_VERBOSE=on"
+    echo
+    return 0
+  fi
+
   if [ "$cmd" == "list" ]; then
     echox blue solid "======== 单元测试函数列表 ========"
     unitList
     return 0
   fi
 
-  # 执行某个单元测试函数
-  if [ "$cmd" != "" ]; then
-    unitTest "$cmd"
+  #执行所有单元测试
+  if [ "$cmd" == "all" ]; then
+    all=$(unitList)
+    # shellcheck disable=SC2048
+    for v in ${all[*]}; do
+      unitTest "$v"
+    done
     return
   fi
 
-  #默认执行所有单元测试
-  all=$(unitList)
-
-  # shellcheck disable=SC2048
-  for v in ${all[*]}; do
-    unitTest "$v"
-  done
+  # 执行某个单元测试函数
+  unitTest "$cmd"
 }
 
 # =================================类库帮助=====================================
 function version() {
-
   echox blue SOLD "sdk $SDK_VERSION"
 }
 

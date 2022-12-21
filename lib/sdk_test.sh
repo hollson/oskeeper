@@ -68,8 +68,8 @@ function testLog() {
   logFail "致命错误"
 }
 
-function testOS() {
-  os
+function testNotfound() {
+  notfound
 }
 
 # (针对性)单元测试
@@ -85,6 +85,3 @@ function testOS() {
 
 # (自动化)单元测试
 unitLaunch
-
-# 命令不存在
-unitTest testNotfound
