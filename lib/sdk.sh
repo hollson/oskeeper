@@ -303,6 +303,10 @@ function help() {
   echo -e "更多详情，请参考 https://github.com/hollson\n"
 }
 
+function register() {
+  help
+}
+
 # Main函数
 function main() {
   if [[ "$BASE_NAME" == "sdk.sh" ]]; then

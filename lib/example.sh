@@ -15,4 +15,5 @@ function Status() {
     logWarn "查看状态"
 }
 
-#reload  注册
+# 注册帮助信息
+help
