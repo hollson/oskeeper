@@ -1,12 +1,12 @@
 #!/bin/bash
 import() { . "$1" &>/dev/null; }
-# ==========================================================================
-# Shell开发工具库(Shell Development Kit)
-# 查看函数列表： ./sdk.sh list
-# 下载/更新脚本：
-#   curl -Ssl -O https://github.com/hollson/oskeeper/releases/download/v1.0.0/sdk.sh && chmod +x ./sdk.sh
-# 更多详情，请参考 https://github.com/hollson/oskeeper
-# ==========================================================================
+
+# ======================= SDK (Shell Development Kit) ========================
+# 作者: Hollson
+# 说明: Shell开发工具库(Shell Development Kit)
+# 下载：https://github.com/hollson/oskeeper/releases/download/leatest/sdk.tar.gz
+# 用法： ./sdk.sh help
+# =============================================================================
 
 # 全局变量
 cmd=$1        # 二级命令
@@ -106,10 +106,10 @@ function echox() {
   magenta | MAGENTA) color="\033[${style}35m" ;; # 洋紫
   cyan | CYAN) color="\033[${style}36m" ;;       # 青色
 
-  err | fail | error | ERROR) color="\033[1;31m❌  " ;;        # 「 错误 」
-  ok | OK | success | SUCCESS) color="\033[${style}32m✅  " ;; # 「 成功 」
-  warn | WARN) color="\033[${style}33m⛔️ " ;;                 # 「 警告 」
-  info | INFO) color="\033[${style}34m🔔 " ;;                  # 「 提示 」
+  err | fail | error | ERROR) color="\033[1;31m❌ " ;;        # 「 错误 」
+  ok | OK | success | SUCCESS) color="\033[${style}32m✅ " ;; # 「 成功 」
+  warn | WARN) color="\033[${style}33m⛔️ " ;;                # 「 警告 」
+  info | INFO) color="\033[${style}34m🔔 " ;;                 # 「 提示 」
   *) color="\033[${style}30m" ;;
   esac
   # 格式：echo -e "\033[风格;字体;背景m内容\033[0m"
@@ -128,6 +128,8 @@ function log() {
     content="[$(dateTime)] [$1] ${*:2}"
   fi
   if [ $ConsoleLog == "on" ]; then
+
+    #          printf "\033[1;31m[UT]\t\t⛔️\t\t\033[0m \033[30;41m%-20s\033[0m \t\t 函数/命令不存在\n" "$1"
     echox "$1" "$content"
   fi
   echo -e "$content" >>"$LogPath"
@@ -144,7 +146,7 @@ function logWarn() {
 }
 
 # 一般错误
-function logError() {
+function logErr() {
   log error "${*:1}"
 }
 
@@ -242,14 +244,18 @@ function unitList() {
 # ./sdk_test.sh list
 # ./sdk_test.sh testOK
 # ./sdk_test.sh testErr
-function unitLaunch() {
+function unitStart() {
   set +e
   if [ "$cmd" == "" ]; then
-    echox BLUE 1 "执行单元测试, 命令如："
-    printf "单元测试列表: \t\033[34m %s \033[0m\n" "./sdk_test.sh list"
-    printf "执行具体函数: \t\033[34m %s \033[0m\n" "./sdk_test.sh testOK"
-    printf "执行具体函数: \t\033[34m %s \033[0m\n" "./sdk_test.sh testErr"
-    printf "执行全部测试: \t\033[34m %s \033[0m\n" "./sdk_test.sh all"
+    echox BLUE 1 "=== 🧪🧪🧪 执行单元测试 🧪🧪🧪==="
+    echo -e "命令格式: "
+    echox RED 1 "    bash xxx_test.sh <list|all|testXXX>"
+    echo -e "其中xxx_test.sh为您的测试文件名称.\n"
+
+    echo "示例："
+    printf "1) 单元测试列表:  \033[34m %s \033[0m\n" "./sdk_test.sh list"
+    printf "2) 执行具体函数:  \033[34m %s \033[0m\n" "./sdk_test.sh testXXX"
+    printf "3) 执行全部测试:  \033[34m %s \033[0m\n" "./sdk_test.sh all"
     echo
     echo -n "可打印单元测试过程:  "
     echox BLUE "export TEST_VERBOSE=on"
@@ -258,7 +264,7 @@ function unitLaunch() {
   fi
 
   if [ "$cmd" == "list" ]; then
-    echox blue solid "======== 单元测试函数列表 ========"
+    echox blue solid "=== 🧪🧪🧪 单元测试列表 🧪🧪🧪==="
     unitList
     return 0
   fi

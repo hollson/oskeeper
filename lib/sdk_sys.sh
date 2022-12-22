@@ -4,7 +4,6 @@ source ./base.sh
 
 # 安装器
 function installer() {
-  #  set +e
   arr=(dnf yum apt apt-get apk brew)
   for v in "${arr[@]}"; do
     which "$v" && return 0
@@ -92,6 +91,7 @@ CPU数量:= $_cpu_count
 安装器:= $(installer)
 虚拟化状态:= $(virtualize)
 EOF
+
   cat ~/.sdk/sys.info
 }
 
@@ -109,19 +109,39 @@ EOF
  https://www.runoob.com/linux/linux-filesystem.html
 '
 function sysInspect() {
+  echo -e "磁盘信息: \t 待完善..."
   if darwin; then
-    echo -e "磁盘信息: \t 待完善..."
     echo -e "内存信息: \t $(top -l 1 | head -n 10 | sed -n "s/PhysMem: //p")"
     echo -e "CPU状态: \t $(top -l 1 | head -n 10 | sed -n "s/CPU usage: //p")"
-    echo -e "内网IP: \t 待完善..."
-    echo -e "公网IP: \t 待完善..."
-    return
+  else
+    echo -e "内存信息: \t $(free -h | sed -n 's/Mem:\s*//p' | awk '{print "total:"$1, "used:"$2,"buff:"$5,"available:"$6}')"
+    echo -e "CPU状态: \t $(top -bn1 -ic | grep '%Cpu' | awk -F: '{print $2}' | xargs)"
   fi
 
-  #Linux
-  echo -e "磁盘信息: \t 待完善..."
-  echo -e "内存信息: \t $(free -h | sed -n 's/Mem:\s*//p' | awk '{print "total:"$1, "used:"$2,"buff:"$5,"available:"$6}')"
-  echo -e "CPU状态: \t $(top -bn1 -ic | grep '%Cpu' | awk -F: '{print $2}' | xargs)"
-  echo -e "内网IP: \t 待完善..."
-  echo -e "公网IP: \t 待完善..."
+  echo -e "网关  : \t $(gateWay)"
+  echo -e "内网IP: \t $(ip4)"
+  echo -e "公网IP: \t $(curl ifconfig.me -s)"
 }
+
+# # 默认网关
+# function gateWay() {
+#   if [ "$(uname -s)" == "Darwin" ]; then
+#     route -n get default | awk -F: '/gateway/{print $2}' | xargs
+#     return
+#   fi
+#   ip route | awk '/default/{print $3}'
+# }
+
+# # IPv4
+# function ip4() {
+#   sub=$(gateWay | cut -d '.' -f1,2,3)
+#   ips=$(ifconfig | awk '/inet /{print $2}')
+
+#   # 24位子网
+#   echo -n "$ips" | grep "${sub}3" && return
+
+#   # 16位子网
+#   sub=$(gateWay | cut -d '.' -f1,2)
+#   echo -n "$ips" | grep "${sub}"
+# }
+# ip4

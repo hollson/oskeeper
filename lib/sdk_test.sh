@@ -1,15 +1,10 @@
 #!/bin/bash
+# shellcheck source=/dev/null
 source sdk.sh
 
 function testArch() {
   arch
 }
-
-#function testNext() {
-#  next
-#  echo "Done"
-#}
-#testNext
 
 function testOK() {
   echox BLUE "this is testOK"
@@ -54,9 +49,9 @@ function testCompare() {
 }
 
 function testContain() {
-  contain "linux" "lin"
-  contain "linux" "abc"
-  contain "linux" "linuxlinux"
+  contain "Linux" "Lin"
+  contain "Linux" "abc"
+  contain "Linux" "LinuxLinux"
 }
 
 function testLog() {
@@ -64,7 +59,7 @@ function testLog() {
   logInfo 你好 世界
   logInfo "提示信息"
   logWarn "警告提醒"
-  logError "一般错误"
+  logErr "一般错误"
   logFail "致命错误"
 }
 
@@ -84,4 +79,4 @@ function testNotfound() {
 #unitTest testSum
 
 # (自动化)单元测试
-unitLaunch
+unitStart

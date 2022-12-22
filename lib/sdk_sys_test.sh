@@ -12,4 +12,4 @@ function testSysInspect(){
 }
 
 # (自动化)单元测试
-unitLaunch
+unitStart
