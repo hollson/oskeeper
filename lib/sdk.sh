@@ -212,13 +212,6 @@ function logFail() {
 ## contain@是否包含子串,如：contain src sub
 function contain() {
   [[ $1 == *$2* ]]
-
-  # if [[ $1 == *$2* ]]; then
-  #   # echo true
-  #   return 0
-  # fi
-  # return 1
-  # echo false
 }
 
 ## next@阻塞并确定是否继续
@@ -396,13 +389,18 @@ function unitTest() {
 
 # 单元测试列表
 function unitList() {
-  sed -n "s/test//p" "$0"
-  # typeset -F | awk '/test[A-Z]+/ && !/testList/ {print $3}'
-  echo
+  # grep -oE "^\s*function\s+test[A-Z][a-zA-Z]+|^\s*test[A-Z][a-zA-Z]+\s*\(\s*\)" "$0" | grep -oE "test[A-Z][a-zA-Z]+"
+  # typeset -F | awk '/test[A-Z][a-zA-Z]+/ && !/testList/ {print $3}'
+  declare -F | awk '/test[A-Z][a-zA-Z]+/ && !/testList/ {print $3}'
 }
 
 # 启动单元测试
 function unitStart() {
+  if [[ "$(basename "$0")" != *_test.sh ]]; then
+    echox warn "非法的测试文件"
+    return 1
+  fi
+
   set +e
   if [ "$cmd" == "" ]; then
     echox BLUE 1 "=== 🧪🧪🧪 执行单元测试 🧪🧪🧪==="
@@ -441,15 +439,16 @@ function unitStart() {
   unitTest "$cmd"
 }
 
-unitStart
 # =================================类库帮助=====================================
 function version() {
   echox blue SOLD "$APP_VERSION"
 }
 
-function list() {
-  echox blue solid "======== 函数库列表 ========"
-  echox magenta " 命令\t  说明"
+## funcs@查看函数列表
+function funcs() {
+  # echox blue solid "======== 函数列表 ========"
+  echox magenta " 函数\t  |  说明"
+  echox magenta "----------|----------"
   sed -n "s/^##//p" "$0" | column -t -s '@-' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
   echo
 }
@@ -463,30 +462,31 @@ function help() {
   echo -e "用法：\n sdk [command] <param>"
   echo
   echo "Available Commands:"
-  echox magenta " 命令\t简写\t说明"
+  # echox magenta " 命令\t简写\t说明"
+  echox magenta " 命令\t说明"
 
   sed -n "s/^##//p" "$0" | column -t -s '@-' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
+
+  #  grep "sdk.sh" ./example.sh |awk '{print $2}'
+  #  排序
+
   echo
   echo -e "更多详情，请参考 https://github.com/hollson\n"
 }
 
 # Main函数
 function main() {
-  if [[ "$(basename "$0")" == "sdk.sh" ]]; then
+  # echo "Invoker => ${FUNCNAME[1]}"
+  [[ ${FUNCNAME[1]} == "main" ]] || return
 
-    # source "$(scriptFile)"
-
-    case $cmd in
-    list) list ;;
-    ver | version) version ;;
-    *) help ;;
-    esac
-  fi
+  # if [[ "$(basename "$0")" == "sdk.sh" ]]; then
+  case $cmd in
+  funcs | func | list) funcs ;;
+  ver | version) version ;;
+  *) help ;;
+  esac
+  # fi
 }
-
-# function reload() {
-#   main
-# }
 
 main
 

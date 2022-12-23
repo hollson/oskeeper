@@ -20,3 +20,15 @@
 
 # 字符串操作
 #https://www.cnblogs.com/gaochsh/p/6901809.html
+
+#   echo "上层函数 => ${FUNCNAME[1]}"
+#   echo ${FUNCNAME[@]}
+
+function fooTest() {
+    echo "hello world"
+}
+eval "$(declare -f fooTest | xargs | grep -oE '{.*}' | sed -E 's/{|}//g')"
+
+# todo
+# 制表符
+# 帮助命令

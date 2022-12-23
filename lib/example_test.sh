@@ -13,15 +13,15 @@ function testDemo() {
 }
 
 function testBuild() {
-    Build
+    build
 }
 
 function testRun() {
-    Run
+    run
 }
 
 function testStatus() {
-    Status
+    status
 }
 
 # 未定义
@@ -30,4 +30,4 @@ function testStop() {
 }
 
 # 启动单元测试，必须放置在脚本末尾
-# unitStart
+unitStart
