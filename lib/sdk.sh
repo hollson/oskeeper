@@ -1,29 +1,29 @@
 #!/bin/bash
 # shellcheck source=/dev/null
-import() { . "$1" &>/dev/null; }
+import() { source "$1" &>/dev/null; }
 
 # ======================= SDK (Shell Development Kit) ========================
+# 名称: SDK(Shell Development Kit)
 # 作者: Hollson
-# 说明: Shell开发工具库(Shell Development Kit)
+# 说明: Shell开发工具库,包含常用shell函数，单元测试，帮助命令等
 # 下载：https://github.com/hollson/oskeeper/releases/download/leatest/sdk.tar.gz
 # 用法： ./sdk.sh help
 # =============================================================================
 
 # 全局变量
-cmd=$1        # 二级命令
-params=${*:2} # 二级命令参数
+export APP_NAME="SDK(Shell Development Kit)" # 应用名称
+export APP_VERSION="v1.0.0"                  # 应用版本
 
+cmd=$1               # 二级命令
+params=${*:2}        # 二级命令参数
+ConsoleLog=on        # 是否打印控制台日志(on/off)
+LogPath="./dump.log" # 日志文件(环境变量: export SDK_LOG_PATH=./)
+TestVerbose=off      # 打印单元测试过程(环境变量: export TEST_VERBOSE=on/off)
+
+# 通用常量
 readonly SIZE1K=1024       # 容量大小(1K)
 readonly SIZE1M=1048576    # 容量大小(1M)
 readonly SIZE1G=1073741824 # 容量大小(1G)
-
-ConsoleLog=on        # 是否打印控制台日志(on/off)
-LogPath="./dump.log" # 日志文件(环境变量: $SDK_LOG_PATH)
-TestVerbose=off      # 打印单元测试过程(环境变量: $TEST_VERBOSE,如: export TEST_VERBOSE=on)
-
-OS=$(uname -s)
-BASE_NAME=$(basename "$0") # 脚本名称
-SDK_VERSION="v1.0.0"       # 当前sdk版本
 
 function init() {
   if [ -n "$SDK_LOG_PATH" ]; then
@@ -50,7 +50,7 @@ function arch() {
   ppc64) echo 'ppc64' ;;
   riscv64) echo 'riscv64' ;;
   s390x) echo 's390x' ;;
-  *) echox warn "unknown" && return 1 ;;
+  *) echox warn "unknown" ;;
   esac
 }
 
@@ -126,6 +126,11 @@ function dateTime() {
   date "+%Y-%m-%d %H:%M:%S"
 }
 
+# 读取当前脚本的绝对路径
+function scriptFile() {
+  cd "$(dirname "$0")" && pwd | xargs printf "%s/$(basename "$0")\n"
+}
+
 # 默认网关
 function gateWay() {
   if [ "$(uname -s)" == "Darwin" ]; then
@@ -154,10 +159,9 @@ function ip4() {
 }
 
 # 集合是否包含某个元素
-# ext=bmp2
+# ext=bmp
 # list=(jpg bmp png)
 # has "${list[*]}" ${ext}
-# echo $?
 function has() {
   all=$1
   tar=$2
@@ -207,11 +211,14 @@ function logFail() {
 
 ## contain@是否包含子串,如：contain src sub
 function contain() {
-  if [[ $1 == *$2* ]]; then
-    echo true
-    return 0
-  fi
-  echo false
+  [[ $1 == *$2* ]]
+
+  # if [[ $1 == *$2* ]]; then
+  #   # echo true
+  #   return 0
+  # fi
+  # return 1
+  # echo false
 }
 
 ## next@阻塞并确定是否继续
@@ -362,7 +369,7 @@ function sysInspect() {
 # 126: 不可执行
 # 127: 命令不存在
 function unitTest() {
-  # set -e
+  # set +e
   if [[ "$TEST_VERBOSE" == "on" || "$TestVerbose" == "on" ]]; then
     $1
   else
@@ -389,15 +396,12 @@ function unitTest() {
 
 # 单元测试列表
 function unitList() {
+  # sed -n "s/test//p" "$0"
   typeset -F | awk '/test[A-Z]+/ && !/testList/ {print $3}'
   echo
 }
 
-# 启动单元测试，如:
-# ./sdk_test.sh
-# ./sdk_test.sh list
-# ./sdk_test.sh testOK
-# ./sdk_test.sh testErr
+# 启动单元测试
 function unitStart() {
   set +e
   if [ "$cmd" == "" ]; then
@@ -412,7 +416,7 @@ function unitStart() {
     printf "3) 执行全部测试:  \033[34m %s \033[0m\n" "./sdk_test.sh all"
     echo
     echo -n "可打印单元测试过程:  "
-    echox BLUE "export TEST_VERBOSE=on"
+    echox BLUE "export TEST_VERBOSE=on/off"
     echo
     return 0
   fi
@@ -437,9 +441,10 @@ function unitStart() {
   unitTest "$cmd"
 }
 
+unitStart
 # =================================类库帮助=====================================
 function version() {
-  echox blue SOLD "sdk $SDK_VERSION"
+  echox blue SOLD "$APP_VERSION"
 }
 
 function list() {
@@ -452,13 +457,14 @@ function list() {
 ## help@帮助说明
 function help() {
   echox blue solid "========================================================="
-  echox blue solid "         欢迎使用sdk(Shell Development Kit) $SDK_VERSION"
+  echox blue solid "         欢迎使用${APP_NAME} ${APP_VERSION}"
   echox blue solid "========================================================="
 
   echo -e "用法：\n sdk [command] <param>"
   echo
   echo "Available Commands:"
   echox magenta " 命令\t简写\t说明"
+
   sed -n "s/^##//p" "$0" | column -t -s '@-' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
   echo
   echo -e "更多详情，请参考 https://github.com/hollson\n"
@@ -466,25 +472,26 @@ function help() {
 
 # Main函数
 function main() {
-  if [[ "$BASE_NAME" == "sdk.sh" ]]; then
+  if [[ "$(basename "$0")" == "sdk.sh" ]]; then
+
+    # source "$(scriptFile)"
+
     case $cmd in
     list) list ;;
-    ut | test) ut ;;
     ver | version) version ;;
     *) help ;;
     esac
   fi
 }
 
-function reload() {
-  main
-}
+# function reload() {
+#   main
+# }
 
 main
 
 # 语法检测
 function _xxx() {
-  echo "$OS"
   echo "$params"
   echo $SIZE1K
   echo $SIZE1M

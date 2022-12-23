@@ -2,27 +2,42 @@
 # shellcheck source=/dev/null
 source sdk.sh
 
+# 模拟断言成功
+function testOK() {
+  return 0
+}
+
+# 模拟断言失败
+function testErr() {
+  return 1
+}
+
+function testDateTime() {
+  dateTime
+}
+
+# 正向断言: 即左侧模拟0值结果
 function testArch() {
   [[ $(arch) == "x64" ]] || return 1
-  [[ $(arch) == "x86" ]] || return 0
+  [[ $(arch) != "x86" ]] || return 1
+  [[ $(arch) != "x32" ]] || return 1
 }
 
 function testHas() {
   ext=bmp
   list=(jpg bmp png)
 
-  has "${list[*]}" ${ext} || return 1 # 如果不存在,则结果错误
-  has "${list[*]}" "abc" || return 0  # 如果存在,  则结果正确
+  has "${list[*]}" ${ext} || return 1
+  ! has "${list[*]}" "abc" || return 1
+  ! has "${list[*]}" "xyz" || return 1
+  has "${list[*]}" "png" || return 1
 }
 
-function testOK() {
-  echox BLUE "this is testOK"
-  return 0
-}
-
-function testErr() {
-  echox BLUE "this is testErr"
-  return 1
+function testCompare() {
+  [[ $(compare 2 1) == 1 ]] || return 1
+  [[ $(compare 1 2) == -1 ]] || return 1
+  [[ $(compare 2 2) == 0 ]] || return 1
+  [[ $(compare 1 2) -lt 0 ]] || return 1
 }
 
 function testEchox() {
@@ -39,21 +54,11 @@ function testEchox() {
   echox info 1 "提示消息"
 }
 
-function testDateTime() {
-  dateTime
-}
-
-function testCompare() {
-  [[ $(compare 2 1) == 1 ]] || return 1
-  [[ $(compare 1 2) == -1 ]] || return 1
-  [[ $(compare 2 2) == 0 ]] || return 1
-  [[ $(compare 2 2) == -1 ]] || return 0
-}
-
 function testContain() {
-  contain "Linux" "Lin"
-  contain "Linux" "abc"
-  contain "Linux" "LinuxLinux"
+  contain "Linux" "Lin" || return 1
+  contain "Linux" "Linux" || return 1
+  ! contain "Linux" "unix" || return 1
+  ! contain "Bye" "ByeBye" || return 1
 }
 
 function testLog() {
