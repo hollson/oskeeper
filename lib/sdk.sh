@@ -396,8 +396,8 @@ function unitTest() {
 
 # 单元测试列表
 function unitList() {
-  # sed -n "s/test//p" "$0"
-  typeset -F | awk '/test[A-Z]+/ && !/testList/ {print $3}'
+  sed -n "s/test//p" "$0"
+  # typeset -F | awk '/test[A-Z]+/ && !/testList/ {print $3}'
   echo
 }
 
