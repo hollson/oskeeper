@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck source=/dev/null
 import() { . "$1" &>/dev/null; }
 
 # ======================= SDK (Shell Development Kit) ========================
@@ -23,9 +24,6 @@ TestVerbose=off      # 打印单元测试过程(环境变量: $TEST_VERBOSE,如:
 OS=$(uname -s)
 BASE_NAME=$(basename "$0") # 脚本名称
 SDK_VERSION="v1.0.0"       # 当前sdk版本
-
-import sdk_ut.sh
-import base.sh
 
 function init() {
   if [ -n "$SDK_LOG_PATH" ]; then
@@ -54,7 +52,6 @@ function arch() {
   s390x) echo 's390x' ;;
   *) echox warn "unknown" && return 1 ;;
   esac
-  return 0
 }
 
 ## echox@打印彩色字符
@@ -116,6 +113,61 @@ function echox() {
   echo -e "${color}${txt}${PLAIN}"
 }
 
+# Mac(达尔文)系统
+function darwin() {
+  if [ "$(uname -s)" == "Darwin" ]; then
+    return 0
+  fi
+  return 1
+}
+
+## dateTime@打印当前时间
+function dateTime() {
+  date "+%Y-%m-%d %H:%M:%S"
+}
+
+# 默认网关
+function gateWay() {
+  if [ "$(uname -s)" == "Darwin" ]; then
+    route -n get default | awk -F: '/gateway/{print $2}' | xargs
+    return
+  fi
+  ip route | awk '/default/{print $3}'
+}
+
+# IPv4
+function ip4() {
+  # unset IPv4
+  # if [ -n "${IPv4}" ]; then
+  #   echo "${IPv4}" && return
+  # fi
+
+  sub=$(gateWay | cut -d '.' -f1,2,3)
+  ips=$(ifconfig | awk '/inet /{print $2}')
+
+  # 24位子网
+  echo -n "$ips" | grep "${sub}3" && return
+
+  # 16位子网
+  sub=$(gateWay | cut -d '.' -f1,2)
+  echo -n "$ips" | grep "${sub}"
+}
+
+# 集合是否包含某个元素
+# ext=bmp2
+# list=(jpg bmp png)
+# has "${list[*]}" ${ext}
+# echo $?
+function has() {
+  all=$1
+  tar=$2
+  # shellcheck disable=SC2048
+  for v in ${all[*]}; do
+    [[ "$tar" == "$v" ]] && return
+  done
+  return 1
+}
+
 # 打印日志
 # log "普通日志"
 # log info  "提示信息"
@@ -128,8 +180,6 @@ function log() {
     content="[$(dateTime)] [$1] ${*:2}"
   fi
   if [ $ConsoleLog == "on" ]; then
-
-    #          printf "\033[1;31m[UT]\t\t⛔️\t\t\033[0m \033[30;41m%-20s\033[0m \t\t 函数/命令不存在\n" "$1"
     echox "$1" "$content"
   fi
   echo -e "$content" >>"$LogPath"
@@ -153,17 +203,6 @@ function logErr() {
 # 致命错误
 function logFail() {
   log fail "${*:1}"
-}
-
-# 加减乘除模
-#expr 9 + 3
-#expr 9 - 3
-#expr 9 \* 3
-#expr 9 / 3
-#expr 9 % 2
-## sum@求两数之和
-function sum() {
-  echo $(($1 + $2))
 }
 
 ## contain@是否包含子串,如：contain src sub
@@ -195,11 +234,126 @@ function compare() {
   fi
 }
 
-function list() {
-  echox blue solid "======== 函数库列表 ========"
-  echox magenta " 命令\t  说明"
-  sed -n "s/^##//p" "$0" | column -t -s '@-' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
-  echo
+# =================================系统信息=====================================
+
+# 安装器
+function installer() {
+  arr=(dnf yum apt apt-get apk brew)
+  for v in "${arr[@]}"; do
+    which "$v" && return 0
+  done
+  return 127
+}
+#$(installer) --version
+
+# 检查当前系统是否为虚拟化环境
+: '
+ CPU状态参数：
+ VT-x/Physics: 物理机
+ Xen/Kvm:   开源虚拟化软件
+ VMware:    付费虚拟化软件
+ hyper-v:   微软虚拟化组件
+ Kubepods： K8s容器化
+ Docker:    Docker容器化
+'
+function virtualize() {
+  if darwin; then
+    echo "Physics"
+    return
+  fi
+
+  if grep -q "kubepods" /proc/1/cgroup; then
+    echo "Kubepods"
+    return 0
+  fi
+
+  if grep -q "docker" /proc/1/cgroup; then
+    echo "Docker"
+    return 0
+  fi
+
+  # 虚拟化
+  lscpu | awk -F: '/Virtualization|Hypervisor/&&!/full/{print $2}' | xargs
+}
+
+# 查看系统发行版本(厂商)，如：
+# CentOS Linux 7 (Core)
+# Ubuntu 20.04 LTS (Focal Fossa)
+# Debian GNU/Linux 11 (bullseye)
+# uos 20
+function osRelease() {
+  if darwin; then
+    sw_vers | awk -F: '/Product/{print $2}' | xargs
+    return 0
+  fi
+  awk -F= '/^NAME=|^VERSION="/{print $2}' /etc/os-release | xargs
+}
+
+# 查看系统(静态)信息
+function sysInfo() {
+  if [ -f ~/.sdk/sys.info ]; then
+    cat ~/.sdk/sys.info
+    return
+  fi
+
+  mkdir -p ~/.sdk
+  _os="$(uname -rms)"
+  _cpu_mode="known"
+  _cpu_count=1
+  _physical=0
+  _thread=0
+
+  if darwin; then
+    _cpu_mode=$(sysctl -n machdep.cpu.brand_string)
+    _physical=$(sysctl -n machdep.cpu.core_count)
+    _thread=$(sysctl -n machdep.cpu.thread_count)
+
+  else
+    _cpu_mode=$(awk -F: '/model name/{print $2}' /proc/cpuinfo | sort | uniq | xargs)
+    _cpu_count=$(grep "physical id" /proc/cpuinfo | sort | uniq | wc -l)
+    _physical=$(awk '/cpu cores/{print $4}' /proc/cpuinfo | uniq)
+    _thread=$(grep -c "processor" /proc/cpuinfo)
+  fi
+
+  cat <<EOF | column -s = -t >~/.sdk/sys.info
+操作系统:= $_os
+CPU型号:= $_cpu_mode
+CPU数量:= $_cpu_count
+物理核数:= $_physical
+逻辑核数:= $_thread
+发行版本:= $(osRelease)
+安装器:= $(installer)
+虚拟化状态:= $(virtualize)
+EOF
+  cat ~/.sdk/sys.info
+}
+
+# 系统诊断(动态)信息
+: '
+ CPU状态参数：
+ %us：表示用户空间程序的cpu使用率（没有通过nice调度）
+ %sy：表示系统空间的cpu使用率，主要是内核程序。
+ %ni：表示用户空间且通过nice调度过的程序的cpu使用率。
+ %id：空闲cpu
+ %wa：cpu运行时在等待io的时间
+ %hi：cpu处理硬中断的数量
+ %si：cpu处理软中断的数量
+ %st：被虚拟机偷走的cpu
+ https://www.runoob.com/linux/linux-filesystem.html
+'
+function sysInspect() {
+  echo -e "磁盘信息: \t 待完善..."
+  if darwin; then
+    echo -e "内存信息: \t $(top -l 1 | head -n 10 | sed -n "s/PhysMem: //p")"
+    echo -e "CPU状态: \t $(top -l 1 | head -n 10 | sed -n "s/CPU usage: //p")"
+  else
+    echo -e "内存信息: \t $(free -h | sed -n 's/Mem:\s*//p' | awk '{print "total:"$1, "used:"$2,"buff:"$5,"available:"$6}')"
+    echo -e "CPU状态: \t $(top -bn1 -ic | grep '%Cpu' | awk -F: '{print $2}' | xargs)"
+  fi
+
+  echo -e "网关  : \t $(gateWay)"
+  echo -e "内网IP: \t $(ip4)"
+  echo -e "公网IP: \t $(curl ifconfig.me -s)"
 }
 
 # =================================单元测试=====================================
@@ -208,7 +362,7 @@ function list() {
 # 126: 不可执行
 # 127: 命令不存在
 function unitTest() {
-  set +e
+  # set -e
   if [[ "$TEST_VERBOSE" == "on" || "$TestVerbose" == "on" ]]; then
     $1
   else
@@ -216,7 +370,7 @@ function unitTest() {
   fi
 
   result=$?
-  #  echo "$result"
+  # echo "$result"
   if [ $result -eq 127 ]; then
     printf "\033[1;31m[UT]\t\t⛔️\t\t\033[0m \033[30;41m%-20s\033[0m \t\t 函数/命令不存在\n" "$1"
     # echox error 1 "[NotFound] \t [$1]\t 函数/命令不存在"
@@ -288,6 +442,13 @@ function version() {
   echox blue SOLD "sdk $SDK_VERSION"
 }
 
+function list() {
+  echox blue solid "======== 函数库列表 ========"
+  echox magenta " 命令\t  说明"
+  sed -n "s/^##//p" "$0" | column -t -s '@-' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
+  echo
+}
+
 ## help@帮助说明
 function help() {
   echox blue solid "========================================================="
@@ -303,10 +464,6 @@ function help() {
   echo -e "更多详情，请参考 https://github.com/hollson\n"
 }
 
-function register() {
-  help
-}
-
 # Main函数
 function main() {
   if [[ "$BASE_NAME" == "sdk.sh" ]]; then
@@ -318,8 +475,14 @@ function main() {
     esac
   fi
 }
+
+function reload() {
+  main
+}
+
 main
 
+# 语法检测
 function _xxx() {
   echo "$OS"
   echo "$params"
@@ -327,10 +490,3 @@ function _xxx() {
   echo $SIZE1M
   echo $SIZE1G
 }
-
-#sed -i '/hello/d' ./a.txt # 删除关键字行
-#sed -i '1d' a.txt         # 删首行
-#sed -i '2d' a.txt         # 删除第2行
-#sed -i '$d' a.txt         # 删除尾行
-#sed -i 's/[ ]*//g' a.txt  # 删除空格
-#sed -i '/^$/d' a.txt      # 删除空行

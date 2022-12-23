@@ -1,5 +1,5 @@
 #!/bin/bash
-# 导入项目主体脚本
+# shellcheck source=/dev/null
 source ./example.sh
 
 # 编写单元测试函数，函数名格式: testXXX

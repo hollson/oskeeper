@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck source=/dev/null
 source ./sdk.sh
 
 # 编译项目
@@ -16,4 +17,4 @@ function Status() {
 }
 
 # 注册帮助信息
-help
+reload

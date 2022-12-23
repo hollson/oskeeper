@@ -3,7 +3,16 @@
 source sdk.sh
 
 function testArch() {
-  arch
+  [[ $(arch) == "x64" ]] || return 1
+  [[ $(arch) == "x86" ]] || return 0
+}
+
+function testHas() {
+  ext=bmp
+  list=(jpg bmp png)
+
+  has "${list[*]}" ${ext} || return 1 # 如果不存在,则结果错误
+  has "${list[*]}" "abc" || return 0  # 如果存在,  则结果正确
 }
 
 function testOK() {
@@ -16,14 +25,6 @@ function testErr() {
   return 1
 }
 
-function testSum() {
-  sum 1 2
-  sum 111 222
-}
-
-function test() {
-  echo "ddd"
-}
 function testEchox() {
   echox black SOLD "字体+样式"
   echox RED SOLD "字体+样式"
@@ -43,9 +44,10 @@ function testDateTime() {
 }
 
 function testCompare() {
-  compare 2 1
-  compare 1 1
-  compare 1
+  [[ $(compare 2 1) == 1 ]] || return 1
+  [[ $(compare 1 2) == -1 ]] || return 1
+  [[ $(compare 2 2) == 0 ]] || return 1
+  [[ $(compare 2 2) == -1 ]] || return 0
 }
 
 function testContain() {
@@ -61,6 +63,14 @@ function testLog() {
   logWarn "警告提醒"
   logErr "一般错误"
   logFail "致命错误"
+}
+
+function testSysInfo() {
+  sysInfo
+}
+
+function testSysInspect() {
+  sysInspect
 }
 
 function testNotfound() {
