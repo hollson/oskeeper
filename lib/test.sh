@@ -24,11 +24,25 @@
 #   echo "上层函数 => ${FUNCNAME[1]}"
 #   echo ${FUNCNAME[@]}
 
-function fooTest() {
-    echo "hello world"
-}
-eval "$(declare -f fooTest | xargs | grep -oE '{.*}' | sed -E 's/{|}//g')"
+# function fooTest() {
+#     echo "hello world"
+# }
+# eval "$(declare -f fooTest | xargs | grep -oE '{.*}' | sed -E 's/{|}//g')"
 
 # todo
 # 制表符
 # 帮助命令
+
+# echo "#FUN 分类|名称|帮助说明" | sed -n "s/^#FUN//p" | awk -F '|' '{printf ("\033[30;41m %12s\033[0m",$1),"\t|\t", $2,"\t|\t" $3}'
+# echo "#FUN 分类|名称|帮助说明" | sed -n "s/^#FUN //p" | awk -F "|" '{printf ("\033[31m %s\033[0m",$0)}'
+# awk -F ":" '$5~/^a/{print }' /etc/passwd  打印以冒号为分隔符，第5列中以a开头的行
+
+function has() {
+    all=$1
+    tar=$2
+    # shellcheck disable=SC2048
+    for v in ${all[*]}; do
+        [[ "$tar" == "$v" ]] && return
+    done
+    return 1
+}

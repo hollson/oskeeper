@@ -70,6 +70,54 @@ function testLog() {
   logFail "致命错误"
 }
 
+# jsonParser "${jsonStr}" "code"
+# jsonParser "${jsonStr}" "msg" "成功" | xargs
+# jsonParser "${jsonStr}" "data"
+# jsonParser "${jsonStr}" "id" 0
+# jsonParser "${jsonStr}" "name" "unknown"
+# jsonParser "${jsonStr}" "gender" "female"
+function testJsonnParser() {
+  jsonStr='{"code": 200, "msg": "ok", "data": {"id": 1001,"name": "Jackson"}}'
+  [[ $(jsonParser "${jsonStr}" "code") == 200 ]] || return 1
+  [[ $(jsonParser "${jsonStr}" "msg" | xargs) == "ok" ]] || return 1
+  [[ $(jsonParser "${jsonStr}" "data") != "" ]] || return 1
+  [[ $(jsonParser "${jsonStr}" "id" 0) == 1001 ]] || return 1
+  [[ $(jsonParser "${jsonStr}" "name" "unknown" | xargs) == "Jackson" ]] || return 1
+  [[ $(jsonParser "${jsonStr}" "gender" "female" | xargs) == "female" ]] || return 1
+  [[ $(jsonParser "${jsonStr}" "email" | xargs) == "null" ]] || return 1
+}
+
+# export TEST_VERBOSE=on
+function testIniParser() {
+  iniExample=$(
+    cat <<-EOF
+;INI文件由节、键、值组成。
+[mysql]
+host			 = 127.0.0.1
+port			 = 3306
+user			 = root
+password	 = 123456
+charset		 = "utf8"
+
+[pgsql]
+host			 = 127.0.0.1
+port			 = 6379
+user			 = postgres
+password	 = 123456
+EOF
+  )
+
+  # 检查语法
+  iniCheck ./example.ini && echo "Success" || return 1
+  iniCheck "${iniExample}" && echo "Success" || return 1
+
+  # 解析内容
+  iniParser example.ini mysql user
+  iniParser example.ini pgsql user
+  iniParser "${iniExample}" mysql port
+  iniParser "${iniExample}" pgsql port
+}
+
 function testSysInfo() {
   sysInfo
 }

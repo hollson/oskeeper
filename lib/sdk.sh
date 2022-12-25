@@ -143,10 +143,6 @@ function gateWay() {
 # IPv4
 function ip4() {
   # unset IPv4
-  # if [ -n "${IPv4}" ]; then
-  #   echo "${IPv4}" && return
-  # fi
-
   sub=$(gateWay | cut -d '.' -f1,2,3)
   ips=$(ifconfig | awk '/inet /{print $2}')
 
@@ -216,6 +212,7 @@ function contain() {
 
 ## next@阻塞并确定是否继续
 function next() {
+  ! echo "$*" | grep -oE "\s\-y\s|\s\-y$" >/dev/null || return
   read -r -p "是否继续?(Y/n) " next
   [ "$next" = 'Y' ] || [ "$next" = 'y' ] || exit 0
 }
@@ -232,6 +229,98 @@ function compare() {
   else
     echo 1
   fi
+}
+
+# =================================配置文件=====================================
+
+# 检查ini文件语法
+# iniCheck ./config.ini
+# iniCheck "ini content"
+function iniCheck() {
+  txt="$1"
+  [[ $# -lt 2 ]] || return 127
+  [[ -f $1 ]] && txt=$(cat "${txt}")
+  ret=$(echo "${txt}" | awk -F= 'BEGIN{valid=1}{
+        if(valid == 0) next  
+        if(length($0) == 0) next
+        gsub(" |\t","",$0)     
+        head_char=substr($0,1,1)
+        if (head_char != "#" && head_char != ";"){
+            if( NF == 1){
+                b=substr($0,1,1)
+                len=length($0)
+                e=substr($0,len,1)
+                if (b != "[" || e != "]"){valid=0}
+            }else if( NF == 2){
+                b=substr($0,1,1)
+                if (b == "["){ valid=0 }
+            }else{ valid=0 } 
+        }
+    } END{print valid}')
+  [[ $ret == 1 ]] || return 1
+}
+
+#参数1 文件名
+#参数2 块名
+#参数3 字段名
+#返回0,表示正确,且能输出字符串表示找到对应字段的值
+#否则其他情况都表示未找到对应的字段或者是出错
+function iniParser() {
+  txt="$1"
+  [[ $# == 3 ]] || return 1
+  [[ -f $1 ]] && txt=$(cat "${txt}")
+
+  declare -r blockName=$2 fieldName=$3
+  declare -i beginBlock=0 endBlock=0
+  echo "${txt}" | while read -r line; do
+    if [ "X$line" = "X[$blockName]" ]; then
+      beginBlock=1
+      continue
+    fi
+
+    if [ $beginBlock -eq 1 ]; then
+      endBlock=$(echo "$line" | awk 'BEGIN{ret=0} /^\[.*\]$/{ret=1} END{print ret}')
+      if [ "$endBlock" -eq 1 ]; then break; fi
+      need_ignore=$(echo "$line" | awk 'BEGIN{ret=0} /^#/{ret=1} /^$/{ret=1} END{print ret}')
+      if [ "$need_ignore" -eq 1 ]; then continue; fi
+      field=$(echo "$line" | awk -F= '{gsub(" |\t","",$1); print $1}')
+      value=$(echo "$line" | awk -F= '{gsub(" |\t","",$2); print $2}')
+      if [ "X$fieldName" = "X$field" ]; then
+        echo "$value"
+        break
+      fi
+    fi
+  done
+}
+
+# jsonParser Json解析器
+# jsonParser jsonText key [defaultValue]
+function jsonParser() {
+  defaultValue="null"
+  if [[ "$3" != "" ]]; then defaultValue="$3"; fi
+  awk -v json="$1" -v key="$2" -v defaultValue="${defaultValue}" 'BEGIN{
+        foundKeyCount = 0
+        while (length(json) > 0) {
+            pos = match(json, "\""key"\"[ \\t]*?:[ \\t]*");
+            if (pos == 0) {if (foundKeyCount == 0) {print defaultValue;} exit 0;}
+            ++foundKeyCount;
+            start = 0; stop = 0; layer = 0;
+            for (i = pos + length(key) + 1; i <= length(json); ++i) {
+                lastChar = substr(json, i - 1, 1)
+                currChar = substr(json, i, 1)
+                if (start <= 0) { if (lastChar == ":") {
+                    start = currChar == " " ? i + 1: i;
+                    if (currChar == "{" || currChar == "[") {layer = 1;}}
+                } else {if (currChar == "{" || currChar == "[") {++layer;}
+                    if (currChar == "}" || currChar == "]") {--layer;}
+                    if ((currChar == "," || currChar == "}" || currChar == "]") && layer <= 0) {
+                        stop = currChar == "," ? i : i + 1 + layer;break;}}
+                    }
+            if (start <= 0 || stop <= 0 || start > length(json) || stop > length(json) || start >= stop) {
+                if (foundKeyCount == 0) {print defaultValue;} exit 0;} 
+                else {print substr(json, start, stop - start);
+            }
+            json = substr(json, stop + 1, length(json) - stop)}}'
 }
 
 # =================================系统信息=====================================
@@ -474,7 +563,7 @@ function help() {
   echo -e "更多详情，请参考 https://github.com/hollson\n"
 }
 
-# Main函数
+# main函数
 function main() {
   # echo "Invoker => ${FUNCNAME[1]}"
   [[ ${FUNCNAME[1]} == "main" ]] || return
