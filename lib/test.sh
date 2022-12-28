@@ -37,12 +37,25 @@
 # echo "#FUN 分类|名称|帮助说明" | sed -n "s/^#FUN //p" | awk -F "|" '{printf ("\033[31m %s\033[0m",$0)}'
 # awk -F ":" '$5~/^a/{print }' /etc/passwd  打印以冒号为分隔符，第5列中以a开头的行
 
-function has() {
-    all=$1
-    tar=$2
-    # shellcheck disable=SC2048
-    for v in ${all[*]}; do
-        [[ "$tar" == "$v" ]] && return
-    done
-    return 1
-}
+# function has() {
+#     all=$1
+#     tar=$2
+#     # shellcheck disable=SC2048
+#     for v in ${all[*]}; do
+#         [[ "$tar" == "$v" ]] && return
+#     done
+#     return 1
+# }
+
+# 管道
+echo "输入网站名: "
+#读取从键盘的输入
+read website
+echo "你输入的网站名是 $website"
+exit 0 #退出
+echo abc.com | ./test.sh
+
+# sed专题
+# https://www.yiibai.com/sed/sed_regular_expressions.html
+
+# 压缩json

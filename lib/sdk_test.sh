@@ -16,6 +16,23 @@ function testDateTime() {
   dateTime
 }
 
+function testDarwin() {
+  darwin
+}
+
+# ./sdk_test.sh testNext a b -y
+# ./sdk_test.sh testNext -y a b
+# ./sdk_test.sh testNext a -y b
+# ./sdk_test.sh testNext -y
+# ./sdk_test.sh testNext -Y
+# ./sdk_test.sh testNext --y
+# ./sdk_test.sh testNext -yz
+# ./sdk_test.sh testNext -zy
+function testNext() {
+  :
+  # next
+}
+
 # 正向断言: 即左侧模拟0值结果
 function testArch() {
   [[ $(arch) == "x64" ]] || return 1
@@ -76,15 +93,20 @@ function testLog() {
 # jsonParser "${jsonStr}" "id" 0
 # jsonParser "${jsonStr}" "name" "unknown"
 # jsonParser "${jsonStr}" "gender" "female"
-function testJsonnParser() {
+function testJsonParser() {
+  # 从文本读取
   jsonStr='{"code": 200, "msg": "ok", "data": {"id": 1001,"name": "Jackson"}}'
   [[ $(jsonParser "${jsonStr}" "code") == 200 ]] || return 1
-  [[ $(jsonParser "${jsonStr}" "msg" | xargs) == "ok" ]] || return 1
+  [[ $(jsonParser "${jsonStr}" "msg") == "ok" ]] || return 1
   [[ $(jsonParser "${jsonStr}" "data") != "" ]] || return 1
   [[ $(jsonParser "${jsonStr}" "id" 0) == 1001 ]] || return 1
-  [[ $(jsonParser "${jsonStr}" "name" "unknown" | xargs) == "Jackson" ]] || return 1
-  [[ $(jsonParser "${jsonStr}" "gender" "female" | xargs) == "female" ]] || return 1
-  [[ $(jsonParser "${jsonStr}" "email" | xargs) == "null" ]] || return 1
+  [[ $(jsonParser "${jsonStr}" "name" "unknown") == "Jackson" ]] || return 1
+  [[ $(jsonParser "${jsonStr}" "gender" "female") == "female" ]] || return 1
+  [[ $(jsonParser "${jsonStr}" "email") == "null" ]] || return 1
+
+  # 从文件读取
+  [[ $(jsonParser "./example.json" "code") == 200 ]] || return 1
+  [[ $(jsonParser ./example.json "name" "unknown") == "  Linus   Torvalds    " ]] || return 1
 }
 
 # export TEST_VERBOSE=on
