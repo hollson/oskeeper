@@ -33,27 +33,6 @@ function init() {
 init
 # =================================通用函数=====================================
 
-## arch@查看CPU架构
-function arch() {
-  case "$(uname -m)" in
-  i686 | i386) echo 'x32' ;;
-  x86_64 | amd64) echo 'x64' ;;
-  armv5tel) echo 'arm32-v5' ;;
-  armv6l) echo 'arm32-v6' ;;
-  armv7 | armv7l) echo 'arm32-v7a' ;;
-  armv8 | aarch64) echo 'arm64-v8a' ;;
-  mips64le) echo 'mips64le' ;;
-  mips64) echo 'mips64' ;;
-  mipsle) echo 'mips32le' ;;
-  mips) echo 'mips32' ;;
-  ppc64le) echo 'ppc64le' ;;
-  ppc64) echo 'ppc64' ;;
-  riscv64) echo 'riscv64' ;;
-  s390x) echo 's390x' ;;
-  *) echox warn "unknown" ;;
-  esac
-}
-
 ## echox@打印彩色字符
 #for i in {1..8};do echo -e "\033[$i;31;40m hello shell \033[0m";done
 #for i in {30..37};do echo -e "\033[$i;40m hello shell \033[0m";done
@@ -113,6 +92,27 @@ function echox() {
   echo -e "${color}${txt}${PLAIN}"
 }
 
+## arch@查看CPU架构
+function arch() {
+  case "$(uname -m)" in
+  i686 | i386) echo 'x32' ;;
+  x86_64 | amd64) echo 'x64' ;;
+  armv5tel) echo 'arm32-v5' ;;
+  armv6l) echo 'arm32-v6' ;;
+  armv7 | armv7l) echo 'arm32-v7a' ;;
+  armv8 | aarch64) echo 'arm64-v8a' ;;
+  mips64le) echo 'mips64le' ;;
+  mips64) echo 'mips64' ;;
+  mipsle) echo 'mips32le' ;;
+  mips) echo 'mips32' ;;
+  ppc64le) echo 'ppc64le' ;;
+  ppc64) echo 'ppc64' ;;
+  riscv64) echo 'riscv64' ;;
+  s390x) echo 's390x' ;;
+  *) echox warn "unknown" ;;
+  esac
+}
+
 # Mac(达尔文)系统
 function darwin() {
   [[ "$(uname -s)" == "Darwin" ]]
@@ -149,6 +149,15 @@ function ip4() {
   # 16位子网
   sub=$(gateWay | cut -d '.' -f1,2)
   echo -n "$ips" | grep "${sub}"
+}
+
+# 获取公网IP4
+function outIP4() {
+  # IP4 && 请求超时3秒 && 数据传输2秒
+  curl -4 -s --connect-timeout 3 -m 2 ifconfig.me ||
+    curl -4 -s --connect-timeout 3 -m 2 icanhazip.com ||
+    curl -4 -s --connect-timeout 3 -m 2 ifconfig.co ||
+    curl -4 -s --connect-timeout 3 -m 2 ipecho.net/plain
 }
 
 # 集合是否包含某个元素
@@ -443,7 +452,7 @@ function sysInspect() {
 
   echo -e "网关  : \t $(gateWay)"
   echo -e "内网IP: \t $(ip4)"
-  echo -e "公网IP: \t $(curl ifconfig.me -s)"
+  echo -e "公网IP: \t $(outIP4)"
 }
 
 # =================================单元测试=====================================
@@ -495,7 +504,10 @@ function unitStart() {
   if [ "$cmd" == "" ]; then
     echox BLUE 1 "=== 🧪🧪🧪 执行单元测试 🧪🧪🧪==="
     echo -e "命令格式: "
-    echox RED 1 "    ./${cur} <list|all|testXXX>"
+    echox RED 1 "    ./${cur} <list|all|testXXX> [OPTIONS]"
+    echo
+    echo -e "Options: "
+    echo -e "    -v,--verbose  打印详细信息"
     echo
 
     echo "示例："
@@ -503,10 +515,14 @@ function unitStart() {
     printf "2) 执行具体函数:  \033[34m %s \033[0m\n" "./${cur} testXXX"
     printf "3) 执行全部测试:  \033[34m %s \033[0m\n" "./${cur} all"
     echo
-    echo -n "可打印单元测试过程:  "
+    echo -n "设置verbose系统变量: "
     echox BLUE "export TEST_VERBOSE=on"
     echo
     return
+  fi
+
+  if [[ "${params[0]}" == "-v" || "${params[0]}" == "--verbose" ]]; then
+    TestVerbose=on
   fi
 
   if [ "$cmd" == "list" ]; then
@@ -545,9 +561,9 @@ function funcs() {
 
 ## help@帮助说明
 function help() {
-  echox blue solid "========================================================="
-  echox blue solid "         欢迎使用${APP_NAME} ${APP_VERSION}"
-  echox blue solid "========================================================="
+  echox blue solid "=========================================================
+     欢迎使用${APP_NAME} ${APP_VERSION}
+========================================================="
 
   echo -e "用法：\n sdk [command] <param>"
   echo

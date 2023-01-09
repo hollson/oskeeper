@@ -47,13 +47,13 @@
 #     return 1
 # }
 
-# 管道
-echo "输入网站名: "
-#读取从键盘的输入
-read website
-echo "你输入的网站名是 $website"
-exit 0 #退出
-echo abc.com | ./test.sh
+## 管道
+#echo "输入网站名: "
+##读取从键盘的输入
+#read website
+#echo "你输入的网站名是 $website"
+#exit 0 #退出
+#echo abc.com | ./test.sh
 
 # sed专题
 # https://www.yiibai.com/sed/sed_regular_expressions.html

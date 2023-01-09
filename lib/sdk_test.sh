@@ -4,6 +4,7 @@ source sdk.sh
 
 # 模拟断言成功
 function testOK() {
+  logInfo "test ok"
   return 0
 }
 
@@ -28,10 +29,10 @@ function testDarwin() {
 # ./sdk_test.sh testNext --y
 # ./sdk_test.sh testNext -yz
 # ./sdk_test.sh testNext -zy
-function testNext() {
-  :
-  # next
-}
+#function testNext() {
+#  :
+#  # next
+#}
 
 # 正向断言: 即左侧模拟0值结果
 function testArch() {
@@ -111,8 +112,7 @@ function testJsonParser() {
 
 # export TEST_VERBOSE=on
 function testIniParser() {
-  iniExample=$(
-    cat <<-EOF
+  iniExample="
 ;INI文件由节、键、值组成。
 [mysql]
 host			 = 127.0.0.1
@@ -126,18 +126,18 @@ host			 = 127.0.0.1
 port			 = 6379
 user			 = postgres
 password	 = 123456
-EOF
-  )
+"
 
   # 检查语法
   iniCheck ./example.ini && echo "Success" || return 1
   iniCheck "${iniExample}" && echo "Success" || return 1
 
   # 解析内容
-  iniParser example.ini mysql user
-  iniParser example.ini pgsql user
-  iniParser "${iniExample}" mysql port
-  iniParser "${iniExample}" pgsql port
+  [[ $(iniParser ./example.ini mysql user) == "root" ]] || return 1
+  [[ $(iniParser ./example.ini pgsql user) == "postgres" ]] || return 1
+  [[ $(iniParser "${iniExample}" mysql port) == 3306 ]] || return 1
+  [[ $(iniParser "${iniExample}" mysql charset) == utf8 ]] || return 1
+  [[ $(iniParser "${iniExample}" pgsql port) == 6379 ]] || return 1
 }
 
 function testSysInfo() {
@@ -151,17 +151,6 @@ function testSysInspect() {
 function testNotfound() {
   notfound
 }
-
-# (针对性)单元测试
-#unitTest testOK
-#unitTest testErr
-#unitTest testArch
-#unitTest testOS
-#unitTest testLog
-#unitTest testEchox
-#unitTest testContain
-#unitTest testCompare
-#unitTest testSum
 
 # (自动化)单元测试
 unitStart
