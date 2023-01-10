@@ -16,15 +16,17 @@ function testBuild() {
     build
 }
 
+# 测试run函数
 function testRun() {
     run
 }
 
+# 测试status函数
 function testStatus() {
     status
 }
 
-# 未定义
+# 未定义的函数
 function testStop() {
     undifined
 }

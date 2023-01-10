@@ -31,9 +31,10 @@ function init() {
   fi
 }
 init
+
 # =================================通用函数=====================================
 
-## echox@打印彩色字符
+#FUN echox|打印彩色字符内容
 #for i in {1..8};do echo -e "\033[$i;31;40m hello shell \033[0m";done
 #for i in {30..37};do echo -e "\033[$i;40m hello shell \033[0m";done
 #for i in {40..47};do echo -e "\033[47;${i}m hello shell \033[0m";done
@@ -92,7 +93,7 @@ function echox() {
   echo -e "${color}${txt}${PLAIN}"
 }
 
-## arch@查看CPU架构
+#FUN arch|查看CPU架构
 function arch() {
   case "$(uname -m)" in
   i686 | i386) echo 'x32' ;;
@@ -118,7 +119,7 @@ function darwin() {
   [[ "$(uname -s)" == "Darwin" ]]
 }
 
-## dateTime@打印当前时间
+#FUN dateTime|打印当前时间
 function dateTime() {
   date "+%Y-%m-%d %H:%M:%S"
 }
@@ -128,7 +129,7 @@ function scriptFile() {
   cd "$(dirname "$0")" && pwd | xargs printf "%s/$(basename "$0")\n"
 }
 
-# 默认网关
+#FUN gateWay|获取默认网关
 function gateWay() {
   if [ "$(uname -s)" == "Darwin" ]; then
     route -n get default | awk -F: '/gateway/{print $2}' | xargs
@@ -137,7 +138,7 @@ function gateWay() {
   ip route | awk '/default/{print $3}'
 }
 
-# IPv4
+#FUN ip4|获取内网IP(v4)
 function ip4() {
   # unset IPv4
   sub=$(gateWay | cut -d '.' -f1,2,3)
@@ -151,7 +152,7 @@ function ip4() {
   echo -n "$ips" | grep "${sub}"
 }
 
-# 获取公网IP4
+#FUN outIP4|获取公网IP(v4)
 function outIP4() {
   # IP4 && 请求超时3秒 && 数据传输2秒
   curl -4 -s --connect-timeout 3 -m 2 ifconfig.me ||
@@ -160,7 +161,7 @@ function outIP4() {
     curl -4 -s --connect-timeout 3 -m 2 ipecho.net/plain
 }
 
-# 集合是否包含某个元素
+#FUN has|集合是否包含某个元素
 # ext=bmp
 # list=(jpg bmp png)
 # has "${list[*]}" ${ext}
@@ -174,7 +175,7 @@ function has() {
   return 1
 }
 
-# 打印日志
+#FUN log|打印日志
 # log "普通日志"
 # log info  "提示信息"
 # log warn " 警告提醒"
@@ -191,39 +192,40 @@ function log() {
   echo -e "$content" >>"$LogPath"
 }
 
-# 提示信息
+#FUN logInfo|打印提示信息
 function logInfo() {
   log info "${*:1}"
 }
 
-# 警告提醒
+
+#FUN logWarn|打印警告提醒
 function logWarn() {
   log warn "${*:1}"
 }
 
-# 一般错误
+#FUN logWarn|打印一般错误
 function logErr() {
   log error "${*:1}"
 }
 
-# 致命错误
+#FUN logWarn|打印致命错误
 function logFail() {
   log fail "${*:1}"
 }
 
-## contain@是否包含子串,如：contain src sub
+#FUN contain|是否包含子串,格式：contain <src> <sub>
 function contain() {
   [[ $1 == *$2* ]]
 }
 
-## next@阻塞并确定是否继续
+#FUN next|阻塞并确定是否继续
 function next() {
   ! echo "${params}" | grep -oiE "\s\-y\s|\s\-y$|^-y\s|^-y$" >/dev/null || return 0
   read -r -p "是否继续?(Y/n) " next
   [ "$next" = 'Y' ] || [ "$next" = 'y' ] || exit 0
 }
 
-## compare@比较大小
+#FUN compare|比较两个数值的大小
 # -1: a < b
 #  0: a = b
 #  1: a > b
@@ -239,7 +241,7 @@ function compare() {
 
 # =================================配置文件=====================================
 
-# 检查ini文件语法
+#FUN iniCheck|检查ini文件语法
 # iniCheck ./config.ini
 # iniCheck "ini content"
 function iniCheck() {
@@ -266,6 +268,7 @@ function iniCheck() {
   [[ $ret == 1 ]] || return 1
 }
 
+#FUN iniParser|解析ini配置文件
 #参数1 文件名
 #参数2 块名
 #参数3 字段名
@@ -299,7 +302,7 @@ function iniParser() {
   done
 }
 
-# jsonParser Json解析器
+#FUN jsonParser|解析json文件
 # jsonParser jsonText key [defaultValue]
 function jsonParser() {
   fileOrTxt=$1
@@ -335,7 +338,7 @@ function jsonParser() {
 
 # =================================系统信息=====================================
 
-# 安装器
+#FUN installer|查看当前系统的安装器
 function installer() {
   arr=(dnf yum apt apt-get apk brew)
   for v in "${arr[@]}"; do
@@ -345,7 +348,7 @@ function installer() {
 }
 #$(installer) --version
 
-# 检查当前系统是否为虚拟化环境
+#FUN virtualize|检查当前系统是否为虚拟化环境
 : '
  CPU状态参数：
  VT-x/Physics: 物理机
@@ -375,6 +378,7 @@ function virtualize() {
   lscpu | awk -F: '/Virtualization|Hypervisor/&&!/full/{print $2}' | xargs
 }
 
+#FUN osRelease|查看系统(厂商)发行信息
 # 查看系统发行版本(厂商)，如：
 # CentOS Linux 7 (Core)
 # Ubuntu 20.04 LTS (Focal Fossa)
@@ -388,7 +392,7 @@ function osRelease() {
   awk -F= '/^NAME=|^VERSION="/{print $2}' /etc/os-release | xargs
 }
 
-# 查看系统(静态)信息
+#FUN sysInfo|查看系统(静态)信息
 function sysInfo() {
   if [ -f ~/.sdk/sys.info ]; then
     cat ~/.sdk/sys.info
@@ -427,7 +431,7 @@ EOF
   cat ~/.sdk/sys.info
 }
 
-# 系统诊断(动态)信息
+#FUN sysInspect|系统诊断(动态)信息
 : '
  CPU状态参数：
  %us：表示用户空间程序的cpu使用率（没有通过nice调度）
@@ -545,37 +549,59 @@ function unitStart() {
   unitTest "$cmd"
 }
 
-# =================================类库帮助=====================================
+# =================================SDK命令=====================================
+
+#CMD create|创建应用/测试脚本, 格式: ./sdk.sh create <app｜test>
+function create(){
+  echox warn "TODO"
+}
+
+#CMD list|查看函数列表, 格式: ./sdk.sh list [category]
+function list() {
+  echox magenta " 函数\t   |    说明"
+  echox magenta "-----------|------------"
+    sed -n "s/^#FUN//p" "$0" | column -t -s '|'|sort| grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
+  echo
+  echox GREEN 1 "  执行某个函数(部分支持), 如: ./sdk.sh exec arch\n"
+}
+
+#CMD exec|执行某个函数(部分支持), 如: ./sdk.sh exec arch
+function exec(){
+  echo "${params[0]}"
+}
+
+
+#CMD docs|查看帮助文档列表, 格式: ./sdk.sh docs
+function docs(){
+    echox warn "TODO"
+}
+
+#CMD man|查看帮助文档内容, 格式: ./sdk.sh man <command>
+function man(){
+    echox warn "TODO"
+}
+
+#CMD logf|监视当前日志
+function logf(){
+tail -f "${LogPath}"
+}
+
+#CMD version|查看sdk版本
 function version() {
   echox blue SOLD "$APP_VERSION"
 }
 
-## funcs@查看函数列表
-function funcs() {
-  # echox blue solid "======== 函数列表 ========"
-  echox magenta " 函数\t  |  说明"
-  echox magenta "----------|----------"
-  sed -n "s/^##//p" "$0" | column -t -s '@-' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
-  echo
-}
-
-## help@帮助说明
+#CMD help|查看帮助说明
 function help() {
   echox blue solid "=========================================================
      欢迎使用${APP_NAME} ${APP_VERSION}
 ========================================================="
-
-  echo -e "用法：\n sdk [command] <param>"
+  echo -e "用法：\n $(basename "$0") [command] <params>"
   echo
   echo "Available Commands:"
-  # echox magenta " 命令\t简写\t说明"
   echox magenta " 命令\t说明"
-
-  sed -n "s/^##//p" "$0" | column -t -s '@-' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
-
-  #  grep "sdk.sh" ./example.sh |awk '{print $2}'
-  #  排序
-
+  sed -n "s/^#CMD//p" "$0" | column -t -s '|'| grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
+  # sed -n "s/^##//p" "$0" | column -t -s '@-' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
   echo
   echo -e "更多详情，请参考 https://github.com/hollson\n"
 }
@@ -587,7 +613,12 @@ function main() {
 
   # if [[ "$(basename "$0")" == "sdk.sh" ]]; then
   case $cmd in
-  funcs | func | list) funcs ;;
+     create | new) create ;;
+             exec) exec;;
+          docs) docs ;;
+            man) man ;;
+              logf|log) logf ;;
+     list|func|fun) list ;;
   ver | version) version ;;
   *) help ;;
   esac
@@ -595,6 +626,8 @@ function main() {
 }
 
 main
+
+# ============================================================================
 
 # 语法检测
 function _xxx() {
