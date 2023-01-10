@@ -7,6 +7,14 @@
 all: help
 
 
+## pack@打包lib库。
+.PHONY: pack
+pack:
+	@cd ./lib && tar -zcvf sdk.tar.gz ./*;
+	@mkdir -p release && mv ./lib/sdk.tar.gz ./release;
+	@echo "\033[31m ✅  打包完毕\033[0m";
+
+
 ## clean@清理编译、日志和缓存等数据。
 .PHONY: clean
 clean:

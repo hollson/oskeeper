@@ -12,7 +12,7 @@ import() { source "$1" &>/dev/null; }
 
 # 全局变量
 export APP_NAME="SDK(Shell Development Kit)" # 应用名称
-export APP_VERSION="v1.0.0"                  # 应用版本
+export APP_VERSION="v1.0.1"                  # 应用版本
 
 cmd=$1               # 二级命令
 params=${*:2}        # 二级命令参数
