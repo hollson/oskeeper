@@ -20,7 +20,7 @@
 
 ## Download
 ```shell
-curl -Ssl -O https://github.com/hollson/oskeeper/releases/download/latest/sdk.tar.gz
+wget https://github.com/hollson/oskeeper/releases/download/latest/sdk.tar.gz
 ```
 
 <br/>
