@@ -4,7 +4,7 @@ source ./sdk.sh
 
 # 全局变量
 export APP_NAME="Example Project" # 应用名称
-export APP_VERSION="v2.0.0"       # 应用版本
+export APP_VERSION="v1.0.0"       # 应用版本
 
 #CMD build|-|编译项目
 function build() {
