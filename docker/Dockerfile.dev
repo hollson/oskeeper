@@ -17,6 +17,7 @@ RUN apk add vim
 
 #RUN find . -name *.go -exec rm -rf {} \ #删除源文件
 #RUN find -type d -empty |xargs rm -rf;  #删除空目录
+
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/ /etc/localtime && echo  > /etc/timezone
 

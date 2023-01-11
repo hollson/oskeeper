@@ -13,8 +13,7 @@
 | slim     | 瘦身版，删除了许多非必需软件|
 
 ```shell
-docker pull ubuntu:20.04
-docker pull ubuntu:18.04
+docker pull ubuntu:latest
 
 docker pull debian:bullseye-slim
 docker pull debian:buster-slim
@@ -56,27 +55,11 @@ $ docker image ls --filter=reference="*:latest"
 $ docker image ls --filter dangling=true  # 悬空镜像
 ```
 
-# Dockerfile
 
-```shell
-# copy: 拷贝目录下的内容
-COPY ./deploy .
-
-# add: 1.下载远程文件; 2.添加本地文件并解压
-ADD http://download.redis.io/releases/redis-5.0.4.tar.gz .
-ADD nginx-1.22.0.tar.gz .
-```
 
 ## Docker命令
 
 ```shell
-# 指定多个端口
-docker run -d --name hello -p 8080:8080 -p 1443:443 hello:v1.0
-# 使用随机端口
-docker run -d --name hello -P hello:v1.0
-
-# 查看容器端口
-docker port hello
 
 # 查看完整信息
 docker history hello --no-trunc=true

@@ -6,23 +6,22 @@ build:
 	@echo "=> 🚀 编译Go应用"
 	@mkdir -p ./deploy
 	@GOOS=linux GOARCH=amd64 go build -o ./deploy/hello-server
-	@tar -zcvf deploy.tar.gz ./deploy
+	@tar -zcvf deploy.tar.gz -C ./deploy ./
 	@echo "🚀 构建docker镜像"
-	@docker build -f Dockerfile -t hello:v1.0 . 
+	@docker build -f Dockerfile -t hello:1.0 .
 	@echo "\033[31m 🚀  编译完毕\033[0m"
 
 
 ## clean@清理编译、日志和缓存等
 .PHONY:clean
 clean:
-	@rm -rf ./bin;
+	@docker images|grep none|awk '{print $3}'|xargs docker rmi -f
 	@rm -rf ./logs;
 	@rm -rf ./log;
 	@rm -rf ./cache;
 	@rm -rf ./pid;
 	@rm -rf ./release;
 	@rm -rf ./debug;
-	@rm -rf ./deploy;
 	@rm -rf ./tmp;
 	@rm -rf ./temp;
 	@rm -rf ./vendor/*;
@@ -56,7 +55,14 @@ exec:
 .PHONY:run
 run:
 	@docker rm -f hello
-	@docker run -d --name hello -p 8080:8080 hello:v1.0
+	@docker run -d --name hello -p 8080:8080 hello:1.0
+	@docker ps
+
+
+## my@我的一键式操作
+.PHONY:my
+my: build run
+
 
 
 ## help@查看make帮助

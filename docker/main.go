@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//go:generate GOOS=linux GOARCH=amd64 go build -o ./deploy/hello-server
 func main() {
 	router := gin.Default()
 	router.GET("/", func(c *gin.Context) {
@@ -17,7 +18,5 @@ func main() {
 			"time":    time.Now().Format("2006-01-02 15:04:05"),
 		})
 	})
-
 	router.Run(":8080")
-	// fmt.Println("=> ", time.Now().Format("2006-01-02 15:04:05"))
 }
