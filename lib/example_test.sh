@@ -12,16 +12,22 @@ function testDemo() {
     ! contain "Linux" "abc" || return 1
 }
 
+# 测试build命令
 function testBuild() {
     build
 }
 
-# 测试run函数
+# 测试install命令
+function testInstall() {
+    install
+}
+
+# 测试run命令
 function testRun() {
     run
 }
 
-# 测试status函数
+# 测试status命令
 function testStatus() {
     status
 }

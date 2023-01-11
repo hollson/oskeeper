@@ -14,8 +14,8 @@ import() { source "$1" &>/dev/null; }
 export APP_NAME="SDK(Shell Development Kit)" # 应用名称
 export APP_VERSION="v1.0.1"                  # 应用版本
 
-cmd=$1               # 二级命令
-params=${*:2}        # 二级命令参数
+COMMAND=$1           # 二级命令
+PARAMS=${*:2}        # 二级命令参数
 ConsoleLog=on        # 是否打印控制台日志(on/off)
 LogPath="./dump.log" # 日志文件(环境变量: export SDK_LOG_PATH=./)
 TestVerbose=off      # 打印单元测试过程(环境变量: export TEST_VERBOSE=on/off)
@@ -197,7 +197,6 @@ function logInfo() {
   log info "${*:1}"
 }
 
-
 #FUN logWarn|打印警告提醒
 function logWarn() {
   log warn "${*:1}"
@@ -220,7 +219,7 @@ function contain() {
 
 #FUN next|阻塞并确定是否继续
 function next() {
-  ! echo "${params}" | grep -oiE "\s\-y\s|\s\-y$|^-y\s|^-y$" >/dev/null || return 0
+  ! echo "${PARAMS}" | grep -oiE "\s\-y\s|\s\-y$|^-y\s|^-y$" >/dev/null || return 0
   read -r -p "是否继续?(Y/n) " next
   [ "$next" = 'Y' ] || [ "$next" = 'y' ] || exit 0
 }
@@ -459,6 +458,26 @@ function sysInspect() {
   echo -e "公网IP: \t $(outIP4)"
 }
 
+#FUN gitBranch|获取当前的分支
+function gitBranch() {
+  git rev-parse --abbrev-ref "@{u}"
+}
+
+#FUN gitCommit|获取最近一次提交的ID
+function gitCommit() {
+  git rev-parse --short HEAD
+}
+
+#FUN gitAuthor|获取当前用户名
+function gitAuthor() {
+  git config user.name
+}
+
+#FUN gitTag|获取最近一次tag标签
+function gitTag() {
+  git describe --tags --abbrev=0
+}
+
 # =================================单元测试=====================================
 # 单元测试
 # 加载单元测试: unitTest "${@:1}"
@@ -505,7 +524,7 @@ function unitStart() {
   fi
 
   set +e
-  if [ "$cmd" == "" ]; then
+  if [ "$COMMAND" == "" ]; then
     echox BLUE 1 "=== 🧪🧪🧪 执行单元测试 🧪🧪🧪==="
     echo -e "命令格式: "
     echox RED 1 "    ./${cur} <list|all|testXXX> [OPTIONS]"
@@ -525,18 +544,18 @@ function unitStart() {
     return
   fi
 
-  if [[ "${params[0]}" == "-v" || "${params[0]}" == "--verbose" ]]; then
+  if [[ "${PARAMS[0]}" == "-v" || "${PARAMS[0]}" == "--verbose" ]]; then
     TestVerbose=on
   fi
 
-  if [ "$cmd" == "list" ]; then
+  if [ "$COMMAND" == "list" ]; then
     echox blue solid "=== 🧪🧪🧪 单元测试列表 🧪🧪🧪==="
     unitList
     return
   fi
 
   #执行所有单元测试
-  if [ "$cmd" == "all" ]; then
+  if [ "$COMMAND" == "all" ]; then
     all=$(unitList)
     # shellcheck disable=SC2048
     for v in ${all[*]}; do
@@ -546,44 +565,40 @@ function unitStart() {
   fi
 
   # 执行某个单元测试函数
-  unitTest "$cmd"
+  unitTest "$COMMAND"
 }
 
 # =================================SDK命令=====================================
 
-#CMD create|创建应用/测试脚本, 格式: ./sdk.sh create <app｜test>
-function create(){
-  echox warn "TODO"
-}
-
 #CMD list|查看函数列表, 格式: ./sdk.sh list [category]
 function list() {
-  echox magenta " 函数\t   |    说明"
-  echox magenta "-----------|------------"
-    sed -n "s/^#FUN//p" "$0" | column -t -s '|'|sort| grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
+  echox magenta " 函数\t  |   说明"
+  echox magenta "----------|-----------"
+  sed -n "s/^#FUN//p" "$0" | column -t -s '|' | sort | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
   echo
-  echox GREEN 1 "  执行某个函数(部分支持), 如: ./sdk.sh exec arch\n"
+  echox BLUE 1 "执行某个函数(部分支持), 如: ./$(basename "$0") exec arch\n"
 }
 
 #CMD exec|执行某个函数(部分支持), 如: ./sdk.sh exec arch
-function exec(){
-  echo "${params[0]}"
+# ./sdk.sh exec echox RED 1 你好
+function exec() {
+  # shellcheck disable=SC2068
+  ${PARAMS[@]}
 }
 
-
 #CMD docs|查看帮助文档列表, 格式: ./sdk.sh docs
-function docs(){
-    echox warn "TODO"
+function docs() {
+  echox warn "TODO"
 }
 
 #CMD man|查看帮助文档内容, 格式: ./sdk.sh man <command>
-function man(){
-    echox warn "TODO"
+function man() {
+  echox warn "TODO"
 }
 
-#CMD logf|监视当前日志
-function logf(){
-tail -f "${LogPath}"
+#CMD logf|监视当前脚本日志
+function logf() {
+  tail -f "${LogPath}"
 }
 
 #CMD version|查看sdk版本
@@ -599,30 +614,50 @@ function help() {
   echo -e "用法：\n $(basename "$0") [command] <params>"
   echo
   echo "Available Commands:"
-  echox magenta " 命令\t说明"
-  sed -n "s/^#CMD//p" "$0" | column -t -s '|'| grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
-  # sed -n "s/^##//p" "$0" | column -t -s '@-' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
+  cur=$(basename "$0")
+  if [[ "${cur}" == "sdk.sh" ]]; then
+    echox magenta " 命令\t  说明"
+  else
+    echox magenta " 命令\t 简称\t说明"
+  fi
+
+  sed -n "s/^#CMD//p" "$0" | column -t -s '|' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
   echo
   echo -e "更多详情，请参考 https://github.com/hollson\n"
 }
 
-# main函数
-function main() {
+# main函数.V1
+function main1() {
   # echo "Invoker => ${FUNCNAME[1]}"
   [[ ${FUNCNAME[1]} == "main" ]] || return 0
 
-  # if [[ "$(basename "$0")" == "sdk.sh" ]]; then
-  case $cmd in
-     create | new) create ;;
-             exec) exec;;
-          docs) docs ;;
-            man) man ;;
-              logf|log) logf ;;
-     list|func|fun) list ;;
+  case $COMMAND in
+  create | new) create ;;
+  exec) exec ;;
+  docs) docs ;;
+  man) man ;;
+  log) tail -20 "${LogPath}" ;;
+  logf) logf ;;
+  list | func | fun) list ;;
   ver | version) version ;;
   *) help ;;
   esac
-  # fi
+}
+
+# main函数.V2
+function main() {
+  [[ ${FUNCNAME[1]} == "main" ]] || return 0
+  if [[ "${COMMAND}" == "" || "${COMMAND}" == "help" ]]; then
+    help
+    return 0
+  fi
+  cs=$(sed -n "s/^#CMD//p" "$0" | awk -F '|' '{print $1,$2}' | grep -E "[\s\|]*${COMMAND}[\s\|]*")
+  if test $? || [[ ${cs} == "" ]]; then
+    "$(echo "${cs}" | awk '{print $1}')" 2>/dev/null
+    [[ $? != 127 ]] || echox warn "执行失败，请检查参数和CMD命令注释是否正确"
+    return
+  fi
+  help
 }
 
 main
@@ -631,7 +666,7 @@ main
 
 # 语法检测
 function _xxx() {
-  echo "$params"
+  echo "$PARAMS"
   echo $SIZE1K
   echo $SIZE1M
   echo $SIZE1G

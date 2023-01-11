@@ -6,23 +6,35 @@ source ./sdk.sh
 export APP_NAME="Example Project" # 应用名称
 export APP_VERSION="v2.0.0"       # 应用版本
 
-#CMD build|编译项目
+#CMD build|-|编译项目
 function build() {
-    logInfo "编译程序"
+    logInfo "Todo:编译程序"
 }
 
+#CMD install|ins|安装程序
+function install() {
+    logInfo "Todo:安装程序"
+    return 1
+}
 
-#CMD run|运行项目
+#CMD run|-|运行程序
 function run() {
-    logErr "运行失败"
-    return 1 #返回错误
+    logErr "Todo:运行失败"
+    return 1
 }
 
-
-#CMD status|查看服务状态
+#CMD status|stt|查看服务状态
 function status() {
-    logWarn "查看状态"
+    logInfo "Todo:查看状态"
 }
 
-# 刷新静态元数据
+#FUN demo|示例函数
+function demoFunc() {
+    logInfo "Todo:查看状态"
+}
+
+# 继承通用命令，并重载main函数
+#CMD list|-|查看函数列表
+#CMD version|ver|查看应用版本
+#CMD help|*|查看帮助说明
 main

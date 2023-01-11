@@ -30,7 +30,6 @@ function testDarwin() {
 # ./sdk_test.sh testNext -yz
 # ./sdk_test.sh testNext -zy
 #function testNext() {
-#  :
 #  # next
 #}
 
