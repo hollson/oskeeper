@@ -59,3 +59,7 @@
 # https://www.yiibai.com/sed/sed_regular_expressions.html
 
 # 压缩json
+
+
+#RUN find . -name *.go -exec rm -rf {} \ #删除源文件
+#RUN find -type d -empty |xargs rm -rf;  #删除空目录
