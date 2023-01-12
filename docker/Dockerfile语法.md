@@ -49,8 +49,8 @@ FROM alpine
 ENV APP_NAME=Awesome APP_VERSION="1.0.0"
 ```
 ```shell
-docker build -t hello:1.0 .
-docker run -ti hello:1.0 env
+docker build -t hello .
+docker run --rm hello env
 ```
 
 <br/>
@@ -77,8 +77,8 @@ RUN touch ${APP_HOME}/a.txt && \
 ```
 
 ```shell
-docker build --build-arg Version=v1.0 --build-arg Commit=$(git rev-parse --short HEAD) -t hello:1.0 .
-docker run -ti hello:1.0 cat ./a.txt
+docker build --build-arg Version=v1.0 --build-arg Commit=$(git rev-parse --short HEAD) -t hello .
+docker run --rm hello cat ./a.txt
 ```
 
 <br/>
@@ -88,7 +88,8 @@ docker run -ti hello:1.0 cat ./a.txt
 # 1.查看镜像内应用端口
 # 2.随机端口映射必须设定
 EXPOSE 1443 8080
-
+```
+```shell
 # 要启动容器，但不知道镜像内端口怎么办？
 docker inspect hello:1.0 -f {{.Config.ExposedPorts}}
 docker history hello:1.0|grep EXPOSE
@@ -96,7 +97,10 @@ docker history hello:1.0|grep EXPOSE
 
 <br/>
 
+
+
 ## 6. VOLUME
+
 >  向容器添加数据卷
 ```shell
 VOLUME ./asset ./asset
@@ -108,15 +112,24 @@ VOLUME ["/app/data"]
 
 <br/>
 
+
+
 ## 7. RUN
+
 > 构建时命令
 ```dockerfile
 # 默认命令解释器
 RUN touch hello.txt
 
 # 特定命令解释器
-RUN ["/bin/bash","-c","touch hello.txt"]
+RUN ["/bin/sh","-c","echo 'hello world' >/opt/hello.txt"]
 ```
+
+```shell
+docker run --rm hello cat /opt/hello.txt
+```
+
+
 
 <br/>
 
@@ -134,9 +147,9 @@ ENTRYPOINT echo "hello god"
 ```
 _运行时命令只会执行最后一条, 即存在多条CMD时，仅后有一条有效_
 ```shell
-docker run -ti hello:1.0				# 默认CMD命令
-docker run -ti hello:1.0 echo "hello world"		# 覆盖默认命令
-docker run -ti hello:1.0 sh -c "echo hello world"	# 脚本解析
+docker run --rm hello:latest				# 默认CMD命令
+docker run --rm hello:latest echo "hello world"		# 覆盖默认命令
+docker run --rm hello:latest sh -c "echo hello world"	# 脚本解析
 ```
 <br/>
 
@@ -145,14 +158,18 @@ docker run -ti hello:1.0 sh -c "echo hello world"	# 脚本解析
 ```shell
 FROM alpine
 ENTRYPOINT ["/bin/ls","/"]
-CMD ["-l"]	# CMD仅提供默认参数
+
+# CMD仅提供默认参数
+CMD ["-l"]
 ```
 
 ```shell
-docker run -ti hello:1.0 -lh	#进覆盖默认CMD参数
+docker run --rm hello -lh	#进覆盖默认CMD参数
 ```
 
 <br/>
+
+
 
 ## 9. LABEL
 > LABEL为镜像增加`元数据`，一个LABEL是键值对，多个键值对之间使用空格分开，命令换行时是使用反斜杠。
@@ -160,7 +177,7 @@ docker run -ti hello:1.0 -lh	#进覆盖默认CMD参数
 > 格式：`LABEL <key>=<value> <key>=<value> <key>=<value> ...`
 
 ```dockerfile
-FROM alpine
+FROM scratch
 
 LABEL "nick"="hollson"
 LABEL email="hollson@qq.com"
@@ -177,14 +194,17 @@ LABEL Maintainer="Microsoft"
 ```
 
 ```shell
-docker inspect hello:1.0
-docker inspect hello:1.0 -f {{".Config.Labels"}}
-docker inspect hello:1.0 -f {{".Config.Labels.Maintainer"}}
+docker build -t hello:latest .
+docker inspect hello
+docker inspect hello -f {{".Config.Labels"}}
+docker inspect hello -f {{".Config.Labels.Maintainer"}}
 ```
 
 <br/>
 
 <br/>
+
+
 
 # 二. 多阶段构建
 
@@ -204,13 +224,16 @@ COPY --from=builder /app/hello-server /app/
 CMD ["./hello-server"]
 ```
 ```shell
-docker build -t hello:scratch .
-docker run -ti hello:scratch
+docker build -t hello:latest .
+docker run --rm hello
 ```
 
 <br/>
 
+
+
 ## 2. 完整实例
+
 > **多阶段构建ARG参数:**
 >
 >  1. 先在顶部定义ARG参数
@@ -223,22 +246,21 @@ ARG version=1.0.0
 # 构建阶段
 FROM golang:alpine AS builder
 WORKDIR /app
-COPY ./main.go ./go.mod ./config.ini ./
+COPY ./main.go ./go.mod ./
 RUN go build -ldflags="-s -w" -o hello-server main.go
 
 # 发布阶段
 FROM alpine
-#FROM scratch
 WORKDIR /app
 ARG version
 RUN echo "${version}" > version
-COPY --from=builder /app/hello-server /app/config.ini /app/
+COPY --from=builder /app/hello-server /app/
 CMD ["./hello-server"]
 ```
 
 ```shell
-docker build -t hello:alpine .
-docker run -ti hello:alpine
-docker run -ti hello:alpine ls .
-docker run -ti hello:alpine cat version
+docker build -t hello:latest .
+docker run --rm hello
+docker run --rm hello ls .
+docker run --rm hello cat version
 ```
