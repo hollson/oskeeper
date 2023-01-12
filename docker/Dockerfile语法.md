@@ -134,9 +134,9 @@ ENTRYPOINT echo "hello god"
 ```
 _运行时命令只会执行最后一条, 即存在多条CMD时，仅后有一条有效_
 ```shell
-docker run -ti hello:1.0								# 默认CMD命令
-docker run -ti hello:1.0 echo "hello world"				# 覆盖默认命令
-docker run -ti hello:1.0 sh -c "echo hello world"		# 脚本解析
+docker run -ti hello:1.0				# 默认CMD命令
+docker run -ti hello:1.0 echo "hello world"		# 覆盖默认命令
+docker run -ti hello:1.0 sh -c "echo hello world"	# 脚本解析
 ```
 <br/>
 
