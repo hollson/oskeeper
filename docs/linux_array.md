@@ -1,1 +1,0 @@
-https://www.runoob.com/linux/linux-shell-array.html

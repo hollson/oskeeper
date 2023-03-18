@@ -1,0 +1,32 @@
+version: "3.0"
+
+services:
+  mysqldb:
+    image: mysql:5.6
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - /tmp/mysql/conf:/etc/mysql/conf.d
+      - /tmp/mysql/logs:/logs
+      - /tmp/mysql/data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    networks:
+      - ems
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7.0
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - ems
+    volumes:
+      - /tmp/redis/data:/data
+    command: redis-server
+
+networks:
+  ems:

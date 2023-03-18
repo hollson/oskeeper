@@ -1,0 +1,19 @@
+# Compose和Docker兼容对照： https://docs.docker.com/compose/compose-file/compose-file-v3/
+# 执行compose项目：        docker-compose -f demo1.docker-compose.yml up
+version: "3.8"
+
+services:
+  tomcat:
+    image: tomcat:8.0
+    ports:
+      - "8080:8080"
+
+  nginx01:
+    image: nginx:latest
+    ports:
+      - "8081:80"
+
+  nginx02:
+    image: nginx:latest
+    ports:
+      - "8082:80"

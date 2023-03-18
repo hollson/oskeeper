@@ -5,8 +5,7 @@ WORKDIR /app
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o go_server
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
 
-
-FROM alpine:3.16
+FROM alpine:latest
 RUN echo "http://mirrors.aliyun.com/alpine/v3.16/main/" > /etc/apk/repositories
 RUN apk update
 RUN apk add ca-certificates

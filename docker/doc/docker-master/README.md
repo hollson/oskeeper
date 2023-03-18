@@ -60,15 +60,8 @@ $ docker image ls --filter dangling=true  # 悬空镜像
 ## Docker命令
 
 ```shell
-
 # 查看完整信息
 docker history hello --no-trunc=true
-```
-
-## 端口
-
-```shell
-https://www.cnblogs.com/wang_yb/p/14593606.html
 ```
 
 

@@ -4,7 +4,7 @@ FROM alpine
 WORKDIR /app
 
 # 拷贝添加
-COPY ./deploy .
+COPY /tmp/deploy .
 
 # 开放端口
 EXPOSE 8080 1443
@@ -19,7 +19,7 @@ ENV GIT_COMMIT $(git rev-parse HEAD)
 
 # 添加时区
 ENV TZ=Asia/Shanghai
-ADD ./asset/Shanghai /usr/share/zoneinfo/Asia/Shanghai
+ADD /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/Shanghai
 RUN echo ${TZ} > /etc/timezone
 
 # 运行时命令

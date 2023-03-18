@@ -75,6 +75,30 @@ set -euxo pipefail
 ```
 
 
+
+# 数组
+
+https://www.runoob.com/linux/linux-shell-array.html
+
+
+
+
+Apple M1 规格参数
+
+| **项目**  | **参数** |
+| ------- | ------ |
+| CPU  | 核心数：8核 |
+| GPU  | 核心数：8核 |
+| 晶体管    | 约160亿个 |
+| 架构 | **Arm架构**|
+| 制程 | 5纳米 |
+| 接口 | 集成雷电/USB 4控制器、PCIe 4.0控制器、NVMe存储|
+| 安全模块  | Secure Enclave |
+| 机器学习加速器 | 集成  |
+| ISP  | 集成  |
+| 神经网络引擎   | 16核  |
+
+
 ## 参考连接
 
 >  http://www.ruanyifeng.com/blog/2017/11/bash-set.html

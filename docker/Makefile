@@ -4,9 +4,9 @@ all:help
 .PHONY:build
 build:
 	@echo "=> 🚀 编译Go应用"
-	@mkdir -p ./deploy
-	@GOOS=linux GOARCH=amd64 go build -o ./deploy/hello-server
-	@tar -zcvf deploy.tar.gz -C ./deploy ./
+	@mkdir -p /tmp/deploy
+	@GOOS=linux GOARCH=amd64 go build -o /tmp/deploy/hello-server
+	@tar -zcvf deploy.tar.gz -C /tmp/deploy ./
 	@echo "🚀 构建docker镜像"
 	@docker build -f Dockerfile -t hello:1.0 .
 	@echo "\033[31m 🚀  编译完毕\033[0m"
@@ -22,9 +22,8 @@ clean:
 	@rm -rf ./pid;
 	@rm -rf ./release;
 	@rm -rf ./debug;
-	@rm -rf ./tmp;
-	@rm -rf ./temp;
 	@rm -rf ./vendor/*;
+	@rm -rf /tmp/deploy/*
 	@echo "\033[31m ✅  清理完毕\033[0m";
 
 

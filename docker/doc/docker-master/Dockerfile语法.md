@@ -2,21 +2,6 @@
 
 # 一. 基础命令
 
-## 1. INSPECT
-
-> 构建时的配置等信息
-```shell
-# 构建者(废弃)
-# docker inspect hello:1.0 -f {{.Author}}
-MAINTAINER Microsoft
-
-# 系统用户，默认为root
-# docker inspect hello:1.0 -f {{.Config.User}}
-USER postgres
-```
-
-<br/>
-
 ## 2. ADD/COPY
 ```shell
 COPY [--chown=<user>:<group>] <src> ... <dest>
@@ -101,7 +86,6 @@ docker history hello:1.0|grep EXPOSE
 
 ## 6. VOLUME
 
->  向容器添加数据卷
 ```shell
 VOLUME ./asset ./asset
 VOLUME ["/opt","/opt"]
@@ -134,7 +118,7 @@ docker run --rm hello cat /opt/hello.txt
 <br/>
 
 ## 8. CMD/ENTRYPOINT
-> `CMD`是**默认运行时命令**，会被命令行参数覆盖
+> `CMD`是**运行时(默认)命令或参数**，会被命令行参数覆盖
 >
 > `ENTRYPOINT`是**强制运行时命令**,其他CMD都会失效
 
@@ -172,7 +156,7 @@ docker run --rm hello -lh	#进覆盖默认CMD参数
 
 
 ## 9. LABEL
-> LABEL为镜像增加`元数据`，一个LABEL是键值对，多个键值对之间使用空格分开，命令换行时是使用反斜杠。
+> LABEL为镜像增加**元数据**，一个LABEL是键值对，多个键值对之间使用空格分开，命令换行时是使用反斜杠。
 >
 > 格式：`LABEL <key>=<value> <key>=<value> <key>=<value> ...`
 
@@ -199,6 +183,18 @@ docker inspect hello
 docker inspect hello -f {{".Config.Labels"}}
 docker inspect hello -f {{".Config.Labels.Maintainer"}}
 ```
+
+```shell
+# 构建者(废弃)
+# docker inspect hello:1.0 -f {{.Author}}
+MAINTAINER Microsoft
+
+# 系统用户，默认为root
+# docker inspect hello:1.0 -f {{.Config.User}}
+USER postgres
+```
+
+
 
 <br/>
 
