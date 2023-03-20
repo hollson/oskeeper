@@ -2,7 +2,8 @@
 
 # 一. 基础命令
 
-## 2. ADD/COPY
+## 1. ADD/COPY
+
 ```shell
 COPY [--chown=<user>:<group>] <src> ... <dest>
 COPY [--chown=<user>:<group>] ["<src>",... "<dest>"]
@@ -22,9 +23,8 @@ ADD deploy.tar.gz .
 ```
 > 切换目录并压缩：`tar -zcvf deploy.tar.gz -C ./deploy ./`
 
-<br/>
+## 2. ENV
 
-## 3. ENV
 ```shell
 FROM alpine
 
@@ -38,9 +38,8 @@ docker build -t hello .
 docker run --rm hello env
 ```
 
-<br/>
+## 3. ARG
 
-## 4. ARG
 > ARG不会进入构建映像。所以可能，不应该担心由 ARG 引起的层数。
 ```dockerfile
 FROM alpine
@@ -66,9 +65,10 @@ docker build --build-arg Version=v1.0 --build-arg Commit=$(git rev-parse --short
 docker run --rm hello cat ./a.txt
 ```
 
-<br/>
 
-## 5. EXPOSR
+
+## 4. EXPOSR
+
 ```shell
 # 1.查看镜像内应用端口
 # 2.随机端口映射必须设定
@@ -80,11 +80,9 @@ docker inspect hello:1.0 -f {{.Config.ExposedPorts}}
 docker history hello:1.0|grep EXPOSE
 ```
 
-<br/>
 
 
-
-## 6. VOLUME
+## 5. VOLUME
 
 ```shell
 VOLUME ./asset ./asset
@@ -94,11 +92,9 @@ VOLUME ["/opt","/opt"]
 VOLUME ["/app/data"]
 ```
 
-<br/>
 
 
-
-## 7. RUN
+## 6. RUN
 
 > 构建时命令
 ```dockerfile
@@ -115,9 +111,8 @@ docker run --rm hello cat /opt/hello.txt
 
 
 
-<br/>
+## 7. CMD/ENTRYPOINT
 
-## 8. CMD/ENTRYPOINT
 > `CMD`是**运行时(默认)命令或参数**，会被命令行参数覆盖
 >
 > `ENTRYPOINT`是**强制运行时命令**,其他CMD都会失效
@@ -151,11 +146,10 @@ CMD ["-l"]
 docker run --rm hello -lh	#进覆盖默认CMD参数
 ```
 
-<br/>
 
 
+## 8. LABEL
 
-## 9. LABEL
 > LABEL为镜像增加**元数据**，一个LABEL是键值对，多个键值对之间使用空格分开，命令换行时是使用反斜杠。
 >
 > 格式：`LABEL <key>=<value> <key>=<value> <key>=<value> ...`
@@ -195,8 +189,6 @@ USER postgres
 ```
 
 
-
-<br/>
 
 <br/>
 

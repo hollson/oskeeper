@@ -1,4 +1,4 @@
-## 准备工作
+# 准备工作
 
 所有集群节点都进行配置，服务器环境如下： 
 
@@ -10,7 +10,7 @@
 
 
 
-### 1. 解析主机名
+## 1. 配置主机名
 
 _在每个集群节点中的hosts中加入主机名映射：_
 
@@ -32,7 +32,7 @@ hostnamectl set-hostname k8s-node02	 # 在node02上执行
 
 
 
-### 2. 同步时间
+## 2. 同步系统时间
 
 ```shell
 # 设置时区
@@ -52,14 +52,18 @@ date
 
 
 
-### 3. 关闭防火墙
+## 3. 关闭防火墙
 
 _关闭`firewalld`或`iptables`服务_
 
 ```shell
 # firewalld
 systemctl stop firewalld 
-systemctl disable firewallld
+systemctl disable firewalld
+
+systemctl start firewalld 
+firewall-cmd --zone=public --list-ports
+systemctl stop firewalld 
 
 # iptables
 systemctl stop iptables
@@ -68,7 +72,7 @@ systemctl disable iptables
 
 
 
-### 4. 禁用selinux
+## 4. 禁用selinux
 
 _selinux是linux系统下的一个安全服务，可能引发一些问题_
 
@@ -83,7 +87,7 @@ getenforce
 
 
 
-### 5. 禁用swap分区
+## 5. 禁用swap分区
 
 _Kubernetes v1.8+要求关闭系统 Swap，Swap指虚拟内存分区_
 
@@ -98,12 +102,12 @@ free -h
 
 
 
-### 6. 配置网桥转发???
+## 6. 配置K8s网桥
 
 _将桥接的IPv4流量传递到iptables的链_
 
 ```shell
-cat <<EOF >/etc/sysctl.d/kubernetes.conf
+cat <<EOF >/etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-iptables  = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 net.ipv4.ip_forward                 = 1
@@ -114,7 +118,9 @@ modprobe br_netfilter       # 加载过滤模块
 lsmod | grep br_netfilter   # 查看是否成功
 ```
 
-- 配置阿里云yum仓库
+
+
+## 7.  配置K8s.Yum源
 
 ```shell
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
@@ -130,121 +136,46 @@ EOF
 
 
 
+# 安装配置Docker
 
+在所有节点主机上安装 **docker/containerd** 服务，参考[**Docker安装教程**](https://blog.csdn.net/Gusand/article/details/102714104)，并做如下修改
 
-### 8. 配置ipvs功能[???]
-
-_在K8s中kube-proxy有**iptables**和**ipvs**两种代理模型，ipvs性能较高，但需要手动载入ipset和ipvsadm模块_
-
-```shell
-# ⚠️ 系统内核为4.19+时，执行此操作
-yum install -y ipset ipvsadm
-cat <<EOF > /etc/sysconfig/modules/ipvs.modules
-#!/bin/bash
-modprobe -- ip_vs
-modprobe -- ip_vs_rr
-modprobe -- ip_vs_wrr
-modprobe -- ip_vs_sh
-modprobe -- nf_conntrack
-EOF
-
-chmod 755 /etc/sysconfig/modules/ipvs.modules
-bash /etc/sysconfig/modules/ipvs.modules
-lsmod|grep -e ip_vs -e nf_conntrack
-```
+- 配置Docker服务
 
 ```shell
-# ⚠️ 系统内核低于4.19，执行此操作
-yum install -y ipset ipvsadm
-cat <<EOF > /etc/sysconfig/modules/ipvs.modules
-#!/bin/bash
-modprobe -- ip_vs
-modprobe -- ip_vs_rr
-modprobe -- ip_vs_wrr
-modprobe -- ip_vs_sh
-modprobe -- nf_conntrack_ipv4
-nf_conntrack
-EOF
-
-chmod 755 /etc/sysconfig/modules/ipvs.modules
-bash /etc/sysconfig/modules/ipvs.modules 
-lsmod|grep -e ip_vs -e nf_conntrack_ipv4
-```
-```shell
-# 设置下次开机自动加载
-cat > /etc/modules-load.d/ip_vs.conf << EOF 
-ip_vs
-ip_vs_rr
-ip_vs_wrr
-ip_vs_sh
-nf_conntrack_ipv4
-EOF
-```
-
-```shell
-# 最后重启服务器
-reboot
-```
-
-
-
-## 安装containerd服务
-
-在所有节点上安装 **docker/containerd** 服务，参考[**Docker安装教程**](https://blog.csdn.net/Gusand/article/details/102714104)，并做如下修改：
-
-> containerd配置文件为: `/etc/containerd/config.toml`
->
-> docker配置文件为：`/etc/docker/daemon.json`
->
-> containerd的**SystemdCgroup = true** 配置项优先级高于docker 中的**cgroupdriver**。
-
-```shell
-# 停止docker、containerd服务，修改配置
-systemctl stop containerd.service
-cp /etc/containerd/config.toml /etc/containerd/config.toml.bak
-containerd config default > /etc/containerd/config2.toml
-
-sed -i "s#registry.k8s.io/pause#registry.cn-hangzhou.aliyuncs.com/google_containers/pause#g" /etc/containerd/config.toml
-sed -i "s#SystemdCgroup = false#SystemdCgroup = true#g" /etc/containerd/config.toml
-
-
-# 修改sandbox_image 镜像源，1.24以下k8s.gcr.io 、1.25 改成了registry.k8s.io
-sed -i "s#registry.k8s.io/pause#registry.aliyuncs.com/google_containers/pause#g" /etc/containerd/config.toml
-
-
-# containerd 忽略证书验证的配置
-#      [plugins."io.containerd.grpc.v1.cri".registry.configs]
-#        [plugins."io.containerd.grpc.v1.cri".registry.configs."192.168.0.12:8001".tls]
-#          insecure_skip_verify = true
-
-# 镜像加速
-mkdir -p /etc/docker
-tee /etc/docker/daemon.json <<-'EOF'
+cat <<-'EOF' > /etc/docker/daemon.json
 {
   "registry-mirrors": ["https://qclq5rqa.mirror.aliyuncs.com"],
   "exec-opts": ["native.cgroupdriver=systemd"]
 }
 EOF
-
+```
+- 配置Containerd服务
+```shell
+# 重新生成(覆盖)配置文件，并启动SystemdCgroup
+containerd config default > /etc/containerd/config.toml
+sed -i "s#registry.k8s.io/pause#registry.cn-hangzhou.aliyuncs.com/google_containers/pause#g" /etc/containerd/config.toml
+sed -i '/SystemdCgroup/s/false/true/g' /etc/containerd/config.toml
+```
+- 重启服务
+```shell
 systemctl daemon-reload
-systemctl enable --now containerd.service
-systemctl enable --now docker.service
-systemctl enable --now docker.socket
-
-systemctl list-unit-files | grep docker
+systemctl restart containerd.service
+systemctl restart docker.service
+systemctl restart docker.socket
 
 docker info|grep Cgroup
 systemctl status docker.service
 systemctl status containerd.service
 ```
 
+_当前实验版本：Docker：`v20.10.22`；Containerd：`v1.6.18`_
 
 
-## 安装Kubernetes
 
-在所有服务节点上安装**kubeadm,  kubelet和kubectl**。
+# 安装Kubernetes
 
-- 安装K8s服务
+在**所有服务节点**上安装**kubeadm,  kubelet和kubectl**
 
 _kubernetes 1.24+版本之后，docker必须要加装cir-docker,dockershim已经从kubelet中移除。_
 
@@ -255,23 +186,17 @@ _kubernetes 1.24+版本之后，docker必须要加装cir-docker,dockershim已经
 # yum --showduplicates list kubectl --nogpgcheck
 # yum --showduplicates list  cri-tools --nogpgcheck
 
-# OK
-yum install -y kubelet-1.22.6-0 kubeadm-1.22.6-0 kubectl-1.22.6-0 --disableexcludes=kubernetes --nogpgcheck
-
-yum install -y kubelet-1.23.8-0 kubeadm-1.23.8-0 kubectl-1.23.8-0 --disableexcludes=kubernetes --nogpgcheck
-
-# 2023-02-07，经过测试，版本号：1.24.0，同样适用于本文章
-# sudo yum install -y kubelet-1.24.0-0 kubeadm-1.24.0-0 kubectl-1.24.0-0 --disableexcludes=kubernetes --nogpgcheck
-
-# 2023-03-02，经过测试，版本号：1.26.2，同样适用于本文章
 # disableexcludes=kubernetes: 禁掉除了这个kubernetes之外的别的仓库
 yum install -y kubelet-1.26.2-0 kubeadm-1.26.2-0 kubectl-1.26.2-0 --disableexcludes=kubernetes --nogpgcheck
 
-# 安装最新版，生产时不建议
-# sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes --nogpgcheck
-
+# 启动服务
 systemctl daemon-reload
 systemctl enable --now kubelet
+
+# 查看版本
+kubeadm version --output=json
+kubectl version --output=json
+kubelet --version
 
 # 卸载
 # yum -y remove kubeadm kubelet kubectl
@@ -282,36 +207,31 @@ systemctl enable --now kubelet
 # K8s当前还未做初始化，所以会提示"kubelet.service: main process exited, code=exited, status=1/FAILURE"错误,
 # 在后续"kubeadm init"或"kubeadm join"后会自动解决。
 systemctl status kubelet
-journalctl -xefu kubelet
-
-# 查看版本
-kubeadm version --output=yaml
-kubectl version --output=yaml
-kubelet --version
+# journalctl -xefu kubelet
 ```
 
 
 
 
 
-## 配置Master服务
+# 初始化控制平面
+
+> 控制平面(control-plane) 即Master主机
 
 ```shell
 # 查看kubeadm使用的镜像
 kubeadm config images list
 
-# 可预先拉取镜像，或下一步init时自动拉取
+# ⚠️ 可预先拉取镜像，或下一步init时自动拉取
 kubeadm config images pull --image-repository registry.aliyuncs.com/google_containers
-
 docker images|grep google_containers
 ```
 
 ```shell
-kubeadm reset
-rm -fr ~/.kube/  /etc/kubernetes/* var/lib/etcd/*
-
+# 简单初始化
 kubeadm init --image-repository=registry.aliyuncs.com/google_containers
 
+# 自定义初始化
 # kubernetes-version:   指定kubenets版本号，默认值是stable-1
 # apiserver-advertise-address: 指明用Master的哪个interface与Cluster的其他节点通信。
 # pod-network-cidr:     指定Pod网络的范围,10.244.0.0/16即使用flannel网络方案。
@@ -323,37 +243,64 @@ kubeadm init \
   --service-cidr=10.1.0.0/16 \
   --pod-network-cidr=10.244.0.0/16 \
   --v=5
-  
-
-  
-# 🔔 此时，会得到「kubeadm join」的token信息😊😊😊
-
-
 
 # 使用kubectl工具
 mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
 ```
+_初始化成功后输出如下:_
 
+```txt
+Your Kubernetes control-plane has initialized successfully!
 
+To start using your cluster, you need to run the following as a regular user:
 
-## 加入Node节点
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-_在Node节点执行`kubeadm join`命令，将node加入集群。_
+Alternatively, if you are the root user, you can run:
 
-```shell
-# 在master节点获取token，同「kubeadm init」得到的token信息
-kubeadm token create --print-join-command --ttl 0
+  export KUBECONFIG=/etc/kubernetes/admin.conf
 
-kubeadm join 10.0.0.11:6443 --token 05mmas.1kl...dz --discovery-token-ca-cert-hash sha256:16752bf...9c1e2f3c6
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 10.0.0.11:6443 --token pktv1w.ey1kyzfc0mkiks6d --discovery-token-ca-cert-hash sha256:1da76a7330ca8c2f46b0cd23ffa479cc02d5b8ce5fa656ac187dc64d879c8fd8
 ```
 
 
 
-## 部署CNI网络组件
+# 加入Node节点
 
-_Kubernetes支持多种网络插件，如 **flannel、calico、canal**等，这里选择使用「**flannel**」_
+_在Node节点执行`kubeadm join`命令，将node加入集群。_
+
+```shell
+# 提示⚠️：在控制平面(master)上查询Join信息
+kubeadm token create --print-join-command --ttl 0
+
+kubeadm join 10.0.0.11:6443 --token xxx --discovery-token-ca-cert-hash sha256:xxx
+```
+
+_在Master上查看Node信息：_
+
+```txt
+[root@k8s-master ~]# kubectl get nodes
+NAME         STATUS     ROLES                  AGE     VERSION
+k8s-master   NotReady   control-plane,master   21m     v1.22.6
+k8s-node01   NotReady   <none>                 6m13s   v1.22.6
+k8s-node02   NotReady   <none>                 3m55s   v1.22.6
+```
+
+
+
+# 部署CNI网络组件
+
+_Kubernetes支持多种网络组件，如 **flannel、calico、canal**等，这里选择使用「**flannel**」_
 
 ```shell
 # master上操作
@@ -368,10 +315,29 @@ _查看集群健康状态：_
 kubectl get cs
 kubectl cluster-info
 ```
+_示例数据：_
+```txt
+[root@k8s-master ~]# kubectl get pods -n kube-system
+NAME                                 READY   STATUS              RESTARTS   AGE
+coredns-7f6cbbb7b8-2gzbl             0/1     ContainerCreating   0          27m
+coredns-7f6cbbb7b8-jnl8f             0/1     ContainerCreating   0          27m
+etcd-k8s-master                      1/1     Running             0          27m
+kube-apiserver-k8s-master            1/1     Running             0          27m
+kube-controller-manager-k8s-master   1/1     Running             0          27m
+kube-proxy-5p596                     1/1     Running             0          10m
+kube-proxy-r2s2q                     1/1     Running             0          27m
+kube-proxy-rkfsg                     1/1     Running             0          12m
+kube-scheduler-k8s-master            1/1     Running             0          27m
+[root@k8s-master ~]# kubectl get nodes
+NAME         STATUS     ROLES                  AGE   VERSION
+k8s-master   Ready      control-plane,master   28m   v1.22.6
+k8s-node01   NotReady   <none>                 12m   v1.22.6
+k8s-node02   NotReady   <none>                 10m   v1.22.6
+```
 
 
 
-## 测试Nginx服务
+# 测试Nginx服务
 
 ```shell
 [root@k8s-master ~]# kubectl create deployment nginx --image=nginx
@@ -398,7 +364,8 @@ service/nginx        NodePort    10.97.165.25   <none>        80:30211/TCP   4s
 
 
 
-## 总结
+# 常见问题
+
 > 安装异常，可执行`journalctl -xefu kubelet` 查看日志
 
 -   master推荐最小配置为**1核心2G**，否则会出现以下错误！
@@ -408,22 +375,28 @@ service/nginx        NodePort    10.97.165.25   <none>        80:30211/TCP   4s
 [ERROR Mem]: the system RAM (947 MB) is less than the minimum 1700 MB
 ```
 
--   必须配置hostname和hosts，且名称必须对应一致。
+-   必须配置hostname和hosts，且名称必须对应一致 !
 
 ```shell
 [WARNING Hostname]: hostname "XXX" could not be reached
 [WARNING Hostname]: hostname "XXX": lookup vm02 on 114.114.114.114:53: no such host
 ```
 
-- fff
 
-```sh
-    The connection to the server 10.0.0.11:6443 was refused - did you specify the right host or port?
+
+# 附: 下载离线包
+
+```shell
+# 指定版本
+sudo yum install kubelet-1.26.2-0 kubectl-1.26.2-0 kubeadm-1.26.2-0 --downloadonly --downloaddir=./k8s-rpm.v1.26.2
+
+# 最新版本
+sudo yum install kubelet kubectl kubeadm --downloadonly --downloaddir=./k8s-rpm.latest
 ```
 
-​    
 
-## 参考资料
+
+# 参考资料
 
 https://huangzhongde.cn/istio/Chapter2/Chapter2-4.html
 
