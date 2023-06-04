@@ -111,11 +111,14 @@ cat <<EOF >/etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-iptables  = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 net.ipv4.ip_forward                 = 1
+vm.swappiness=0
 EOF
 
-sysctl --system             # 重新加载
-modprobe br_netfilter       # 加载过滤模块
-lsmod | grep br_netfilter   # 查看是否成功
+sysctl --system                   # 重新加载
+modprobe br_netfilter             # 加载过滤模块
+
+sysctl -p /etc/sysctl.d/k8s.conf  #使之生效
+lsmod | grep br_netfilter         # 查看是否成功
 ```
 
 
@@ -152,9 +155,14 @@ EOF
 ```
 - 配置Containerd服务
 ```shell
-# 重新生成(覆盖)配置文件，并启动SystemdCgroup
+# 重新生成(覆盖)配置文件
 containerd config default > /etc/containerd/config.toml
+
+# 将sandbox_image镜像源设置为阿里云google_containers镜像源
+# sed -i "s#registry.k8s.io/pause#registry.aliyuncs.com/google_containers/pause#g" 
 sed -i "s#registry.k8s.io/pause#registry.cn-hangzhou.aliyuncs.com/google_containers/pause#g" /etc/containerd/config.toml
+
+# 并启动SystemdCgroup
 sed -i '/SystemdCgroup/s/false/true/g' /etc/containerd/config.toml
 ```
 - 重启服务
@@ -173,7 +181,7 @@ _当前实验版本：Docker：`v20.10.22`；Containerd：`v1.6.18`_
 
 
 
-# 安装Kubernetes
+# 安装Kubernetes ???
 
 在**所有服务节点**上安装**kubeadm,  kubelet和kubectl**
 
@@ -188,6 +196,11 @@ _kubernetes 1.24+版本之后，docker必须要加装cir-docker,dockershim已经
 
 # disableexcludes=kubernetes: 禁掉除了这个kubernetes之外的别的仓库
 yum install -y kubelet-1.26.2-0 kubeadm-1.26.2-0 kubectl-1.26.2-0 --disableexcludes=kubernetes --nogpgcheck
+
+# 使docker的cgroupdriver与kubelet的cgroup保持一致。
+cat <<EOF > /etc/sysconfig/kubelet
+KUBELET_EXTRA_ARGS="--cgroup-driver=systemd"
+EOF
 
 # 启动服务
 systemctl daemon-reload
@@ -212,11 +225,9 @@ systemctl status kubelet
 
 
 
+# 集群初始化(Master)
 
-
-# 初始化控制平面
-
-> 控制平面(control-plane) 即Master主机
+> 初始化控制平面(control-plane) ,及Master服务。
 
 ```shell
 # 查看kubeadm使用的镜像
@@ -225,6 +236,15 @@ kubeadm config images list
 # ⚠️ 可预先拉取镜像，或下一步init时自动拉取
 kubeadm config images pull --image-repository registry.aliyuncs.com/google_containers
 docker images|grep google_containers
+
+# 或使用docker下载
+docker pull registry.aliyuncs.com/google_containers/kube-apiserver:v1.24.1
+docker pull registry.aliyuncs.com/google_containers/kube-controller-manager:v1.24.1
+docker pull registry.aliyuncs.com/google_containers/kube-scheduler:v1.24.1
+docker pull registry.aliyuncs.com/google_containers/kube-proxy:v1.24.1
+docker pull registry.aliyuncs.com/google_containers/pause:3.7
+docker pull registry.aliyuncs.com/google_containers/etcd:3.5.3-0
+docker pull registry.aliyuncs.com/google_containers/coredns:v1.8.6
 ```
 
 ```shell
@@ -232,10 +252,10 @@ docker images|grep google_containers
 kubeadm init --image-repository=registry.aliyuncs.com/google_containers
 
 # 自定义初始化
-# kubernetes-version:   指定kubenets版本号，默认值是stable-1
+# kubernetes-version:   	   指定kubenets版本号，默认值是stable-1
 # apiserver-advertise-address: 指明用Master的哪个interface与Cluster的其他节点通信。
-# pod-network-cidr:     指定Pod网络的范围,10.244.0.0/16即使用flannel网络方案。
-# control-plane-endpoint:     cluster-endpoint 是映射到该 IP 的自定义 DNS 名称
+# pod-network-cidr:     	   指定Pod网络的范围,10.244.0.0/16即使用flannel网络方案。
+# control-plane-endpoint:      cluster-endpoint 是映射到该IP的自定义DNS名称
 kubeadm init \
   --apiserver-advertise-address=$(hostname -i) \
   --image-repository registry.aliyuncs.com/google_containers \
@@ -300,7 +320,9 @@ k8s-node02   NotReady   <none>                 3m55s   v1.22.6
 
 # 部署CNI网络组件
 
-_Kubernetes支持多种网络组件，如 **flannel、calico、canal**等，这里选择使用「**flannel**」_
+_Kubernetes支持多种网络组件，如 **flannel、calico、canal**等。_
+
+## flannel
 
 ```shell
 # master上操作
@@ -337,7 +359,48 @@ k8s-node02   NotReady   <none>                 10m   v1.22.6
 
 
 
+## calico
+
+https://www.yuque.com/xuxiaowei-com-cn/gitlab-k8s/k8s-install?singleDoc=#B7zUb
+
+```shell
+# 下载
+wget --no-check-certificate https://projectcalico.docs.tigera.io/archive/v3.25/manifests/calico.yaml
+# 修改 calico.yaml 文件
+vim calico.yaml
+```
+
+```txt
+# 在 - name: CLUSTER_TYPE 下方添加如下内容
+- name: CLUSTER_TYPE
+  value: "k8s,bgp"
+  # 下方为新增内容
+- name: IP_AUTODETECTION_METHOD
+  value: "interface=网卡名称"
+
+# INTERFACE_NAME=ens33
+# sed -i '/k8s,bgp/a \            - name: IP_AUTODETECTION_METHOD\n              value: "interface=INTERFACE_NAME"' calico.yaml
+# sed -i "s#INTERFACE_NAME#$INTERFACE_NAME#g" calico.yaml
+```
+
+```shell
+# 配置网络
+kubectl apply -f calico.yaml
+```
+
+```shell
+[root@k8s ~]# kubectl get nodes -o wide
+NAME            STATUS     ROLES           AGE     VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE                KERNEL-VERSION           CONTAINER-RUNTIME
+centos-7-9-16   NotReady   <none>          7m58s   v1.25.3   192.168.0.18    <none>        CentOS Linux 7 (Core)   3.10.0-1160.el7.x86_64   containerd://1.6.9
+k8s             NotReady   control-plane   10m     v1.25.3   192.168.80.60   <none>        CentOS Linux 7 (Core)   3.10.0-1160.el7.x86_64   containerd://1.6.9
+[root@k8s ~]#
+```
+
+
+
 # 测试Nginx服务
+
+https://www.yuque.com/xuxiaowei-com-cn/gitlab-k8s/k8s-install?singleDoc=#B7zUb
 
 ```shell
 [root@k8s-master ~]# kubectl create deployment nginx --image=nginx
@@ -405,4 +468,3 @@ https://www.cnblogs.com/xuweiweiwoaini/p/13884112.html
 https://gitee.com/ylp657/kubernetes/tree/master#kubernetes
 
 https://github.com/liuyi01/kubernetes-starter
-

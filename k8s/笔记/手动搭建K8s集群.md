@@ -132,7 +132,7 @@ EOF
 
 
 
-### 8. 配置ipvs功能[???]
+### 8. 配置ipvs功能
 
 _在K8s中kube-proxy有**iptables**和**ipvs**两种代理模型，ipvs性能较高，但需要手动载入ipset和ipvsadm模块_
 
