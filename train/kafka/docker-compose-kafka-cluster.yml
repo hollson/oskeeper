@@ -22,8 +22,8 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.2.3:9093 ## 绑定发布订阅的端口。修改:宿主机IP
       KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2181,zoo3:2181"
     volumes:
-      - "./kafka/kafka1/docker.sock:/var/run/docker.sock"
-      - "./kafka/kafka1/data/:/kafka"
+      - "./.data/kafka1/docker.sock:/var/run/docker.sock"
+      - "./.data/kafka1/data/:/kafka"
     networks:
       - docker_net
 
@@ -44,8 +44,8 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.2.3:9094 ## 修改:宿主机IP
       KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2181,zoo3:2181"
     volumes:
-      - "./kafka/kafka2/docker.sock:/var/run/docker.sock"
-      - "./kafka/kafka2/data/:/kafka"
+      - "./.data/kafka2/docker.sock:/var/run/docker.sock"
+      - "./.data/kafka2/data/:/kafka"
     networks:
       - docker_net
 
@@ -66,11 +66,12 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.2.3:9095 ## 修改:宿主机IP
       KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2181,zoo3:2181"
     volumes:
-      - "./kafka/kafka3/docker.sock:/var/run/docker.sock"
-      - "./kafka/kafka3/data/:/kafka"
+      - "./.data/kafka3/docker.sock:/var/run/docker.sock"
+      - "./.data/kafka3/data/:/kafka"
     networks:
       - docker_net
 
+  # 可视化工具1
   kafka-manager:
     image: sheepkiller/kafka-manager:latest
     restart: unless-stopped
@@ -91,3 +92,16 @@ services:
       TZ: CST-8
     networks:
       - docker_net
+
+  # 可视化工具2
+  # akhq:
+  #   image: tchiotludo/akhq:latest
+  #   container_name: kafka-akhq
+  #   hostname: kafka-akhq
+  #   ports:
+  #     - "8987:8080"
+  #   environment:
+  #     - AKHQ_BOOTSTRAP_SERVERS=kafka:9092
+  #     - AKHQ_JVM_OPTS=-Xmx256M
+  #   networks:
+  #     - docker_net
