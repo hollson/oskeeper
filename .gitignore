@@ -8,4 +8,5 @@ target
 tmp
 temp
 logs
+.data
 release
