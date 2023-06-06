@@ -11,9 +11,3 @@ docker-compose -f docker-compose-kafka-cluster.yml up -d
 # Kafka可视化管理平台
 # https://gitcode.net/mirrors/tchiotludo/akhq?utm_source=csdn_github_accelerator
 # https://akhq.io/docs/configuration/docker.html
-
-
-docker run -d \
-    -p 18080:8080 \
-    -v /tmp/application.yml:/app/application.yml \
-    tchiotludo/akhq

@@ -5,54 +5,54 @@ networks:
     external: true
 
 services:
-  zoo1:
+  zk1:
     image: zookeeper
     restart: unless-stopped
-    hostname: zoo1
-    container_name: zoo1
+    hostname: zk1
+    container_name: zk1
     ports:
       - 2181:2181
     environment:
       ZOO_MY_ID: 1
       # 四字命令(The Four Letter Words)白名单
       ZOO_4LW_COMMANDS_WHITELIST: "stat,conf,mntr,envi,cons,srvr,ruok"
-      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=zk2:2888:3888;2181 server.3=zk3:2888:3888;2181
     volumes:
-      - ./.data/zoo1/data:/data
-      - ./.data/zoo1/datalog:/datalog
+      - ./.data/zk1/data:/data
+      - ./.data/zk1/datalog:/datalog
     networks:
       - docker_net
 
-  zoo2:
+  zk2:
     image: zookeeper
     restart: unless-stopped
-    hostname: zoo2
-    container_name: zoo2
+    hostname: zk2
+    container_name: zk2
     ports:
       - 2182:2181
     environment:
       ZOO_MY_ID: 2
       ZOO_4LW_COMMANDS_WHITELIST: "stat,conf,mntr,envi,cons,srvr,ruok"
-      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=0.0.0.0:2888:3888;2181 server.3=zoo3:2888:3888;2181
+      ZOO_SERVERS: server.1=zk1:2888:3888;2181 server.2=0.0.0.0:2888:3888;2181 server.3=zk3:2888:3888;2181
     volumes:
-      - ./.data/zoo2/data:/data
-      - ./.data/zoo2/datalog:/datalog
+      - ./.data/zk2/data:/data
+      - ./.data/zk2/datalog:/datalog
     networks:
       - docker_net
 
-  zoo3:
+  zk3:
     image: zookeeper
     restart: unless-stopped
-    hostname: zoo3
-    container_name: zoo3
+    hostname: zk3
+    container_name: zk3
     ports:
       - 2183:2181
     environment:
       ZOO_MY_ID: 3
       ZOO_4LW_COMMANDS_WHITELIST: "stat,conf,mntr,envi,cons,srvr,ruok"
-      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=0.0.0.0:2888:3888;2181
+      ZOO_SERVERS: server.1=zk1:2888:3888;2181 server.2=zk2:2888:3888;2181 server.3=0.0.0.0:2888:3888;2181
     volumes:
-      - ./.data/zoo3/data:/data
-      - ./.data/zoo3/datalog:/datalog
+      - ./.data/zk3/data:/data
+      - ./.data/zk3/datalog:/datalog
     networks:
       - docker_net

@@ -5,69 +5,69 @@ networks:
     external: true
 
 services:
-  kafka1:
+  kfk1:
     image: wurstmeister/kafka
     restart: unless-stopped
-    container_name: kafka1
+    container_name: kfk1
     ports:
-      - "9093:9092"
+      - "19092:9092"
     external_links:
-      - zoo1
-      - zoo2
-      - zoo3
+      - zk1
+      - zk2
+      - zk3
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ADVERTISED_HOST_NAME: 192.168.2.3 ## 修改:宿主机IP
-      KAFKA_ADVERTISED_PORT: 9093 ## 修改:宿主机映射port
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.2.3:9093 ## 绑定发布订阅的端口。修改:宿主机IP
-      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2181,zoo3:2181"
+      KAFKA_ADVERTISED_PORT: 19092 ## 修改:宿主机映射port
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.2.3:19092 ## 绑定发布订阅的端口。修改:宿主机IP
+      KAFKA_ZOOKEEPER_CONNECT: "zk1:2181,zk2:2181,zk3:2181"
     volumes:
-      - "./.data/kafka1/docker.sock:/var/run/docker.sock"
-      - "./.data/kafka1/data/:/kafka"
+      - "./.data/kfk1/docker.sock:/var/run/docker.sock"
+      - "./.data/kfk1/data/:/kafka"
     networks:
       - docker_net
 
-  kafka2:
+  kfk2:
     image: wurstmeister/kafka
     restart: unless-stopped
-    container_name: kafka2
+    container_name: kfk2
     ports:
-      - "9094:9092"
+      - "19093:9092"
     external_links:
-      - zoo1
-      - zoo2
-      - zoo3
+      - zk1
+      - zk2
+      - zk3
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_ADVERTISED_HOST_NAME: 192.168.2.3 ## 修改:宿主机IP
-      KAFKA_ADVERTISED_PORT: 9094 ## 修改:宿主机映射port
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.2.3:9094 ## 修改:宿主机IP
-      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2181,zoo3:2181"
+      KAFKA_ADVERTISED_PORT: 19093 ## 修改:宿主机映射port
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.2.3:19093 ## 修改:宿主机IP
+      KAFKA_ZOOKEEPER_CONNECT: "zk1:2181,zk2:2181,zk3:2181"
     volumes:
-      - "./.data/kafka2/docker.sock:/var/run/docker.sock"
-      - "./.data/kafka2/data/:/kafka"
+      - "./.data/kfk2/docker.sock:/var/run/docker.sock"
+      - "./.data/kfk2/data/:/kafka"
     networks:
       - docker_net
 
-  kafka3:
+  kfk3:
     image: wurstmeister/kafka
     restart: unless-stopped
-    container_name: kafka3
+    container_name: kfk3
     ports:
-      - "9095:9092"
+      - "19094:9092"
     external_links:
-      - zoo1
-      - zoo2
-      - zoo3
+      - zk1
+      - zk2
+      - zk3
     environment:
       KAFKA_BROKER_ID: 3
       KAFKA_ADVERTISED_HOST_NAME: 192.168.2.3 ## 修改:宿主机IP
-      KAFKA_ADVERTISED_PORT: 9095 ## 修改:宿主机映射port
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.2.3:9095 ## 修改:宿主机IP
-      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2181,zoo3:2181"
+      KAFKA_ADVERTISED_PORT: 19094 ## 修改:宿主机映射port
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.2.3:19094 ## 修改:宿主机IP
+      KAFKA_ZOOKEEPER_CONNECT: "zk1:2181,zk2:2181,zk3:2181"
     volumes:
-      - "./.data/kafka3/docker.sock:/var/run/docker.sock"
-      - "./.data/kafka3/data/:/kafka"
+      - "./.data/kfk3/docker.sock:/var/run/docker.sock"
+      - "./.data/kfk3/data/:/kafka"
     networks:
       - docker_net
 
@@ -80,15 +80,15 @@ services:
     ports:
       - "9000:9000"
     links: # 连接本compose文件创建的container
-      - kafka1
-      - kafka2
-      - kafka3
+      - kfk1
+      - kfk2
+      - kfk3
     external_links: # 连接本compose文件以外的container
-      - zoo1
-      - zoo2
-      - zoo3
+      - zk1
+      - zk2
+      - zk3
     environment:
-      ZK_HOSTS: zoo1:2181,zoo2:2181,zoo3:2181 ## 修改:宿主机IP
+      ZK_HOSTS: zk1:2181,zk2:2181,zk3:2181 ## 修改:宿主机IP
       TZ: CST-8
     networks:
       - docker_net
