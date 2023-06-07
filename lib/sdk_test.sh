@@ -143,6 +143,10 @@ function testSysInfo() {
   sysInfo
 }
 
+function testIp4() {
+  ip4
+}
+
 function testSysInspect() {
   sysInspect
 }

@@ -485,6 +485,11 @@ function gitTag() {
 # 127: 命令不存在
 function unitTest() {
   # set +e
+  if ! [[ $1 =~ ^test[A-Z] ]]; then
+    printf "\033[1;31m[UT]\t\t⛔️\t\t\033[0m \033[30;41m%-20s\033[0m \t\t 测试函数不存在或不符合命名规范\n" "$1"
+    return 126
+  fi
+
   if [[ "$TEST_VERBOSE" == "on" || "$TestVerbose" == "on" ]]; then
     $1
   else
@@ -512,7 +517,7 @@ function unitTest() {
 function unitList() {
   # grep -oE "^\s*function\s+test[A-Z][a-zA-Z]+|^\s*test[A-Z][a-zA-Z]+\s*\(\s*\)" "$0" | grep -oE "test[A-Z][a-zA-Z]+"
   # typeset -F | awk '/test[A-Z][a-zA-Z]+/ && !/testList/ {print $3}'
-  declare -F | awk '/test[A-Z][a-zA-Z]+/ && !/testList/ {print $3}'
+  declare -F | awk '/test[A-Z][a-zA-Z0-9]+/ && !/testList/ {print $3}'
 }
 
 # 启动单元测试
@@ -574,7 +579,7 @@ function unitStart() {
 function list() {
   echox magenta " 函数\t  |   说明"
   echox magenta "----------|-----------"
-  sed -n "s/^#FUN//p" "$0" | column -t -s '|' | sort | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
+  sed -n "s/^#FUN//p" "$0" | column -t -s '|' | sort | grep --color=auto "^[[:space:]][a-zA-Z0-9_]\+[[:space:]]"
   echo
   echox BLUE 1 "执行某个函数(部分支持), 如: ./$(basename "$0") exec arch\n"
 }
@@ -621,7 +626,7 @@ function help() {
     echox magenta " 命令\t 简称\t说明"
   fi
 
-  sed -n "s/^#CMD//p" "$0" | column -t -s '|' | grep --color=auto "^[[:space:]][a-zA-Z_]\+[[:space:]]"
+  sed -n "s/^#CMD//p" "$0" | column -t -s '|' | grep --color=auto "^[[:space:]][a-zA-Z0-9_]\+[[:space:]]"
   echo
   echo -e "更多详情，请参考 https://github.com/hollson\n"
 }
