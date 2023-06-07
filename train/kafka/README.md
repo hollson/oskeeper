@@ -20,8 +20,8 @@ alias kafka-configs.sh='kafka-configs.sh --zookeeper zk1:2181,zk2:2181,zk3:2181'
 # 查看topic列表
 kafka-topics.sh --list
 
-# 创建topic
-kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic test
+# 创建topic(3个副本3个分区)
+kafka-topics.sh --create --replication-factor 3 --partitions 3 --topic test
 
 # 查看topic详情
 kafka-topics.sh --describe --topic test
@@ -55,63 +55,72 @@ kafka-consumer-groups.sh --bootstrap-server kfk1:9092 --group test-group --descr
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 ```shell
-# 创建3副本，3分区的Topic
-kafka-topics.sh --create --zookeeper 10.0.0.11:2181 --replication-factor 3 --partitions 3 --topic mytest
+kafka-topics.sh --create --replication-factor 1 --partitions 2 --topic testA
+kafka-topics.sh --create --replication-factor 2 --partitions 2 --topic testB
+kafka-topics.sh --create --replication-factor 3 --partitions 3 --topic testC
 
-# 查看Topic
-kafka-topics.sh --describe --zookeeper 10.0.0.11:2181 --topic mytest
-Topic: mytest	TopicId: V53dtJUDSYqZTxC8N2kj5w	PartitionCount: 3	ReplicationFactor: 3	Configs:
-	Topic: mytest	Partition: 0	Leader: 1	Replicas: 1,2,0	Isr: 1,2,0
-	Topic: mytest	Partition: 1	Leader: 2	Replicas: 2,0,1	Isr: 2,0,1
-	Topic: mytest	Partition: 2	Leader: 0	Replicas: 0,1,2	Isr: 0,1,2
-
-# 生产者
-kafka-console-producer.sh --broker-list 10.0.0.11:9092,10.0.0.11:9093,10.0.0.11:9094 --topic mytest
-
-# 消费者
-kafka-console-consumer.sh --bootstrap-server 10.0.0.11:9092,10.0.0.11:9093,10.0.0.11:9094 --from-beginning --topic mytest
-
+kafka-topics.sh --describe --topic testA
+kafka-topics.sh --describe --topic testB
+kafka-topics.sh --describe --topic testC
 ```
 
 
 
-```shell
+## 在Docker Compose读取命令行参数和环境变量。
 
-Kafka提供了多种API操作，下面是一些常用的命令：
+1. 读取命令行参数
 
-1. 创建主题(topic)：`docker exec kafka1 kafka-topics.sh --create --zookeeper zk1:2181 --replication-factor 1 --partitions 1 --topic test_topic`
+可以使用`${VAR_NAME}`语法来读取命令行参数，其中`VAR_NAME`是命令行参数的名称。例如，假设我们有一个`docker-compose.yml`文件，需要在启动时传递一个`PORT`参数，可以在命令行中使用以下命令：
 
-2. 查看主题列表：`docker exec kafka1 kafka-topics.sh --list --zookeeper zk1:2181`
-
-3. 发送消息：`docker exec kafka1 kafka-console-producer.sh --broker-list localhost:9092 --topic test_topic`
-
-4. 消费消息：`docker exec kafka1 kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test_topic --from-beginning`
-
-5. 查看分区信息：`docker exec kafka1 kafka-topics.sh --describe --zookeeper zk1:2181 --topic test_topic`
-
-6. 删除主题：`docker exec kafka1 kafka-topics.sh --delete --zookeeper zk1:2181 --topic test_topic`
-
-7. 修改主题配置：`docker exec kafka1 kafka-configs.sh --zookeeper zk1:2181 --entity-type topics --entity-name test_topic --alter --add-config max.message.bytes=64000`
-
-8. 查看消费者组信息：`docker exec kafka1 kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group test_group`
-
-9. 重置消费者偏移量：`docker exec kafka1 kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group test_group --reset-offsets --to-earliest --execute --topic test_topic`
+```
+docker-compose up --build --port=8080
 ```
 
-这些命令只是常用的一部分，Kafka还提供了更多的API操作，您可以查看Kafka文档来了解更多信息。
+然后，在`docker-compose.yml`文件中可以使用`${PORT}`语法来读取这个参数，例如：
+
+```yaml
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "${PORT}:80"
+```
+
+这样就可以将命令行传递的端口号赋值给`web`服务的端口号。
+
+2. 读取环境变量
+
+可以使用`${ENV_VAR}`语法来读取环境变量，其中`ENV_VAR`是环境变量的名称。例如，假设我们有一个环境变量`DB_PASSWORD`，可以在`docker-compose.yml`文件中使用以下语法来读取这个变量：
+
+```yaml
+version: '3'
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+```
+
+这样就可以将环境变量`DB_PASSWORD`的值作为MySQL的root密码。
+
+如果环境变量不存在，可以使用`${VAR_NAME:-default}`语法来设置默认值，例如：
+
+```yaml
+version: '3'
+services:
+  web:
+    build: .
+    environment:
+      APP_PORT: "${PORT:-8080}"
+    ports:
+      - "${APP_PORT}:80"
+```
+
+这样，如果没有传递`PORT`参数，就会使用默认值`8080`来作为`APP_PORT`环境变量的值。
+
+
 
 
 

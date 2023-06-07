@@ -1,3 +1,7 @@
+# 文件名： docker-compose-kafka-cluster.yml
+#docker-compose -f docker-compose-kafka-cluster.yml down
+# docker-compose -f docker-compose-kafka-cluster.yml up -d
+
 version: "3.7"
 
 networks:
@@ -17,9 +21,9 @@ services:
       - zk3
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ADVERTISED_HOST_NAME: 192.168.2.3 ## 修改:宿主机IP
-      KAFKA_ADVERTISED_PORT: 19092 ## 修改:宿主机映射port
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.2.3:19092 ## 绑定发布订阅的端口。修改:宿主机IP
+      KAFKA_ADVERTISED_HOST_NAME: 192.168.2.3 # 修改:宿主机IP
+      KAFKA_ADVERTISED_PORT: 19092 # 修改:宿主机映射port
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.2.3:19092 # 绑定发布订阅的端口。修改:宿主机IP
       KAFKA_ZOOKEEPER_CONNECT: "zk1:2181,zk2:2181,zk3:2181"
     volumes:
       - "./.data/kfk1/docker.sock:/var/run/docker.sock"
@@ -39,9 +43,9 @@ services:
       - zk3
     environment:
       KAFKA_BROKER_ID: 2
-      KAFKA_ADVERTISED_HOST_NAME: 192.168.2.3 ## 修改:宿主机IP
-      KAFKA_ADVERTISED_PORT: 19093 ## 修改:宿主机映射port
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.2.3:19093 ## 修改:宿主机IP
+      KAFKA_ADVERTISED_HOST_NAME: 192.168.2.3 # 修改:宿主机IP
+      KAFKA_ADVERTISED_PORT: 19093 # 修改:宿主机映射port
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.2.3:19093 # 修改:宿主机IP
       KAFKA_ZOOKEEPER_CONNECT: "zk1:2181,zk2:2181,zk3:2181"
     volumes:
       - "./.data/kfk2/docker.sock:/var/run/docker.sock"
@@ -61,9 +65,9 @@ services:
       - zk3
     environment:
       KAFKA_BROKER_ID: 3
-      KAFKA_ADVERTISED_HOST_NAME: 192.168.2.3 ## 修改:宿主机IP
-      KAFKA_ADVERTISED_PORT: 19094 ## 修改:宿主机映射port
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.2.3:19094 ## 修改:宿主机IP
+      KAFKA_ADVERTISED_HOST_NAME: 192.168.2.3 # 修改:宿主机IP
+      KAFKA_ADVERTISED_PORT: 19094 # 修改:宿主机映射port
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.2.3:19094 # 修改:宿主机IP
       KAFKA_ZOOKEEPER_CONNECT: "zk1:2181,zk2:2181,zk3:2181"
     volumes:
       - "./.data/kfk3/docker.sock:/var/run/docker.sock"
