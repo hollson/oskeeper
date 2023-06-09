@@ -303,6 +303,7 @@ function iniParser() {
 
 #FUN jsonParser|解析json文件
 # jsonParser jsonText key [defaultValue]
+# 🚫 对嵌套对象的处理不太友好，建议使用jq命令
 function jsonParser() {
   fileOrTxt=$1
   [[ $# -ge 2 ]] || return 1
