@@ -1,7 +1,7 @@
 ## 安装XRay
 
 ```shell
-curl -sSL https://raw.githubusercontent.com/hollson/oskeeper/master/xray/xray.sh|bash
+curl -sSLO https://raw.githubusercontent.com/hollson/oskeeper/master/xray/xray.sh|bash
 ```
 
 
