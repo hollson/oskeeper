@@ -1,6 +1,6 @@
 #!/bin/bash
 # xray一键安装脚本
-# Author: hijk<https://hijk.art>
+# Author: hijk<https://github.com/hijkpw>
 
 RED="\033[31m"    # Error message
 GREEN="\033[32m"  # Success message
