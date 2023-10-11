@@ -6,15 +6,16 @@ WORKDIR /app
 LABEL Maintainer=ShongSheng
 ENV GOPROXY https://goproxy.cn,direct
 COPY . .
-RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o hello .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o hello .
 
 # 第二阶段：将Go项目打包进apline
 FROM scratch
 WORKDIR /app
 ADD ./zoneinfo/Shanghai /usr/share/zoneinfo/Asia/Shanghai
 ENV TZ Asia/Shanghai
+ENV GIT_COMMIT $(git rev-parse --short HEAD)
 COPY --from=builder /app/hello .
-EXPOSE 80
+EXPOSE 80 443
 CMD ["./hello"]
 
 # 构建镜像，运行容器,验证服务
