@@ -14,9 +14,3 @@ FROM nginx:alpine-slim
 COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
-
-
-# 构建镜像，运行容器
-# docker build -t hello_vue:1.0 .
-# docker run -p 8080:80 --name hello_vue  -d  hello_vue:1.0
-# curl http://localhost:8080

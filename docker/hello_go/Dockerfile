@@ -13,12 +13,8 @@ FROM scratch
 WORKDIR /app
 ADD ./zoneinfo/Shanghai /usr/share/zoneinfo/Asia/Shanghai
 ENV TZ Asia/Shanghai
-ENV GIT_COMMIT $(git rev-parse --short HEAD)
+# 最后一次版本提交记录
+ENV COMMIT $(git rev-parse --short HEAD)
 COPY --from=builder /app/hello .
 EXPOSE 80 443
 CMD ["./hello"]
-
-# 构建镜像，运行容器,验证服务
-# docker build -t hello_go:1.0 .
-# docker run -d --name hello_go -p 1080:80 hello_go:1.0
-# curl http://localhost:1080
