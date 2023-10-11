@@ -1,13 +1,18 @@
 # 第一阶段：构建Go项目
-FROM golang:1.21 as builder
+# docker run -ti --rm golang:alpine go version
+# -s:去掉符号表,-w:去掉调试信息(不能gdb调试)
+FROM golang:alpine as builder
 WORKDIR /app
+LABEL Maintainer=ShongSheng
+ENV GOPROXY https://goproxy.cn,direct
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o hello .
+RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o hello .
 
 # 第二阶段：将Go项目打包进apline
-FROM alpine:latest  
+FROM scratch
 WORKDIR /app
 COPY --from=builder /app/hello .
+EXPOSE 80
 CMD ["./hello"]
 
 # 构建镜像，运行容器,验证服务
