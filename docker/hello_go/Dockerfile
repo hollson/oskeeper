@@ -11,6 +11,8 @@ RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o hello .
 # 第二阶段：将Go项目打包进apline
 FROM scratch
 WORKDIR /app
+ADD ./zoneinfo/Shanghai /usr/share/zoneinfo/Asia/Shanghai
+ENV TZ Asia/Shanghai
 COPY --from=builder /app/hello .
 EXPOSE 80
 CMD ["./hello"]
