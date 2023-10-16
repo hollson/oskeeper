@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "GQy+cM0+kt8YevdissHtZ4mMqnclbghbSI5XE1tDtcPWmmVYfMdgf42lc4fGiTMoA2LuzzSZQsQk9cT/UuNpSQ==",
+  "dgSpecHash": "hNoP2KbaW4TsyUx3lwnNM6cSqS5RwbbHp9mZSMqzvXXWRXjQjyj6xtS3jyhsbqZ0zzihrw8MPg9rBIJiP2uXZA==",
   "success": true,
   "projectFilePath": "D:\\Github\\oskeeper\\docker\\hello_dotnet\\HelloDotnet\\HelloDotnet.csproj",
   "expectedPackageFiles": [

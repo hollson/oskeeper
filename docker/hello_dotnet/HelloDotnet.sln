@@ -3,7 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloDotnet", "HelloDotnet\HelloDotnet.csproj", "{9229566D-3268-4083-A82F-5668113CD7EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloDotnet", "HelloDotnet\HelloDotnet.csproj", "{9229566D-3268-4083-A82F-5668113CD7EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{C452BEE0-DC69-4403-AF2E-6C4A795B2D70}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项目", "解决方案项目", "{D4F7D060-9F57-451C-80E0-CA2338CC1CC0}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +22,10 @@ Global
 		{9229566D-3268-4083-A82F-5668113CD7EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9229566D-3268-4083-A82F-5668113CD7EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9229566D-3268-4083-A82F-5668113CD7EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C452BEE0-DC69-4403-AF2E-6C4A795B2D70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C452BEE0-DC69-4403-AF2E-6C4A795B2D70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C452BEE0-DC69-4403-AF2E-6C4A795B2D70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C452BEE0-DC69-4403-AF2E-6C4A795B2D70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

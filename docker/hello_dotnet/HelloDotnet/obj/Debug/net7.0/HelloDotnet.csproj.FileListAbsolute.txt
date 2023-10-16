@@ -31,3 +31,13 @@ D:\Github\oskeeper\docker\hello_dotnet\HelloDotnet\obj\Debug\net7.0\refint\Hello
 D:\Github\oskeeper\docker\hello_dotnet\HelloDotnet\obj\Debug\net7.0\HelloDotnet.pdb
 D:\Github\oskeeper\docker\hello_dotnet\HelloDotnet\obj\Debug\net7.0\HelloDotnet.genruntimeconfig.cache
 D:\Github\oskeeper\docker\hello_dotnet\HelloDotnet\obj\Debug\net7.0\ref\HelloDotnet.dll
+D:\Github\oskeeper\docker\hello_dotnet\HelloDotnet\bin\Debug\net7.0\HelloDotnet.xml
+D:\Github\oskeeper\docker\hello_dotnet\HelloDotnet\obj\Debug\net7.0\HelloDotnet.xml
+D:\Github\oskeeper\docker\hello_dotnet\HelloDotnet\bin\Debug\net7.0\Utils.dll
+D:\Github\oskeeper\docker\hello_dotnet\HelloDotnet\bin\Debug\net7.0\Utils.pdb
+D:\Github\oskeeper\docker\hello_dotnet\HelloDotnet\bin\Debug\net7.0\Utils.xml
+D:\Github\oskeeper\docker\hello_dotnet\HelloDotnet\bin\Debug\net7.0\app\publish\web.config
+D:\Github\oskeeper\docker\hello_dotnet\HelloDotnet\bin\Debug\net7.0\app\publish\appsettings.Development.json
+D:\Github\oskeeper\docker\hello_dotnet\HelloDotnet\bin\Debug\net7.0\app\publish\appsettings.json
+D:\Github\oskeeper\docker\hello_dotnet\HelloDotnet\bin\Debug\net7.0\app\publish\HelloDotnet.deps.json
+D:\Github\oskeeper\docker\hello_dotnet\HelloDotnet\bin\Debug\net7.0\app\publish\HelloDotnet.runtimeconfig.json
