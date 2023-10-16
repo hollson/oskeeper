@@ -7,9 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloDotnet", "HelloDotnet\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{C452BEE0-DC69-4403-AF2E-6C4A795B2D70}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项目", "解决方案项目", "{D4F7D060-9F57-451C-80E0-CA2338CC1CC0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{44592421-EC99-49D8-8084-0A639FD8DEFA}"
 	ProjectSection(SolutionItems) = preProject
 		Dockerfile = Dockerfile
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global
