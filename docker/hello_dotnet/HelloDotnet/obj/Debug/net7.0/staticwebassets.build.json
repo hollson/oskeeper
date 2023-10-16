@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "vqOq9PqjY7RvLWLGaQCVw70/3uUfqPzKsEw3zN7fG3I=",
+  "Source": "HelloDotnet",
+  "BasePath": "_content/HelloDotnet",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
