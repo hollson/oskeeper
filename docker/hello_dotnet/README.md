@@ -4,7 +4,7 @@ Dotnet项目镜像构建示例，可用于CICD
 <br/>
 
 ## 构建镜像
-> 
+
 ```shell
 docker build -t hello_dotnet:1.0 .
 docker run -d --name hello_dotnet -p 1080:80 hello_dotnet:1.0
