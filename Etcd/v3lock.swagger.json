@@ -1,0 +1,187 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "server/etcdserver/api/v3lock/v3lockpb/v3lock.proto",
+    "version": "未设置版本"
+  },
+  "tags": [
+    {
+      "name": "Lock"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v3/lock/lock": {
+      "post": {
+        "summary": "在给定的命名锁上获取分布式共享锁。\n成功时，将返回一个唯一的键，只要持有者持有锁，这个键就存在。此键可结合事务使用，以确保在持有锁所有权期间安全地更新 etcd。锁将一直保持，直到调用 Unlock 释放该键或与其关联的租约到期。",
+        "operationId": "Lock_Lock",
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "schema": {
+              "$ref": "#/definitions/v3lockpbLockResponse"
+            }
+          },
+          "default": {
+            "description": "出现意外错误。",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v3lockpbLockRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Lock"
+        ]
+      }
+    },
+    "/v3/lock/unlock": {
+      "post": {
+        "summary": "通过 Unlock 接受 Lock 返回的键，并释放对锁的占用。接下来在等待锁的 Lock 调用将被唤醒并获得锁的所有权。",
+        "operationId": "Lock_Unlock",
+        "responses": {
+          "200": {
+            "description": "请求成功。",
+            "schema": {
+              "$ref": "#/definitions/v3lockpbUnlockResponse"
+            }
+          },
+          "default": {
+            "description": "出现意外错误。",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v3lockpbUnlockRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Lock"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "etcdserverpbResponseHeader": {
+      "type": "object",
+      "properties": {
+        "cluster_id": {
+          "type": "string",
+          "format": "uint64",
+          "description": "cluster_id 是发送响应的集群的 ID。"
+        },
+        "member_id": {
+          "type": "string",
+          "format": "uint64",
+          "description": "member_id 是发送响应的成员的 ID。"
+        },
+        "revision": {
+          "type": "string",
+          "format": "int64",
+          "description": "revision 是请求应用时的键值存储修订版本，在不涉及键值存储的调用中为未设置（因此为0）。对于关于监视进度的响应，header.revision 指示进度。保证在该流中接收到的所有未来事件具有高于 header.revision 的修订版本号。"
+        },
+        "raft_term": {
+          "type": "string",
+          "format": "uint64",
+          "description": "raft_term 是请求应用时的 Raft 任期。"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v3lockpbLockRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "format": "byte",
+          "description": "name 是要获取的分布式共享锁的标识符。"
+        },
+        "lease": {
+          "type": "string",
+          "format": "int64",
+          "description": "lease 是将附加到锁的所有权的租约的 ID。如果租约过期或被撤销并且当前持有锁，则自动释放锁。对于使用相同租约的 Lock 调用，将视为单次获取；使用相同租约两次加锁是无操作的。"
+        }
+      }
+    },
+    "v3lockpbLockResponse": {
+      "type": "object",
+      "properties": {
+        "header": {
+          "$ref": "#/definitions/etcdserverpbResponseHeader"
+        },
+        "key": {
+          "type": "string",
+          "format": "byte",
+          "description": "key 是在持有锁的调用者拥有锁的期间在 etcd 上存在的键。用户不应修改此键，否则锁可能表现出未定义的行为。"
+        }
+      }
+    },
+    "v3lockpbUnlockRequest": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "format": "byte",
+          "description": "key 是由 Lock 授予的锁所有权键。"
+        }
+      }
+    },
+    "v3lockpbUnlockResponse": {
+      "type": "object",
+      "properties": {
+        "header": {
+          "$ref": "#/definitions/etcdserverpbResponseHeader"
+        }
+      }
+    }
+  }
+}

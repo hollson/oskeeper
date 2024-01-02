@@ -1,0 +1,402 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "server/etcdserver/api/v3election/v3electionpb/v3election.proto",
+        "version": "版本未设置"
+    },
+    "tags": [
+        {
+            "name": "选举"
+        }
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/v3/election/campaign": {
+            "post": {
+                "summary": "在选举中等待获取领导地位，如果成功返回一个表示领导地位的LeaderKey。LeaderKey可以用于在选举上发布新值、在仍持有领导权的情况下事务性地保护API请求，并从选举中辞职。",
+                "operationId": "选举_竞选",
+                "responses": {
+                    "200": {
+                        "description": "成功的响应。",
+                        "schema": {
+                            "$ref": "#/definitions/v3electionpbCampaignResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "意外的错误响应。",
+                        "schema": {
+                            "$ref": "#/definitions/rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v3electionpbCampaignRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "选举"
+                ]
+            }
+        },
+        "/v3/election/leader": {
+            "post": {
+                "summary": "返回当前选举的领导宣告（如果有）。",
+                "operationId": "选举_领导",
+                "responses": {
+                    "200": {
+                        "description": "成功的响应。",
+                        "schema": {
+                            "$ref": "#/definitions/v3electionpbLeaderResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "意外的错误响应。",
+                        "schema": {
+                            "$ref": "#/definitions/rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v3electionpbLeaderRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "选举"
+                ]
+            }
+        },
+        "/v3/election/observe": {
+            "post": {
+                "summary": "按照选举产生的顺序流式传输选举宣告。",
+                "operationId": "选举_观察",
+                "responses": {
+                    "200": {
+                        "description": "成功的响应。（流式响应）",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "result": {
+                                    "$ref": "#/definitions/v3electionpbLeaderResponse"
+                                },
+                                "error": {
+                                    "$ref": "#/definitions/rpcStatus"
+                                }
+                            },
+                            "title": "v3electionpbLeaderResponse的流结果"
+                        }
+                    },
+                    "default": {
+                        "description": "意外的错误响应。",
+                        "schema": {
+                            "$ref": "#/definitions/rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v3electionpbLeaderRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "选举"
+                ]
+            }
+        },
+        "/v3/election/proclaim": {
+            "post": {
+                "summary": "使用新值更新领导者的发布值。",
+                "operationId": "选举_宣告",
+                "responses": {
+                    "200": {
+                        "description": "成功的响应。",
+                        "schema": {
+                            "$ref": "#/definitions/v3electionpbProclaimResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "意外的错误响应。",
+                        "schema": {
+                            "$ref": "#/definitions/rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v3electionpbProclaimRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "选举"
+                ]
+            }
+        },
+        "/v3/election/resign": {
+            "post": {
+                "summary": "释放选举领导权，以便其他竞选者可以获取选举领导权。",
+                "operationId": "选举_辞职",
+                "responses": {
+                    "200": {
+                        "description": "成功的响应。",
+                        "schema": {
+                            "$ref": "#/definitions/v3electionpbResignResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "意外的错误响应。",
+                        "schema": {
+                            "$ref": "#/definitions/rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v3electionpbResignRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "选举"
+                ]
+            }
+        }
+    },
+    "definitions": {
+        "etcdserverpbResponseHeader": {
+            "type": "object",
+            "properties": {
+                "cluster_id": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "cluster_id 是发送响应的集群的ID。"
+                },
+                "member_id": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "member_id 是发送响应的成员的ID。"
+                },
+                "revision": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "revision 是应用请求时键值存储的修订版本，在不与键值存储互动的调用中未设置（因此为0）。对于监视进度响应，header.revision 表示进度。此流中接收的所有未来事件都保证比header.revision编号高。"
+                },
+                "raft_term": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "raft_term 是应用请求时的Raft任期。"
+                }
+            }
+        },
+        "mvccpbKeyValue": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "key 是字节形式的键。不允许空键。"
+                },
+                "create_revision": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "create_revision 是此键最后一次创建的修订版本。"
+                },
+                "mod_revision": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "mod_revision 是此键最后一次修改的修订版本。"
+                },
+                "version": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "version 是键的版本。删除键会将版本重置为零，并且对键的任何修改会增加其版本。"
+                },
+                "value": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "value 是键持有的值，以字节形式表示。"
+                },
+                "lease": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "lease 是附加到键的租约的ID。当附加的租约过期时，键将被删除。如果 lease 为0，则键未附加租约。"
+                }
+            }
+        },
+        "protobufAny": {
+            "type": "object",
+            "properties": {
+                "@type": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": {}
+        },
+        "rpcStatus": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "details": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/protobufAny"
+                    }
+                }
+            }
+        },
+        "v3electionpbCampaignRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "name 是代表竞选的选举标识符。"
+                },
+                "lease": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "lease 是附加到选举领导权的租约ID。如果租约到期或在辞去领导权之前被撤销，则领导权将转移给下一个竞选者（如果有）。"
+                },
+                "value": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "value 是竞选者赢得选举时设置的初始宣称值。"
+                }
+            }
+        },
+        "v3electionpbCampaignResponse": {
+            "type": "object",
+            "properties": {
+                "header": {
+                    "$ref": "#/definitions/etcdserverpbResponseHeader"
+                },
+                "leader": {
+                    "$ref": "#/definitions/v3electionpbLeaderKey",
+                    "description": "leader 描述用于持有选举领导权的资源。"
+                }
+            }
+        },
+        "v3electionpbLeaderKey": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "name 是与领导权键相对应的选举标识符。"
+                },
+                "key": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "key 是表示选举所有权的不透明键。如果该键被删除，则失去领导权。"
+                },
+                "rev": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "rev 是键的创建修订版本。在事务中测试通过测试键的创建修订版本与 rev 匹配，可用于测试对选举的所有权。"
+                },
+                "lease": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "lease 是选举领导器的租约ID。"
+                }
+            }
+        },
+        "v3electionpbLeaderRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "name 是领导信息的选举标识符。"
+                }
+            }
+        },
+        "v3electionpbLeaderResponse": {
+            "type": "object",
+            "properties": {
+                "header": {
+                    "$ref": "#/definitions/etcdserverpbResponseHeader"
+                },
+                "kv": {
+                    "$ref": "#/definitions/mvccpbKeyValue",
+                    "description": "kv 是表示最新领导者更新的键值对。"
+                }
+            }
+        },
+        "v3electionpbProclaimRequest": {
+            "type": "object",
+            "properties": {
+                "leader": {
+                    "$ref": "#/definitions/v3electionpbLeaderKey",
+                    "description": "leader 是选举中的领导权。"
+                },
+                "value": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "value 是用于覆盖当前领导者的值的更新。"
+                }
+            }
+        },
+        "v3electionpbProclaimResponse": {
+            "type": "object",
+            "properties": {
+                "header": {
+                    "$ref": "#/definitions/etcdserverpbResponseHeader"
+                }
+            }
+        },
+        "v3electionpbResignRequest": {
+            "type": "object",
+            "properties": {
+                "leader": {
+                    "$ref": "#/definitions/v3electionpbLeaderKey",
+                    "description": "leader 是要辞去的领导权。"
+                }
+            }
+        },
+        "v3electionpbResignResponse": {
+            "type": "object",
+            "properties": {
+                "header": {
+                    "$ref": "#/definitions/etcdserverpbResponseHeader"
+                }
+            }
+        }
+    }
+}
