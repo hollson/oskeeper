@@ -114,31 +114,9 @@ Prints a line of JSON encoding the database hash, revision, total keys, and size
 +----------+----------+------------+------------+
 ```
 
-### VERSION
 
-Prints the version of etcdutl.
-
-#### Output
-
-Prints etcd version and API version.
-
-#### Examples
-
-```bash
-./etcdutl version
-# etcdutl version: 3.1.0-alpha.0+git
-# API version: 3.1
-```
 
 ### VERSION
-
-Prints the version of etcdctl.
-
-#### Output
-
-Prints etcd version and API version.
-
-#### Examples
 
 ```bash
 ./etcdutl version
@@ -147,27 +125,3 @@ Prints etcd version and API version.
 ```
 
 
-
-## Output formats
-
-All commands accept an output format by setting `-w` or `--write-out`. All commands default to the "simple" output format, which is meant to be human-readable. The simple format is listed in each command's `Output` description since it is customized for each command. If a command has a corresponding RPC, it will respect all output formats.
-
-If a command fails, returning a non-zero exit code, an error string will be written to standard error regardless of output format.
-
-### Simple
-
-A format meant to be easy to parse and human-readable. Specific to each command.
-
-### JSON
-
-The JSON encoding of the command's [RPC response][etcdrpc]. Since etcd's RPCs use byte strings, the JSON output will encode keys and values in base64.
-
-Some commands without an RPC also support JSON; see the command's `Output` description.
-
-### Protobuf
-
-The protobuf encoding of the command's [RPC response][etcdrpc]. If an RPC is streaming, the stream messages will be concatenated. If an RPC is not given for a command, the protobuf output is not defined.
-
-### Fields
-
-An output format similar to JSON but meant to parse with coreutils. For an integer field named `Field`, it writes a line in the format `"Field" : %d` where `%d` is go's integer formatting. For byte array fields, it writes `"Field" : %q` where `%q` is go's quoted string formatting (e.g., `[]byte{'a', '\n'}` is written as `"a\n"`).
