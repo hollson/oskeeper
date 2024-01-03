@@ -41,6 +41,18 @@ etcdctl put foo bar1 --prev-kv
 etcdctl get foo
 # foo
 # bar1
+
+
+# 添加/读取键值对
+etcdctl put hello HelloWorld
+etcdctl get hello
+etcdctl get --from-key ''
+
+# 递归获取所有键值对
+etcdctl put /users/u1001 '{"id":1001,"name":"Ray","addr":"NewYork"}'
+etcdctl put /users/u1002 '{"id":1002,"name":"Jake","addr":"London"}'
+etcdctl put /users/u1003 '{"id":1003,"name":"Lucy","addr":"Berlin"}'
+etcdctl get --prefix /users
 ```
 
 
@@ -273,15 +285,7 @@ COMPACTION 会丢弃给定修订之前的所有 etcd 事件历史记录。  由�
 
 > COMPACTION [options] \<revision>
 
-### Options
-
 - physical -- 'true' to wait for compaction to physically remove all old revisions
-
-### Output
-
-Prints the compacted revision.
-
-### Example
 
 ```bash
 etcdctl compaction 1234
@@ -418,56 +422,28 @@ watch -- echo watch event received
 
 LEASE提供密钥租约管理命令。
 
-## LEASE GRANT \<ttl\>
+## GRANT
 
 LEASE GRANT creates a fresh lease with a server-selected time-to-live in seconds
 greater than or equal to the requested TTL value.
-
-RPC: LeaseGrant
-
-### Output
-
-Prints a message with the granted lease ID.
-
-### Example
 
 ```bash
 etcdctl lease grant 60
 # lease 32695410dcc0ca06 granted with TTL(60s)
 ```
 
-## LEASE REVOKE \<leaseID\>
+## REVOKE
 
 LEASE REVOKE destroys a given lease, deleting all attached keys.
-
-RPC: LeaseRevoke
-
-### Output
-
-Prints a message indicating the lease is revoked.
-
-### Example
 
 ```bash
 etcdctl lease revoke 32695410dcc0ca06
 # lease 32695410dcc0ca06 revoked
 ```
 
-## LEASE TIMETOLIVE \<leaseID\> [options]
+## TIMETOLIVE
 
 LEASE TIMETOLIVE retrieves the lease information with the given lease ID.
-
-RPC: LeaseTimeToLive
-
-### Options
-
-- keys -- Get keys attached to this lease
-
-### Output
-
-Prints lease information.
-
-### Example
 
 ```bash
 etcdctl lease grant 500
@@ -495,17 +471,9 @@ etcdctl lease timetolive 2d8257079fa1bc0c
 # lease 2d8257079fa1bc0c already expired
 ```
 
-## LEASE LIST
+## LIST
 
 LEASE LIST lists all active leases.
-
-RPC: LeaseLeases
-
-### Output
-
-Prints a message with a list of active leases.
-
-### Example
 
 ```bash
 etcdctl lease grant 60
@@ -515,17 +483,10 @@ etcdctl lease list
 32695410dcc0ca06
 ```
 
-## LEASE KEEP-ALIVE \<leaseID\>
+## KEEP-ALIVE
 
 LEASE KEEP-ALIVE periodically refreshes a lease so it does not expire.
 
-RPC: LeaseKeepAlive
-
-### Output
-
-Prints a message for every keep alive sent or prints a message indicating the lease is gone.
-
-### Example
 ```bash
 etcdctl lease keep-alive 32695410dcc0ca0
 # lease 32695410dcc0ca0 keepalived with TTL(100)
@@ -546,17 +507,7 @@ MEMBER provides commands for managing etcd cluster membership.
 
 MEMBER ADD introduces a new member into the etcd cluster as a new peer.
 
-RPC: MemberAdd
-
-### Options
-
 - peer-urls -- comma separated list of URLs to associate with the new member.
-
-### Output
-
-Prints the member ID of the new member and the cluster ID.
-
-### Example
 
 ```bash
 etcdctl member add newMember --peer-urls=https://127.0.0.1:12345
@@ -568,55 +519,29 @@ ETCD_INITIAL_CLUSTER="newMember=https://127.0.0.1:12345,default=http://10.0.0.30
 ETCD_INITIAL_CLUSTER_STATE="existing"
 ```
 
-## MEMBER UPDATE \<memberID\> [options]
+## UPDATE
 
 MEMBER UPDATE sets the peer URLs for an existing member in the etcd cluster.
 
-RPC: MemberUpdate
-
-### Options
-
 - peer-urls -- comma separated list of URLs to associate with the updated member.
-
-### Output
-
-Prints the member ID of the updated member and the cluster ID.
-
-### Example
 
 ```bash
 etcdctl member update 2be1eb8f84b7f63e --peer-urls=https://127.0.0.1:11112
 # Member 2be1eb8f84b7f63e updated in cluster ef37ad9dc622a7c4
 ```
 
-## MEMBER REMOVE \<memberID\>
+## REMOVE
 
 MEMBER REMOVE removes a member of an etcd cluster from participating in cluster consensus.
-
-RPC: MemberRemove
-
-### Output
-
-Prints the member ID of the removed member and the cluster ID.
-
-### Example
 
 ```bash
 etcdctl member remove 2be1eb8f84b7f63e
 # Member 2be1eb8f84b7f63e removed from cluster ef37ad9dc622a7c4
 ```
 
-## MEMBER LIST
+## LIST
 
 MEMBER LIST prints the member details for all members associated with an etcd cluster.
-
-RPC: MemberList
-
-### Output
-
-Prints a humanized table of the member IDs, statuses, names, peer addresses, and client addresses.
-
-### Examples
 
 ```bash
 etcdctl member list
@@ -931,17 +856,8 @@ Note: Deprecated. Use `etcdutl snapshot restore` instead. To be removed in v3.6.
 
 SNAPSHOT STATUS lists information about a given backend database snapshot file.
 
-### Output
 
-#### Simple format
 
-Prints a humanized table of the database hash, revision, total keys, and size.
-
-#### JSON format
-
-Prints a line of JSON encoding the database hash, revision, total keys, and size.
-
-### Examples
 ```bash
 etcdctl snapshot status file.db
 # cf1550fb, 3, 3, 25 kB
@@ -988,23 +904,15 @@ etcdctl --endpoints ${leader_ep} move-leader ${transferee_id}
 
 # 并发命令
 
-## LOCK [options] \<lockname\> [command arg1 arg2 ...]
+## LOCK
 
-LOCK 获取具有给定名称的分布式互斥体。  一旦获得锁，它将一直保持到 etcdctl 终止。
+格式: `LOCK [options] \<lockname\> [command arg1 arg2 ...]`
 
-### Options
+说明: LOCK 获取具有给定名称的分布式互斥体。  一旦获得锁，它将一直保持到 etcdctl 终止。
+
+参数:
 
 - ttl - time out in seconds of lock session.
-
-### Output
-
-Once the lock is acquired but no command is given, the result for the GET on the unique lock holder key is displayed.
-
-If a command is given, it will be executed with environment variables `ETCD_LOCK_KEY` and `ETCD_LOCK_REV` set to the lock's holder key and revision.
-
-### Example
-
-Acquire lock with standard output display:
 
 ```bash
 etcdctl lock mylock
@@ -1064,17 +972,7 @@ If a candidate is abnormally terminated, election rogress may be delayed by up t
 
 # 授权命令
 
-## AUTH \<enable or disable\>
-
-`auth enable` activates authentication on an etcd cluster and `auth disable` deactivates. When authentication is enabled, etcd checks all requests for appropriate authorization.
-
-RPC: AuthEnable/AuthDisable
-
-### Output
-
-`Authentication Enabled`.
-
-### Examples
+## AUTH
 
 ```bash
 etcdctl user add root
@@ -1096,38 +994,18 @@ etcdctl auth enable
 # Authentication Enabled
 ```
 
-## ROLE \<subcommand\>
+## ROLE
 
 ROLE is used to specify different roles which can be assigned to etcd user(s).
 
-## ROLE ADD \<role name\>
-
-`role add` creates a role.
-
-RPC: RoleAdd
-
-### Output
-
-`Role <role name> created`.
-
-### Examples
+## ROLE ADD
 
 ```bash
 etcdctl --user=root:123 role add myrole
 # Role myrole created
 ```
 
-## ROLE GET \<role name\>
-
-`role get` lists detailed role information.
-
-RPC: RoleGet
-
-### Output
-
-Detailed role information.
-
-### Examples
+## ROLE GET
 
 ```bash
 etcdctl --user=root:123 role get myrole
@@ -1138,7 +1016,7 @@ etcdctl --user=root:123 role get myrole
 # foo
 ```
 
-## ROLE DELETE \<role name\>
+## ROLE DELETE
 
 `role delete` deletes a role.
 
@@ -1155,7 +1033,7 @@ etcdctl --user=root:123 role delete myrole
 # Role myrole deleted
 ```
 
-## ROLE LIST \<role name\>
+## ROLE LIST
 
 `role list` lists all roles in etcd.
 
@@ -1174,23 +1052,13 @@ etcdctl --user=root:123 role list
 # myrole
 ```
 
-## ROLE GRANT-PERMISSION [options] \<role name\> \<permission type\> \<key\> [endkey]
+## ROLE GRANT-PERMISSION
 
 `role grant-permission` grants a key to a role.
-
-RPC: RoleGrantPermission
-
-### Options
 
 - from-key -- grant a permission of keys that are greater than or equal to the given key using byte compare
 
 - prefix -- grant a prefix permission
-
-### Output
-
-`Role <role name> updated`.
-
-### Examples
 
 Grant read and write permission on the key `foo` to role `myrole`:
 
@@ -1206,23 +1074,13 @@ etcdctl --user=root:123 role grant-permission --prefix myrole readwrite foo/
 # Role myrole updated
 ```
 
-## ROLE REVOKE-PERMISSION \<role name\> \<permission type\> \<key\> [endkey]
+## ROLE REVOKE-PERMISSION
 
 `role revoke-permission` revokes a key from a role.
-
-RPC: RoleRevokePermission
-
-### Options
 
 - from-key -- revoke a permission of keys that are greater than or equal to the given key using byte compare
 
 - prefix -- revoke a prefix permission
-
-### Output
-
-`Permission of key <key> is revoked from role <role name>` for single key. `Permission of range [<key>, <endkey>) is revoked from role <role name>` for a key range. Exit code is zero.
-
-### Examples
 
 ```bash
 etcdctl --user=root:123 role revoke-permission myrole foo
@@ -1278,34 +1136,18 @@ etcdctl --user=root:123 user get myuser
 # Roles:
 ```
 
-## USER DELETE \<user name\>
+## DELETE
 
 `user delete` deletes a user.
-
-RPC: UserDelete
-
-### Output
-
-`User <user name> deleted`.
-
-### Examples
 
 ```bash
 etcdctl --user=root:123 user delete myuser
 # User myuser deleted
 ```
 
-## USER LIST
+## LIST
 
 `user list` lists detailed user information.
-
-RPC: UserList
-
-### Output
-
-- List of users, one per line.
-
-### Examples
 
 ```bash
 etcdctl --user=root:123 user list
@@ -1314,21 +1156,9 @@ etcdctl --user=root:123 user list
 # myuser
 ```
 
-## USER PASSWD \<user name\> [options]
+## PASSWD
 
 `user passwd` changes a user's password.
-
-RPC: UserChangePassword
-
-### Options
-
-- interactive -- if true, read password in interactive terminal
-
-### Output
-
-`Password updated`.
-
-### Examples
 
 ```bash
 etcdctl --user=root:123 user passwd myuser
@@ -1337,34 +1167,18 @@ etcdctl --user=root:123 user passwd myuser
 # Password updated
 ```
 
-## USER GRANT-ROLE \<user name\> \<role name\>
+## GRANT-ROLE
 
 `user grant-role` grants a role to a user
-
-RPC: UserGrantRole
-
-### Output
-
-`Role <role name> is granted to user <user name>`.
-
-### Examples
 
 ```bash
 etcdctl --user=root:123 user grant-role userA roleA
 # Role roleA is granted to user userA
 ```
 
-## USER REVOKE-ROLE \<user name\> \<role name\>
+## REVOKE-ROLE
 
 `user revoke-role` revokes a role from a user
-
-RPC: UserRevokeRole
-
-### Output
-
-`Role <role name> is revoked from user <user name>`.
-
-### Examples
 
 ```bash
 etcdctl --user=root:123 user revoke-role userA roleA

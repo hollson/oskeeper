@@ -1,75 +1,21 @@
 
 [toc]
 
-## 启动Etcd
-
-```shell
-# 启动Etcd服务
-ROOT="${HOME}/tmp/etcd"
-etcd --listen-client-urls=http://localhost:2379,http://localhost:4001 \
---advertise-client-urls=http://localhost:2379,http://localhost:4001 \
---data-dir=${ROOT}/data \
-# --config-file=${ROOT}/config/etcd.conf \
---log-output=${ROOT}/logs/etcd.log
-```
-
-## 基本命令
-
-### Put
-
-```shell
-# 健康检查
-etcdctl endpoint health
-
-# 成员列表
-etcdctl member list
-
-# 添加/读取键值对
-# etcdctl --endpoints=localhost:2379 put hello HelloWorld
-etcdctl put hello HelloWorld
-etcdctl get hello
-
-# 递归获取所有键值对
-etcdctl put /users/u1001 '{"id":1001,"name":"Ray","addr":"NewYork"}'
-etcdctl put /users/u1002 '{"id":1002,"name":"Jake","addr":"London"}'
-etcdctl put /users/u1003 '{"id":1003,"name":"Lucy","addr":"Berlin"}'
-etcdctl get --prefix /users
-
-# 删除指定键
-etcdctl del hello
-
-# 数据备份
-ROOT="${HOME}/tmp/etcd"
-etcdctl snapshot save ${ROOT}/backup/$(date +'%Y%m%d%H%M').db
-```
-
-
-
-```shell
-etcdctl get --from-key ''
-```
-
-
-
-
-
-
-
-
-
 ## Http接口
 
-https://blog.csdn.net/meifannao789456/article/details/103480842
+可将 [ETCD API文档](https://github.com/etcd-io/etcd/tree/main/Documentation/dev-guide/apispec/swagger) 的URL导入 [在线Swagger工具](https://editor-next.swagger.io/)，查看完整文档。
 
 ```shell
 # 版本信息
 curl http://127.0.0.1:2379/version
 
-# 添加 (KV需要base64编码),否则会乱码 
+# 测试数据
 KEY=$(echo "/hello"|base64)
 VAL=$(echo "Hello World"|base64)
 
-# 写入
+# 写入(KV需要base64编码),否则会乱码 
+# echo "/hello"|base64
+# echo "Hello World"|base64
 curl -X POST http://localhost:2379/v3/kv/put -d "{\"key\":\"${KEY}\", \"value\":\"${VAL}\"}"
 
 #查询
@@ -77,120 +23,84 @@ curl -X POST http://localhost:2379/v3/kv/range -d "{\"key\": \"${KEY}\"}"
 
 # 范围查询(Etcd中，键是按字典顺序排序的),如:在[a,b,c,d,e,f]中查询b到d
 curl -X POST http://localhost:2379/v3/kv/range -d '{"key": "Ygo=", "range_end": "ZAo="}'
+
+
+# 删除
+curl -X 'POST' \
+  'https://raw.githubusercontent.com/v3/kv/deleterange' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "key": "string",
+  "range_end": "string",
+  "prev_kv": true
+}'
+
 ```
 
 ```shell
 curl -N http://localhost:2379/v3/watch \
   -X POST -d '{"create_request": {"key":"Zm9v"} }' &
-# {"result":{"header":{"cluster_id":"12585971608760269493","member_id":"13847567121247652255","revision":"1","raft_term":"2"},"created":true}}
 
 curl -L http://localhost:2379/v3/kv/put \
   -X POST -d '{"key": "Zm9v", "value": "YmFy"}' >/dev/null 2>&1
-# {"result":{"header":{"cluster_id":"12585971608760269493","member_id":"13847567121247652255","revision":"2","raft_term":"2"},"events":[{"kv":{"key":"Zm9v","create_revision":"2","mod_revision":"2","version":"1","value":"YmFy"}}]}}
-
-
 
 # target CREATE
-curl -L http://localhost:2379/v3/kv/txn \
-  -X POST \
+curl -L http://localhost:2379/v3/kv/txn -X POST \
   -d '{"compare":[{"target":"CREATE","key":"Zm9v","createRevision":"2"}],"success":[{"requestPut":{"key":"Zm9v","value":"YmFy"}}]}'
-# {"header":{"cluster_id":"12585971608760269493","member_id":"13847567121247652255","revision":"3","raft_term":"2"},"succeeded":true,"responses":[{"response_put":{"header":{"revision":"3"}}}]}
-
 
 
 # target VERSION
 curl -L http://localhost:2379/v3/kv/txn \
   -X POST \
   -d '{"compare":[{"version":"4","result":"EQUAL","target":"VERSION","key":"Zm9v"}],"success":[{"requestRange":{"key":"Zm9v"}}]}'
-# {"header":{"cluster_id":"14841639068965178418","member_id":"10276657743932975437","revision":"6","raft_term":"3"},"succeeded":true,"responses":[{"response_range":{"header":{"revision":"6"},"kvs":[{"key":"Zm9v","create_revision":"2","mod_revision":"6","version":"4","value":"YmF6"}],"count":"1"}}]}
-
 
 # create root user
 curl -L http://localhost:2379/v3/auth/user/add \
   -X POST -d '{"name": "root", "password": "pass"}'
-# {"header":{"cluster_id":"14841639068965178418","member_id":"10276657743932975437","revision":"1","raft_term":"2"}}
 
 # create root role
 curl -L http://localhost:2379/v3/auth/role/add \
   -X POST -d '{"name": "root"}'
-# {"header":{"cluster_id":"14841639068965178418","member_id":"10276657743932975437","revision":"1","raft_term":"2"}}
 
 # grant root role
 curl -L http://localhost:2379/v3/auth/user/grant \
   -X POST -d '{"user": "root", "role": "root"}'
-# {"header":{"cluster_id":"14841639068965178418","member_id":"10276657743932975437","revision":"1","raft_term":"2"}}
-
+  
 # enable auth
 curl -L http://localhost:2379/v3/auth/enable -X POST -d '{}'
-# {"header":{"cluster_id":"14841639068965178418","member_id":"10276657743932975437","revision":"1","raft_term":"2"}}
 
 
 
 # get the auth token for the root user
-curl -L http://localhost:2379/v3/auth/authenticate \
-  -X POST -d '{"name": "root", "password": "pass"}'
-# {"header":{"cluster_id":"14841639068965178418","member_id":"10276657743932975437","revision":"1","raft_term":"2"},"token":"sssvIpwfnLAcWAQH.9"}
-
-
+curl -L http://localhost:2379/v3/auth/authenticate -X POST -d '{"name": "root", "password": "pass"}'
 
 curl -L http://localhost:2379/v3/kv/put \
   -H 'Authorization : sssvIpwfnLAcWAQH.9' \
   -X POST -d '{"key": "Zm9v", "value": "YmFy"}'
-# {"header":{"cluster_id":"14841639068965178418","member_id":"10276657743932975437","revision":"2","raft_term":"2"}}
-
 ```
 
 
-
-
-
-1. 设置键值对：
-```shell
-# 设置键值对
-curl -X POST http://localhost:2379/v3/kv/key1 -d value=123
-
-# 获取指定键的值
-curl http://localhost:2379/v3/kv/keys/key1
-
-# 删除
-curl -X DELETE http://localhost:2379/v3/kv/keys/key1
-
-# 设置键值对并设置 TTL（以秒为单位）：
-curl -X POST http://localhost:2379/v3/kv/lease -d '{"key": "key1", "value": "123", "lease": 10}'
-
-# 获取具有指定前缀的所有键值对：
-curl http://localhost:2379/v3/kv/range?key=key_prefix
-
-# 监听指定键的变化：
-curl http://localhost:2379/v3/watch -X POST -d '{"create_request": {"key": "/keys/key1"}}'
-
-# 创建目录
-curl -X PUT http://localhost:2379/v3/kv/keys/directory -d dir=true
-
-# 监听目录
-
-# 删除目录(及子内容)
-curl -X DELETE http://localhost:2379/v3/kv/range?prefix=directory/
-
-
-# 设置有序键
-curl -X POST http://localhost:2379/v3/kv/lease -d '{"key": "ordered", "value": "value1", "lease": 0, "lease_options": {"withPrevKV": true}}'
-
-# 获取范围内的有序键
-curl http://localhost:2379/v3/kv/range?type=range&start=ordered/a&end=ordered/z
-```
 
 **集群操作**
 
 ```shell
 # 获取成员列表：
-curl http://localhost:2379/v3/members
+curl -X POST http://localhost:2379/v3/cluster/member/list -d '{"linearizable": true}'
 
-# 添加成员
-curl -X POST http://localhost:2379/v3/member/add -d '{"peerURLs":["http://<new_member_host>:2380"]}'
+# 添加成员(学习者，无投票权)
+curl -X POST http://localhost:2379/v3/cluster/member/add \
+-d '{"peerURLs": ["http://<new_member_host>:2380"],"isLearner": true}'
 
-# 删除成员
-curl -X POST http://localhost:2379/v3/member/remove -d '{"memberID":"<member_id>"}'
+# 更新成员
+curl -X POST http://localhost:2379/v3/cluster/member/update \
+-d '{"ID": "string","peerURLs": ["string"]}'
+
+# 提升为投票成员
+curl -X POST http://localhost:2379/v3/cluster/member/promote -d '{"ID": "string"}'
+
+# 移除成员
+curl -X POST http://localhost:2379/v3/cluster/member/remove -d '{"ID": "string"}'
 ```
 
 
@@ -284,10 +194,6 @@ etcdctl --user=root:123456 --endpoints=192.168.1.3:2379 put shi 史布斯
 
 
 
-
-
-
-
 **动态配置**
 ```shell
 # 使用IP作为节点名称
@@ -306,16 +212,6 @@ echo $TOKEN
 https://github.com/etcd-io/etcd/blob/v3.3.25/mvcc/mvccpb/kv.proto
 
 https://github.com/etcd-io/etcd/blob/v3.3.25/mvcc/mvccpb/kv.proto
-
-
-
-
-
-## Swagger文档
-
-https://github.com/etcd-io/etcd/tree/main/Documentation/dev-guide/apispec/swagger
-
-https://editor-next.swagger.io/
 
 
 

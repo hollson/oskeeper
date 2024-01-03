@@ -2,44 +2,57 @@
 
 > 具体安装过程可参考[ETCD官方文档](https://etcd.io/docs/v3.6/)
 
-### 1.1 Linux方式
+
+### MacOS
+```shell
+# 下载
+ETCD_VER=v3.6.0
+ETCD_URL=https://github.com/etcd-io/etcd/releases/download
+curl -LO ${ETCD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-darwin-amd64.zip
+unzip etcd-${ETCD_VER}-darwin-amd64.zip
+
+# 安装
+sudo mkdir -p /usr/local/etcd
+sudo mv ./etcd-${ETCD_VER}-darwin-amd64/etcd* /usr/local/etcd
+sudo ln -s /usr/local/etcd/etcd /usr/local/bin/etcd
+sudo ln -s /usr/local/etcd/etcdctl /usr/local/bin/etcdctl
+sudo ln -s /usr/local/etcd/etcdutl /usr/local/bin/etcdutl
+
+# 启动进程
+cd ${HOME} && mkdir default.etcd
+nohup etcd > ./default.etcd/etcd.log 2>&1 &
+```
+
+### Linux
 
 ```bash
-# 选项配置
-ETCD_VER=v3.5.11
+# 下载
+ETCD_VER=v3.6.0
 ETCD_URL=https://github.com/etcd-io/etcd/releases/download
-
-# 下载安装
 wget -L ${ETCD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz
 tar xzvf ./etcd-${ETCD_VER}-linux-amd64.tar.gz
-mv ./etcd-${ETCD_VER}-linux-amd64 /usr/local/etcd
+
+# 安装
+mkdir -p /usr/local/etcd
+mv ./etcd-${ETCD_VER}-linux-amd64/etcd* /usr/local/etcd
 ln -s /usr/local/etcd/etcd /usr/local/bin/etcd
 ln -s /usr/local/etcd/etcdctl /usr/local/bin/etcdctl
+ln -s /usr/local/etcd/etcdutl /usr/local/bin/etcdutl
 
-# 查看版本
-etcd --version
-etcdctl version #二级命令
-
-# 启动进程(单机)
-sudop nohup etcd --data-dir=/var/etcd-data/ >/tmp/etcd.log 2>&1 &
-```
-_**客户端测试：**_
-```shell
-etcdctl --endpoints=localhost:2379 put test "hello world"
-etcdctl --endpoints=localhost:2379 get test
-curl 127.0.0.1:2379/version
+# 启动进程
+cd /opt && mkdir default.etcd
+nohup etcd > ./default.etcd/etcd.log 2>&1 &
 ```
 
-
-
-### 1.2 Docker方式
+### Docker
 
 ```shell
-$ mkdir -p /var/etcd-data-docker
-$ TOKEN=$(uuidgen) #uuid作为token
+mkdir -p /var/etcd-data-docker
+ETCD_VER=v3.5.11
+TOKEN=$(uuidgen)
 
 ## 单实例集群
-$ docker run \
+docker run \
  --name etcd -p 2379:2379 -p 2380:2380 \
  --mount type=bind,source=/var/etcd-data-docker,destination=/etcd-data \
  quay.io/coreos/etcd:v3.4.4 /usr/local/bin/etcd \
@@ -58,14 +71,38 @@ $ docker run \
 
 $ docker exec etcd /bin/sh -c "etcd --version"
 $ docker exec etcd /bin/sh -c "etcdctl version"
+$ docker exec etcd /bin/sh -c "etcdutl version"
 $ docker exec etcd /bin/sh -c "etcdctl endpoint health"
 $ docker exec etcd /bin/sh -c "etcdctl put foo 'hello world'"
-$ docker exec etcd /bin/sh -c "etcdctl get foo"
+$ docker exec etcd /bin/sh -c "etcdctl get foo"  
 ```
 
 
 
-<br/>
+```shell
+# 启动Etcd服务
+ROOT="${HOME}/tmp/etcd"
+etcd --listen-client-urls=http://localhost:2379,http://localhost:4001 \
+--advertise-client-urls=http://localhost:2379,http://localhost:4001 \
+--data-dir=${ROOT}/data \
+# --config-file=${ROOT}/config/etcd.conf \
+--log-output=${ROOT}/logs/etcd.log
+```
+
+_**客户端测试：**_
+```shell
+# 查看版本
+etcd --version
+etcdctl version
+etcdutl version
+
+# 数据测试
+curl 127.0.0.1:2379/version
+etcdctl --endpoints=localhost:2379 put hello "Hello World"
+etcdctl --endpoints=localhost:2379 get hello
+```
+
+
 
 ## 三. ETCD配置
 
@@ -333,6 +370,12 @@ func delMember (cli *clientv3.Client, memberId uint64) {
 
 
 <br/>
+
+
+
+https://developer.aliyun.com/article/1385959?spm=a2c6h.12873639.article-detail.25.54d11ec1w7RytC&scm=20140722.ID_community@@article@@1385959._.ID_community@@article@@1385959-OR_rec-V_1-RL_community@@article@@1025089
+
+
 
 
 
