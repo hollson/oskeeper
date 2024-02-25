@@ -5,7 +5,7 @@
 ```shell
 # 启动容器，privileged：特权
 docker run -tid --privileged=true --name centos -p 2022:22 \
---hostname cent -e TZ=Asia/Shanghai centos /usr/sbin/init
+--hostname shs -e TZ=Asia/Shanghai centos /usr/sbin/init
 
 # 进入容器
 docker exec -ti centos /bin/bash

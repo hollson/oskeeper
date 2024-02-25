@@ -1,7 +1,7 @@
 {
   "inbounds": [
     {
-      "port": 1080, // 监听端口
+      "port": 8899, // 监听端口
       "protocol": "socks", // 入口协议为 SOCKS 5
       "sniffing": {
         "enabled": true,
