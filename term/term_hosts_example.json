@@ -1,0 +1,28 @@
+[
+	{
+		"id": 1001,
+		"host": "192.168.10.1",
+		"port": 22,
+		"user": "root",
+		"key": "~/.ssh/id_rsa",
+		"os": "CentOS Stream 9",
+		"arch": "x86_64",
+		"region": "香港",
+		"mark": "开发环境"
+	},
+	{
+		"id": 1002,
+		"host": "example.com",
+		"user": "root",
+		"os": "ubuntu22.04",
+		"arch": "arm64",
+		"region": "新加坡🇸🇬",
+		"mark": "生产环境"
+	},
+	{
+		"id": 1003,
+		"host": "example.com",
+		"user": "root",
+		"mark": "测试环境"
+	}
+]
