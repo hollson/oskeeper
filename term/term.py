@@ -194,8 +194,8 @@ def print_hosts(hosts):
 # ssh登录到远程主机
 def ssh_connect(host):
     try:
-        port = host.get('port', 22)  # 默认端口
-        key = host.get('key', '~/.ssh/id_rsa.pub')  # 默认私钥文件
+        port = host.get('port', 22)             # 默认端口
+        key = host.get('key', '~/.ssh/id_rsa')  # 默认私钥文件
         key = key if key and key.lower() != 'null' else None
         port_option = f"-p {port}" if port != 22 else ""
 
