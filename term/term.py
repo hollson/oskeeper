@@ -21,6 +21,7 @@ def load_hosts(_config):
         with open(_config, 'r') as file:
             hosts = json.load(file)
     except FileNotFoundError:
+        print(f"{Color.BOLD}{Color.BLUE}Usage:\n\tterm.py <CONFIG>\n\nExample: \n\t./term.py --config ~/.ssh/term_hosts.json{Color.END}\n")
         print(f"{Color.FAIL}未找到配置文件: {_config}, 请根据示例文件进行添加。{Color.END}\n")
         create_sample("./term_hosts_example.json")
         exit(1)
@@ -207,21 +208,21 @@ def ssh_connect(host):
     except Exception as e:
         print(f"{Color.FAIL}连接到 {host['host']} 时发生错误：{str(e)}{Color.END}")
 
-# ./term.py --config ./term_hosts_example.json
+# ./term --config ./term_hosts_example.json
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="SSH远程主机管理")
     parser.add_argument("--config", help="指定配置文件路径")
     args = parser.parse_args()
 
     # 根据命令行参数获取配置文件路径
-    _config = args.config if args.config else "~/.term_hosts.json"
+    _config = args.config if args.config else "~/.ssh/term_hosts.json"
     _config = os.path.expanduser(_config)
 
     hosts = load_hosts(_config)
     print_hosts(hosts)
 
     try:
-        id = int(input(f"{Color.BOLD}{Color.BLUE}请输入主机ID：{Color.END}"))
+        id = int(input(f"{Color.BOLD}{Color.BLUE}请输入主机ID(q退出)：{Color.END}"))
         host = next((host for host in hosts if host['id'] == id), None)
 
         if host:
