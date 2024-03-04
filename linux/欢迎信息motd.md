@@ -1,4 +1,5 @@
 ## 系统默认MOTD脚本
+
 - 查看MOTD的守护进程脚本（按照从最低到最高数值的顺序执行）
 ```shell
 $ ls -1  /etc/update-motd.d 
