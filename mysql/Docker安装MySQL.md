@@ -20,6 +20,7 @@ sudo docker run -d -p 3306:3306 \
 --name mysqldb \
 mysql:8.0.36
 
+
 # 最新版本
 sudo docker run -d -p 3306:3306 \
 --privileged=true \
