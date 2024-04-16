@@ -6,11 +6,7 @@
 
 
 
-## RedisManager
 
-> [**Another Redis Desktop Manager**](https://github.com/qishibo/AnotherRedisDesktopManager/) 是一款优秀Redis桌面(GUI)管理客户端
-
-![localsend](./anatherRedis.png)
 
 
 
