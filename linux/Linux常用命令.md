@@ -107,7 +107,6 @@ uname -s
 hostnamectl
 lsb_release -a
 
-
 $ arch  #cpu架构
 $ uname -a  #内核版本
 $ cat /etc/redhat-release

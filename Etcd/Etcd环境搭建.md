@@ -2,46 +2,34 @@
 
 > 具体安装过程可参考[ETCD官方文档](https://etcd.io/docs/v3.6/)
 
+## Binary
 
-### MacOS
-```shell
-# 下载
-ETCD_VER=v3.6.0
-ETCD_URL=https://github.com/etcd-io/etcd/releases/download
-curl -LO ${ETCD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-darwin-amd64.zip
-unzip etcd-${ETCD_VER}-darwin-amd64.zip
-
-# 安装
-sudo mkdir -p /usr/local/etcd
-sudo mv ./etcd-${ETCD_VER}-darwin-amd64/etcd* /usr/local/etcd
+```bash
+# 下载&并解安装到/usr/local/etcd目录下
+# wget -L https://github.com/etcd-io/etcd/releases/download/v3.5.12/etcd-v3.5.12-darwin-amd64.zip
+wget -L https://github.com/etcd-io/etcd/releases/download/v3.5.12/etcd-v3.5.12-linux-amd64.tar.gz
 sudo ln -s /usr/local/etcd/etcd /usr/local/bin/etcd
 sudo ln -s /usr/local/etcd/etcdctl /usr/local/bin/etcdctl
 sudo ln -s /usr/local/etcd/etcdutl /usr/local/bin/etcdutl
 
-# 启动进程
-cd ${HOME} && mkdir default.etcd
-nohup etcd > ./default.etcd/etcd.log 2>&1 &
-```
+# 添加配置(修改监听的网络,即外部可访问)
+sudo bash -c 'echo "listen-client-urls: http://0.0.0.0:2379" > /etc/etcd/config.yaml'
 
-### Linux
+# 启动进程(默认数据目录是./default.etcd)
+sudo mkdir -p /opt/etcd 
+cd /opt/etcd
+pkill etcd
+sudo nohup etcd --config-file=/etc/etcd/config.yaml 2>&1 &
 
-```bash
-# 下载
-ETCD_VER=v3.6.0
-ETCD_URL=https://github.com/etcd-io/etcd/releases/download
-wget -L ${ETCD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz
-tar xzvf ./etcd-${ETCD_VER}-linux-amd64.tar.gz
+# 测试
+etcd --version
+etcdctl version
+etcdutl version
+etcdctl endpoint health
 
-# 安装
-mkdir -p /usr/local/etcd
-mv ./etcd-${ETCD_VER}-linux-amd64/etcd* /usr/local/etcd
-ln -s /usr/local/etcd/etcd /usr/local/bin/etcd
-ln -s /usr/local/etcd/etcdctl /usr/local/bin/etcdctl
-ln -s /usr/local/etcd/etcdutl /usr/local/bin/etcdutl
-
-# 启动进程
-cd /opt && mkdir default.etcd
-nohup etcd > ./default.etcd/etcd.log 2>&1 &
+etcdctl put foo bar
+etcdctl get foo
+etcdctl --endpoints=52.74.6.63:2379 get --prefix ''
 ```
 
 ### Docker
