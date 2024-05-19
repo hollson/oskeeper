@@ -7,29 +7,32 @@
 ```bash
 # 下载&并解安装到/usr/local/etcd目录下
 # wget -L https://github.com/etcd-io/etcd/releases/download/v3.5.12/etcd-v3.5.12-darwin-amd64.zip
-wget -L https://github.com/etcd-io/etcd/releases/download/v3.5.12/etcd-v3.5.12-linux-amd64.tar.gz
-sudo ln -s /usr/local/etcd/etcd /usr/local/bin/etcd
-sudo ln -s /usr/local/etcd/etcdctl /usr/local/bin/etcdctl
-sudo ln -s /usr/local/etcd/etcdutl /usr/local/bin/etcdutl
+$ wget -L https://github.com/etcd-io/etcd/releases/download/v3.5.12/etcd-v3.5.12-linux-amd64.tar.gz
 
-# 添加配置(修改监听的网络,即外部可访问)
-sudo bash -c 'echo "listen-client-urls: http://0.0.0.0:2379" > /etc/etcd/config.yaml'
+# 添加软链
+$ sudo ln -s /usr/local/etcd/etcd /usr/local/bin/etcd
+$ sudo ln -s /usr/local/etcd/etcdctl /usr/local/bin/etcdctl
+$ sudo ln -s /usr/local/etcd/etcdutl /usr/local/bin/etcdutl
 
-# 启动进程(默认数据目录是./default.etcd)
-sudo mkdir -p /opt/etcd 
-cd /opt/etcd
-pkill etcd
-sudo nohup etcd --config-file=/etc/etcd/config.yaml 2>&1 &
+# 启动进程
+# 注意⚠️ ：advertise-client-urls是可以被客户端公开访问的地址
+$ mkdir -p /opt/etcd
+$ nohup etcd --name "etcd-server" \
+--data-dir /opt/etcd \
+--listen-client-urls http://0.0.0.0:2379 \
+--advertise-client-urls http://172.16.1.1:2379 &
 
-# 测试
+# 查看信息
 etcd --version
 etcdctl version
 etcdutl version
 etcdctl endpoint health
+etcdctl member list -w=table
 
-etcdctl put foo bar
-etcdctl get foo
-etcdctl --endpoints=52.74.6.63:2379 get --prefix ''
+# 数据测试
+etcdctl put greet HelloWorld
+etcdctl get greet
+etcdctl --endpoints=172.16.1.1:2379 get --prefix ''
 ```
 
 ### Docker
@@ -119,175 +122,6 @@ $ etcd --help| awk 'BEGIN {RS = "";ORS = "\n\n"} /Cluster/ {print $0}' #Cluster�
 
 
 
-**Ymal文件配置**
-
-```shell
-[root@shs ~]# vim /etc/etcd.yml
-```
-```yml
-name: "etcd-01"
-data-dir: "/var/etcd-data"/
-initial-cluster: "etcd-01=http://localhost:2380"
-listen-client-urls: "http://localhost:2379"
-advertise-client-urls: "http://localhost:2379"
-initial-advertise-peer-urls: "http://localhost:2380"
-listen-peer-urls: "http://localhost:2380"
-```
-```shell
-## 启动服务，指定配置文件
-$ nohup etcd --config-file /etc/etcd.yml >/var/etcd.log 2>&1 &
-
-## 查看节点成员信息
-$ etcdctl --endpoints=localhost:2379 member list -w table
-```
-
-
-
-<br/>
-
-
-
-## 四. 搭建集群
-
-### 1. 初始化集群
-
-- Etcd遵循`先规划，再挂载`的原则，所以不管是初始化集群，还是新增节点，都必须先设定好集群列表。
-
-_**先规初始化两个集群节点服务**_
-
-```shell
-## 集群列表,注意点：
-## 1.只有在初始预设中的节点，接回包含在集群
-## 2.初始化集群中的节点状态都为new
-## 3.集群列表中的【名称】和【主机名】必须和启动的服务信息一致
-$ CLUSTERS=etcd01=http://localhost:2380,etcd02=http://localhost:2480
-```
-
-```shell
-## 将第一个节点挂载到集群中（端口：2379）
-$ nohup etcd --name "etcd01" \
---listen-client-urls http://localhost:2379 \
---advertise-client-urls http://localhost:2379 \
---initial-advertise-peer-urls http://localhost:2380 \
---listen-peer-urls http://localhost:2380 \
---initial-cluster ${CLUSTERS} \
---initial-cluster-state new \
->./etcd01.log 2>&1 &
-```
-
-```shell
-## 将第二个节点挂载到集群中（端口：2479）
-$ nohup etcd --name "etcd02" \
---listen-client-urls http://localhost:2479 \
---advertise-client-urls http://localhost:2479 \
---initial-advertise-peer-urls http://localhost:2480 \
---listen-peer-urls http://localhost:2480 \
---initial-cluster ${CLUSTERS} \
---initial-cluster-state new \
->./etcd02.log 2>&1 &
-
-```
-
-_**查看服务结果**_
-
-```shell
-## 查询
-$ export ETCDCTL_API=3
-
-#终结点信息和集群列表信息一致(注意【格式】和【端口】不同)
-$ ENDPOINTS=localhost:2379,localhost:2479
-
-## 查看节点成员信息
-$ etcdctl --endpoints=$ENDPOINTS member list -w table
-
-## 查看节点状态信息
-$ etcdctl --endpoints=$ENDPOINTS endpoint status -w table
-```
-
-_查询结果：_
-
-```shell
-[root@shs ~]# etcdctl --endpoints=$ENDPOINTS member list -w table
-+------------------+---------+--------+-----------------------+-----------------------+------------+
-|  ID  | STATUS | NAME |  PEER ADDRS  |  CLIENT ADDRS  | IS LEARNER |
-+------------------+---------+--------+-----------------------+-----------------------+------------+
-| b71f75320dc06a6c | started | etcd01 | http://localhost:2380 | http://localhost:2379 |  false |
-| 11bff47b8baf3ee9 | started | etcd02 | http://localhost:2480 | http://localhost:2479 |  false |
-+------------------+---------+--------+-----------------------+-----------------------+------------+
-
-```
-
-```shell
-[root@shs ~]# etcdctl --endpoints=$ENDPOINTS endpoint status -w table
-+----------------+------------+---------+---------+-----------+------------+-----------+------------+...
-| ENDPOINT  |  ID  | VERSION | DB SIZE | IS LEADER | IS LEARNER | RAFT TERM | RAFT INDEX |...
-+----------------+------------+---------+---------+-----------+------------+-----------+------------+...
-| localhost:2379 | b71f320... | 3.4.4 | 20 kB |  true |  false |  11 |   6 |...
-| localhost:2479 | 11b47b8... | 3.4.4 | 20 kB |  false |  false |  11 |   6 |...
-+----------------+------------+---------+---------+-----------+------------+-----------+------------+...
-```
-
-
-
-### 2. 增加集群节点
-
-_**先添加集群成员**_
-
-```shell
-## 添加节点（节点名称与集群成员名称一致）
-$ etcdctl --endpoints=$ENDPOINTS member add "etcd03" --peer-urls=http://localhost:2580
-
-## 查看集群成员，注意【STATUS】字段
-$ etcdctl --endpoints=$ENDPOINTS member list -w table
-```
-
-```txt
-[root@vm02 etcd]# etcdctl --endpoints=$ENDPOINTS member list -w table
-+------------------+-----------+--------+-----------------------+-----------------------+------------+
-|  ID  | STATUS | NAME |  PEER ADDRS  |  CLIENT ADDRS  | IS LEARNER |
-+------------------+-----------+--------+-----------------------+-----------------------+------------+
-| 3949aab25068a95f | unstarted |  | http://localhost:2580 |      |  false |
-| 8e9e05c52164694d | started | etcd01 | http://localhost:2380 | http://localhost:2379 |  false |
-| f228da3d709012fc | started | etcd02 | http://localhost:2480 | http://localhost:2479 |  false |
-+------------------+-----------+--------+-----------------------+-----------------------+------------+
-```
-
-_**最后扩展集群列表，并启动服务**_
-
-```shell
-## 声明集群列表
-$ CLUSTERS=etcd01=http://localhost:2380,etcd02=http://localhost:2480,etcd03=http://localhost:2580
-
-## 至于集群状态变为【existing】
-$ nohup etcd --name "etcd03" \
---listen-client-urls http://localhost:2579 \
---advertise-client-urls http://localhost:2579 \
---listen-peer-urls http://127.0.0.1:2580 \
---initial-advertise-peer-urls http://localhost:2580 \
---initial-cluster-state existing \
---initial-cluster ${CLUSTERS} \
---initial-cluster-token etcd-cluster-1 \
->./etcd03.log 2>&1 &
-```
-_**再次查看服务结果：**_
-
-```shell
-$ ENDPOINTS=localhost:2379,localhost:2479,localhost:2579
-$ etcdctl --endpoints=$ENDPOINTS member list -w table
-$ etcdctl --endpoints=$ENDPOINTS endpoint status -w table
-```
-
-
-
-### 3. 删除集群节点
-
-```shell
-## 试着删除leader节点，会发现leader转移到其他节点上
-$ etcdctl --endpoints=$ENDPOINTS member remove 8e9e05c52164694d
-```
-
-> 温馨提示：删除服务的同时，请删除数据文件，否则再次创建服务的时候会加载旧的状态数据
-
 
 
 ## 五. Golang管理集群
@@ -372,14 +206,6 @@ func delMember (cli *clientv3.Client, memberId uint64) {
 
 
 <br/>
-
-
-
-https://developer.aliyun.com/article/1385959?spm=a2c6h.12873639.article-detail.25.54d11ec1w7RytC&scm=20140722.ID_community@@article@@1385959._.ID_community@@article@@1385959-OR_rec-V_1-RL_community@@article@@1025089
-
-
-
-
 
 > 参考：
 > https://www.jianshu.com/p/2966b6ef5d10
