@@ -3,9 +3,10 @@
 # 1. 创建CentOS容器
 
 ```shell
-# 启动容器，privileged：特权
-docker run -tid --privileged=true --name centos -p 2022:22 \
---hostname shs -e TZ=Asia/Shanghai centos /usr/sbin/init
+docker pull centos:latest
+
+# 启动容器，privileged：特权，init用于启动和管理服务
+docker run --privileged -tid --name centos -p 2022:22 --hostname shs -e TZ=Asia/Shanghai centos /usr/sbin/init
 
 # 进入容器
 docker exec -ti centos /bin/bash
@@ -95,7 +96,7 @@ systemctl restart sshd.service
 **测试ssh**
 
 ```shell
-ssh root@0.0.0.0 -p 2022
+ssh root@localhost -p 2022
 #123456
 
 ssh-copy-id -i .ssh/id_rsa.pub root@0.0.0.0 -p 2022

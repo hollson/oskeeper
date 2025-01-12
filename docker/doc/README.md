@@ -1,36 +1,64 @@
-# awesome
+[TOC]
 
-### Docker基础镜像
 
-| 标签     | 说明   |
+
+
+
+
+
+## Ubuntu镜像
+
+```shell
+# 下载镜像并查看Ubuntu版本(大概78M)
+docker pull ubuntu
+docker run --rm ubuntu:latest cat /etc/os-release|grep VERSION
+
+# 启动容器
+# privileged: 特权模式，可以访问主机的所有资源
+docker run --privileged -itd --name ubuntu -p 2222:22 --hostname dev -e TZ=Asia/Shanghai ubuntu:latest
+
+# 执行容器命令
+docker exec -ti ubuntu bash
+
+# 安装必要的软件
+apt update
+apt install -y initscripts  	# 系统初始化和服务管理
+apt install -y openssh-server
+apt install -y passwd
+apt install -y ntpdate  		# 同步时间
+apt install -y net-tools
+apt install -y iputils-ping
+apt install -y vim
+apt install -y curl
+apt install -y netcat
+apt install -y tree
+
+# 多个服务待验证
+apt install -y nginx
+apt install -y redis
+
+
+docker exec ubuntu date -R  #查看时间和时区
+```
+
+
+
+## Debain系统
+
+| 系统代号 | 版本说明 |
 | :------- | :------- |
-| bookworm | [Debian 12](https://wiki.debian.org/DebianBookworm) 下一代版本，预计2023年发布 |
+| bookworm | [Debian 12](https://wiki.debian.org/DebianBookworm) 最新版本，2023年6月发布 |
 | bullseye | [Debian 11](https://wiki.debian.org/DebianBullseye) 稳定(stable)版 2021 |
-| buster   | [Debian 10](https://wiki.debian.org/DebianBuster)，当前的稳定(stable)版 2019  |
-| stretch  | [Debian 9](https://wiki.debian.org/DebianStretch)，旧的稳定版, 长期支持 2017, 除LTS其他版本已经不再支持 |
-| jessie   | [Debian 8](https://wiki.debian.org/DebianJessie)，旧的稳定版，即将淘汰 2015 |
-| alpine   | [Alpine操作系统](https://alpinelinux.org/) 是一个独立发行版本，更加轻巧 |
+| buster   | [Debian 10](https://wiki.debian.org/DebianBuster) 稳定(stable)版 2019  |
 | slim     | 瘦身版，删除了许多非必需软件|
 
 ```shell
-docker pull ubuntu:latest
+# 下载镜像
+docker pull debian:bookworm
+docker pull debian:bookworm-slim
 
-docker pull debian:bullseye-slim
-docker pull debian:buster-slim
-docker pull debian:bullseye
-docker pull debian:buster
-docker pull debian:stretch
-
-docker pull centos:centos8.3.2011
-docker pull centos:centos7.9.2009
-
-docker pull alpine:latest
-docker pull alpine:edge
-```
-
-```shell
-docker image prune -f
-docker images|grep deepin|xargs docker prune -fa
+# 查看版本即代号
+docker run --rm debian:bookworm cat /etc/os-release|grep VERSION
 ```
 
 
@@ -121,6 +149,10 @@ docker run -d --name hello \
 https://www.cnblogs.com/yqmcu/p/16080476.html
 
 https://www.jianshu.com/p/d770a19e39c3
+
+
+
+
 
 
 

@@ -17,8 +17,7 @@ $ sudo ln -s /usr/local/etcd/etcdutl /usr/local/bin/etcdutl
 # 启动进程
 # 注意⚠️ ：advertise-client-urls是可以被客户端公开访问的地址
 $ mkdir -p /opt/etcd
-$ nohup etcd --name "etcd-server" \
---data-dir /opt/etcd \
+$ nohup etcd --data-dir /opt/etcd \
 --listen-client-urls http://0.0.0.0:2379 \
 --advertise-client-urls http://172.16.1.1:2379 &
 
