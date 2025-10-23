@@ -17,7 +17,7 @@ mkdir -p /data/gitlab/config /data/gitlab/logs /data/gitlab/data
 
 # 2. 下载GitLab镜像
 ```shell
-docker pull registry.gitlab.cn/omnibus/gitlab-jh:latest       #官方镜像 (文件较大3G+)    
+docker pull gitlab/gitlab-ce       #官方镜像 (文件较大3G+)    
 ```
 
 
@@ -162,6 +162,10 @@ server {
 
 
 
+
+
+
+https://blog.csdn.net/u011424614/article/details/150474643
 
 
 
