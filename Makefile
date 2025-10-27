@@ -43,6 +43,7 @@ commit:
 ## push <msg>@提交并推送到Git仓库(格式:make push msg=备注内容,msg为可选参数)。
 .PHONY:push
 push:commit
+	@git pull
 	@git push #origin master
 	@echo "\033[0;31m ⬆️ Push完毕\033[0m"
 
