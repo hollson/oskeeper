@@ -1,51 +1,45 @@
-@[toc]
-> **Gitlab官网：**  [https://about.gitlab.com/](https://about.gitlab.com/)
-> **Gitlab安装：**   [https://gitlab.cn/install/](https://gitlab.cn/install/)
 
-<br/>
 
-# 1. 创建GitLab目录
-- 为了数据的操作安全，建议创建`data`、`config`、`logs`三个数据卷。
+# 搭建Gitlab服务
+
+
+
+## 1. 运行GitLab
 ```shell
-mkdir -p /data/gitlab/config /data/gitlab/logs /data/gitlab/data
+# 创建挂载目录
+sudo mkdir -p /var/gitlab/config /var/gitlab/logs /var/gitlab/data
+sudo chmod -R 777 /var/gitlab
+
+# 启动容器,注意替换域名或IP
+sudo docker run --detach \
+  --hostname git.mafool.com \
+  --publish 9043:443 \
+  --publish 9080:80 \
+  --publish 9022:22 \
+  --name gitlab \
+  --restart always \
+  --volume /var/gitlab/config:/etc/gitlab \
+  --volume /var/gitlab/logs:/var/log/gitlab \
+  --volume /var/gitlab/data:/var/opt/gitlab \
+  gitlab/gitlab-ce:latest
 ```
 
-
-<br/>
-
-
-
-# 2. 下载GitLab镜像
-```shell
-docker pull gitlab/gitlab-ce       #官方镜像 (文件较大3G+)    
-```
+_首次启动需要几分钟初始化，可通过`docker logs -f gitlab`查看进度。_
 
 
 
-<br/>
+##  2. GitLab初始化
 
+- 打开浏览器，访问服务器 IP 或域名（如`http://git.mafool.com`）。
 
+- 首次登录需获取初始管理员密码：
 
-# 3. 运行GitLab容器
-- 主要暴露`HTTP(80)、SSL(443)、SSH(22)`三个端口。
-```shell
-# 192.168.xxx.xxx为是宿主机IP
-docker run \
---detach \
---hostname 192.168.xxx.xxx \
---publish 9443:443 \
---publish 9080:80 \
---publish 9022:22 \
---name gitlab \
---restart always \
---volume /data/gitlab/config:/etc/gitlab \
---volume /data/gitlab/logs:/var/log/gitlab \
---volume /data/gitlab/data:/var/opt/gitlab \
-registry.gitlab.cn/omnibus/gitlab-jh:latest
+  ```bash
+  sudo docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
+  ```
 
-# 查看相关日志
-docker logs gitlab
-```
+- 登录用户名：`root`，输入上述密码，登录后建议立即修改密码。
+
 
 
 <br/>
@@ -66,15 +60,11 @@ gitlab_rails['gitlab_shell_ssh_port'] = 9022
 gitlab_rails['time_zone'] = 'Asia/Shanghai'
 #*************************************************************
 ```
-```shell
-# 重启GitLab
-docker restart gitlab
-```
-**查看root默认密码：**
 
-```shell
-docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
-```
+
+
+
+
 
 
 
@@ -143,6 +133,12 @@ server {
 
 ## 配置邮件
 
+
+
+
+@[toc]
+> **Gitlab官网：**  [https://about.gitlab.com/](https://about.gitlab.com/)
+> **Gitlab安装：**   [https://gitlab.cn/install/](https://gitlab.cn/install/)
 
 
 
