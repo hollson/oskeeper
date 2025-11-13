@@ -7,7 +7,7 @@
 ## 1. 运行GitLab
 ```shell
 # 创建挂载目录
-sudo mkdir -p /var/gitlab/config /var/gitlab/logs /var/gitlab/data
+mkdir -p ./var/gitlab/{config,logs,data}
 sudo chmod -R 777 /var/gitlab
 
 # 启动容器,注意替换域名或IP
@@ -49,7 +49,7 @@ _首次启动需要几分钟初始化，可通过`docker logs -f gitlab`查看�
 # 4. 配置GitLab服务
 - 由于`22端口已经被宿主机占用`，所以我们必须另指定一个端口(`9022`)映射到gitlab上。
 ```shell
-vim /data/gitlab/config/gitlab.rb
+vim /var/gitlab/config/gitlab.rb
 #************************gitlab配置************************
 # 配置http协议
 external_url 'http://192.168.xxx.xxx'    # 宿主机IP
@@ -81,47 +81,7 @@ Gitlab服务初始化较慢，遇到`502`错误或页面无法打开，请继续
 
 
 
-<br/>
 
-
-
-## 配置Nginx
-
-```shell
-# 查看Gotlab自带的Nginx版本
-docker exec -ti gitlab /opt/gitlab/embedded/sbin/nginx -v
-```
-
-```shell
-vim /data/gitlab/config/gitlab.rb
-
-external_url 'http://hub.mafool.com'
-nginx['listen_port'] = 9080
-
-docker restart gitlab
-```
-
-
-
-```nginx
-server {
-    listen 80;
-    server_name hub.mafool.com;
- 
-    location / {
-            # push文件大小 会失败，根据情况调整
-            client_max_body_size 50m;
-            proxy_redirect off;
-            #以下确保 gitlab中项目的 url 是域名而不是 http://git，不可缺少
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            # 反向代理到 gitlab 内置的 nginx ，192.168.100.120为gitlab内容nginx服务IP地址
-            proxy_pass http://localhost:9080;
-            #index index.html index.htm;
-        }
-}
-```
 
 
 
