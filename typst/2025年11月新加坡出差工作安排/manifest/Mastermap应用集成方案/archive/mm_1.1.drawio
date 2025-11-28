@@ -1,0 +1,88 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" version="28.1.2">
+  <diagram name="第 1 页" id="v0ZzK2LpviGRn6X5LkVe">
+    <mxGraphModel dx="1133" dy="829" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Q5lPsSSSen0ZDm0CHTLq-26" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#FFFFFF;" parent="1" vertex="1">
+          <mxGeometry x="310" y="450" width="980" height="750" as="geometry" />
+        </mxCell>
+        <mxCell id="5tWJ2j6tdIBnuKfIypJ4-70" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;fillColor=#dae8fc;gradientColor=#7ea6e0;" parent="1" vertex="1">
+          <mxGeometry x="340" y="540" width="920" height="294" as="geometry" />
+        </mxCell>
+        <mxCell id="Q5lPsSSSen0ZDm0CHTLq-23" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=none;gradientColor=#ffd966;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" parent="1" vertex="1">
+          <mxGeometry x="340" y="870" width="920" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="5tWJ2j6tdIBnuKfIypJ4-41" value="Data（PostgreSQL）" style="rounded=1;whiteSpace=wrap;html=1;arcSize=0;fillColor=#0050EF;strokeColor=none;fontColor=#ffffff;fontStyle=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="395" y="1054" width="820" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5tWJ2j6tdIBnuKfIypJ4-47" value="&lt;span style=&quot;text-align: left;&quot;&gt;&lt;font&gt;&amp;nbsp;Mastermap&lt;/font&gt;&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=22;" parent="1" vertex="1">
+          <mxGeometry x="340" y="870" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="5tWJ2j6tdIBnuKfIypJ4-71" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;dashed=1;fillColor=#d5e8d4;strokeColor=#82b366;startSize=6;sourcePerimeterSpacing=0;width=24;endSize=8.44;endWidth=41;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="554" y="890" as="sourcePoint" />
+            <mxPoint x="554" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5tWJ2j6tdIBnuKfIypJ4-73" value="模块集成 (NPM)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="5tWJ2j6tdIBnuKfIypJ4-71" vertex="1" connectable="0">
+          <mxGeometry x="-0.0639" y="1" relative="1" as="geometry">
+            <mxPoint x="1" y="3" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5tWJ2j6tdIBnuKfIypJ4-77" value="&lt;p class=&quot;MsoNormal&quot;&gt;&lt;b&gt;&lt;span style=&quot;font-family: Arial; font-size: 22pt;&quot;&gt;Mastermap+Appx 应用集成模型框架&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="535.5" y="482" width="518.5" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q5lPsSSSen0ZDm0CHTLq-5" value="API ( MMAPI + OpenAPI )" style="rounded=1;whiteSpace=wrap;html=1;arcSize=0;fillColor=#fa6800;fontColor=#FFFFFF;strokeColor=none;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="395" y="993" width="520" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Q5lPsSSSen0ZDm0CHTLq-11" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;dashed=1;fillColor=#ffe6cc;strokeColor=#d79b00;startSize=6;sourcePerimeterSpacing=0;width=24;endSize=8.44;endWidth=41;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="818" y="920" as="sourcePoint" />
+            <mxPoint x="818" y="770" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Q5lPsSSSen0ZDm0CHTLq-12" value="接口调用 (Restfull)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="Q5lPsSSSen0ZDm0CHTLq-11" vertex="1" connectable="0">
+          <mxGeometry x="-0.0639" y="1" relative="1" as="geometry">
+            <mxPoint x="1" y="3" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Q5lPsSSSen0ZDm0CHTLq-13" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;dashed=1;fillColor=#dae8fc;strokeColor=#6c8ebf;startSize=6;sourcePerimeterSpacing=0;width=24;endSize=8.44;endWidth=41;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1084" y="950" as="sourcePoint" />
+            <mxPoint x="1084" y="801" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Q5lPsSSSen0ZDm0CHTLq-14" value="数据分发 (Offline)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="Q5lPsSSSen0ZDm0CHTLq-13" vertex="1" connectable="0">
+          <mxGeometry x="-0.0639" y="1" relative="1" as="geometry">
+            <mxPoint x="1" y="3" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Q5lPsSSSen0ZDm0CHTLq-16" value="&lt;span style=&quot;text-align: left;&quot;&gt;&lt;font&gt;Appx&lt;/font&gt;&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=22;" parent="1" vertex="1">
+          <mxGeometry x="340" y="540" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Q5lPsSSSen0ZDm0CHTLq-17" value="Web Application (Modules)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=0;fillColor=#008A00;strokeColor=none;fontColor=#ffffff;fontStyle=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="397" y="587" width="820" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Q5lPsSSSen0ZDm0CHTLq-18" value="API +" style="rounded=1;whiteSpace=wrap;html=1;arcSize=0;fillColor=#fa6800;fontColor=#FFFFFF;strokeColor=none;fontSize=16;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="697" y="648" width="520" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Q5lPsSSSen0ZDm0CHTLq-19" value="BusinessDB +" style="rounded=1;whiteSpace=wrap;html=1;arcSize=0;fillColor=#0050EF;fontColor=#ffffff;strokeColor=none;fontStyle=1;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="937" y="709" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Q5lPsSSSen0ZDm0CHTLq-20" value="" style="dashed=0;outlineConnect=0;html=1;align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;shape=mxgraph.webicons.github;gradientColor=#DFDEDE;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="1175" y="587" width="42" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="Q5lPsSSSen0ZDm0CHTLq-25" value="" style="group" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="395" y="932" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5tWJ2j6tdIBnuKfIypJ4-48" value="Modules&amp;nbsp; (React)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=0;fillColor=#008A00;fontColor=#ffffff;strokeColor=#001DBC;fontStyle=1;fontSize=14;strokeWidth=0;" parent="Q5lPsSSSen0ZDm0CHTLq-25" vertex="1">
+          <mxGeometry width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5tWJ2j6tdIBnuKfIypJ4-50" value="" style="dashed=0;outlineConnect=0;html=1;align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;shape=mxgraph.webicons.github;gradientColor=#DFDEDE;fillColor=none;" parent="Q5lPsSSSen0ZDm0CHTLq-25" vertex="1">
+          <mxGeometry x="238" width="42" height="42" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

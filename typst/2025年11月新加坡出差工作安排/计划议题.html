@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>团队建设与工作推进报告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#475569',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        danger: '#ef4444',
+                        info: '#3b82f6',
+                        light: '#f8fafc',
+                        dark: '#1e293b',
+                        accent: '#8b5cf6',
+                        teal: '#0d9488',
+                        purple: '#9333ea',
+                        cyan: '#06b6d4',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .shadow-soft {
+                box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+            .section-divider {
+                height: 4px;
+                width: 60px;
+                margin: 1rem 0;
+                border-radius: 2px;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans text-gray-800">
+    <!-- 顶部导航 -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-primary flex items-center">
+                <i class="fa fa-file-text-o mr-3"></i>团队建设与工作推进报告
+            </h1>
+            <div class="text-gray-500 text-sm">
+                <span class="mr-4"><i class="fa fa-calendar-o mr-1"></i>2025年11月14日</span>
+                <span><i class="fa fa-user-o mr-1"></i>项目团队</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- 封面区域 -->
+        <section class="bg-gradient-to-r from-primary to-accent text-white rounded-xl p-8 mb-10 shadow-lg">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">团队建设与工作推进综合报告</h2>
+                <p class="text-lg opacity-90 mb-6">聚焦团队协作优化、项目对接推进、技术学习交流与长远发展规划</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <span class="bg-white/20 px-4 py-2 rounded-full text-sm backdrop-blur-sm">团队建设</span>
+                    <span class="bg-white/20 px-4 py-2 rounded-full text-sm backdrop-blur-sm">工作对接</span>
+                    <span class="bg-white/20 px-4 py-2 rounded-full text-sm backdrop-blur-sm">学习交流</span>
+                    <span class="bg-white/20 px-4 py-2 rounded-full text-sm backdrop-blur-sm">成长发展</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第一部分：团队建设 -->
+        <section class="mb-16">
+            <div class="flex items-center mb-6">
+                <div class="bg-primary text-white p-3 rounded-lg mr-4">
+                    <i class="fa fa-users text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">一、团队建设</h2>
+            </div>
+            <div class="section-divider bg-primary"></div>
+
+            <!-- 问题总结卡片 -->
+            <div class="bg-white rounded-xl shadow-soft p-6 mb-8 card-hover">
+                <h3 class="text-xl font-semibold text-danger mb-4 flex items-center">
+                    <i class="fa fa-exclamation-triangle mr-2"></i>问题总结
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- 沟通问题 -->
+                    <div class="bg-red-50 p-5 rounded-lg border-l-4 border-danger">
+                        <h4 class="font-semibold mb-2 text-gray-800">团队沟通问题</h4>
+                        <p class="text-gray-600 text-sm">依赖聊天式沟通形式，未形成规范流程；项目管理和产品研发缺乏系统性把控，导致信息传递不精准、不及时。</p>
+                    </div>
+
+                    <!-- 产品把控问题 -->
+                    <div class="bg-orange-50 p-5 rounded-lg border-l-4 border-warning">
+                        <h4 class="font-semibold mb-2 text-gray-800">产品把控问题</h4>
+                        <p class="text-gray-600 text-sm">产品设计细节和业务逻辑的掌控不到位，导致沟通反复，工作进度难以有效对齐，影响项目推进效率。</p>
+                    </div>
+
+                    <!-- 团队协作问题 -->
+                    <div class="bg-yellow-50 p-5 rounded-lg border-l-4 border-warning">
+                        <h4 class="font-semibold mb-2 text-gray-800">团队协作问题</h4>
+                        <p class="text-gray-600 text-sm">缺乏有效的团队管理流程规范，职责划分不够清晰，团队协作效率不高，资源配置不够合理。</p>
+                    </div>
+
+                    <!-- 代码质量问题 -->
+                    <div class="bg-red-50 p-5 rounded-lg border-l-4 border-danger">
+                        <h4 class="font-semibold mb-2 text-gray-800">代码质量问题</h4>
+                        <p class="text-gray-600 text-sm">代码缺少评审机制、研发估时不到位，缺少内部测试环节（即时交付），导致BUG频出，影响产品稳定性。</p>
+                    </div>
+
+                    <!-- 协作工具问题 -->
+                    <div class="bg-blue-50 p-5 rounded-lg border-l-4 border-info">
+                        <h4 class="font-semibold mb-2 text-gray-800">协作工具问题</h4>
+                        <p class="text-gray-600 text-sm">Penpot、Grist等工具团队反映不适应或不符合中国人使用习惯，影响工作效率和协作体验。</p>
+                    </div>
+
+                    <!-- 两地协作问题 -->
+                    <div class="bg-indigo-50 p-5 rounded-lg border-l-4 border-accent">
+                        <h4 class="font-semibold mb-2 text-gray-800">两地协作问题</h4>
+                        <p class="text-gray-600 text-sm">新加坡与西安团队沟通及时性和有效性不足，在项目计划、时间协调性、权限分配等方面存在协作障碍。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 改进计划卡片 -->
+            <div class="bg-white rounded-xl shadow-soft p-6 card-hover mb-8">
+                <h3 class="text-xl font-semibold text-success mb-4 flex items-center">
+                    <i class="fa fa-check-circle mr-2"></i>改进计划
+                </h3>
+
+                <div class="space-y-5">
+                    <!-- 团队协作机制 -->
+                    <div class="bg-green-50 p-5 rounded-lg border-l-4 border-success">
+                        <h4 class="font-semibold mb-2 text-gray-800">1. 团队协作机制优化</h4>
+                        <p class="text-gray-600">针对工具不适应及协作流程不规范问题，采用Gitlab统一管理项目、产品、开发、问题等全流程，建立标准化协作体系。</p>
+                        <div class="mt-3 flex justify-center">
+                            <img src="asset/gitflow.png" alt="Git工作流示意图" class="max-w-full h-auto rounded-lg shadow-sm">
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">参考附件：<a href="manifest/Git高效项目管理与协作/Git高效项目管理与协作.html"
+                                class="text-primary hover:underline">Git高效项目管理与协作</a></p>
+                    </div>
+
+                    <!-- 工作沟通方式 -->
+                    <div class="bg-blue-50 p-5 rounded-lg border-l-4 border-info">
+                        <h4 class="font-semibold mb-2 text-gray-800">2. 工作沟通方式升级</h4>
+                        <p class="text-gray-600">针对聊天式沟通的弊端，建立以任务和问题为导向的沟通机制，所有相关ISSUE均需详细记录，确保信息可追溯、可沉淀，摒弃零散沟通模式。</p>
+                    </div>
+
+                    <!-- 项目负责制度 -->
+                    <div class="bg-purple-50 p-5 rounded-lg border-l-4 border-accent">
+                        <h4 class="font-semibold mb-2 text-gray-800">3. 项目负责制度建立</h4>
+                        <p class="text-gray-600">针对团队协作和产品把控问题，以项目为单位，明确设置项目负责人和产品负责人，强化个人担当意识，提升项目推进效率和产品把控能力。</p>
+                    </div>
+
+                    <!-- 工作汇报机制 -->
+                    <div class="bg-teal-50 p-5 rounded-lg border-l-4 border-teal">
+                        <h4 class="font-semibold mb-2 text-gray-800">4. 工作汇报机制完善</h4>
+                        <p class="text-gray-600">针对两地协作和进度对齐问题，实施工作周计划和汇报制度；由负责人统一对接新加坡方面（产品与研发），沟通内容形成正式清单，确保信息同步准确。
+                        </p>
+                    </div>
+
+                    <!-- 个人成长计划 -->
+                    <div class="bg-amber-50 p-5 rounded-lg border-l-4 border-warning">
+                        <h4 class="font-semibold mb-2 text-gray-800">5. 个人成长计划实施</h4>
+                        <p class="text-gray-600">针对团队能力提升需求，着重培养成员产品思维、架构思维、跨栈学习能力以及文档撰写能力，全面提升团队专业素养。</p>
+                    </div>
+
+                    <!-- 研发内部测试 -->
+                    <div class="bg-red-50 p-5 rounded-lg border-l-4 border-danger">
+                        <h4 class="font-semibold mb-2 text-gray-800">6. 研发质量管控强化</h4>
+                        <p class="text-gray-600">针对代码质量问题，在研发交付环节预留至少三分之一时间用于内部测试，同时增加必要的自动化测试环节，从源头减少BUG产生。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 实施进度 -->
+            <div class="bg-white rounded-xl shadow-soft p-6 card-hover">
+                <h3 class="text-xl font-semibold text-info mb-4 flex items-center">
+                    <i class="fa fa-calendar-check-o mr-2"></i>改进计划实施进度
+                </h3>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-primary mb-2">短期目标（11-12月）</h4>
+                        <ul class="text-gray-600 space-y-2 text-sm">
+                            <li>✓ 完成Gitlab协作体系搭建（30%）</li>
+                            <li>✓ 建立标准化沟通流程（20%）</li>
+                            <li>✓ 明确项目负责人制度（已完成）</li>
+                            <li>□ 启动首轮内部测试规范制定（10%）</li>
+                        </ul>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-success mb-2">中期目标（1-2月）</h4>
+                        <ul class="text-gray-600 space-y-2 text-sm">
+                            <li>□ 协作机制全面落地（80%目标）</li>
+                            <li>□ 沟通流程优化完善（70%目标）</li>
+                            <li>□ 质量管控体系建立（40%目标）</li>
+                            <li>□ 个人成长计划启动（30%目标）</li>
+                        </ul>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-accent mb-2">长期目标（3-4月）</h4>
+                        <ul class="text-gray-600 space-y-2 text-sm">
+                            <li>□ 所有改进措施全面落地</li>
+                            <li>□ 质量管控达到预期效果</li>
+                            <li>□ 个人成长计划初见成效</li>
+                            <li>□ 建立持续优化机制</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第二部分：工作对接 -->
+        <section class="mb-16">
+            <div class="flex items-center mb-6">
+                <div class="bg-info text-white p-3 rounded-lg mr-4">
+                    <i class="fa fa-exchange text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">二、工作对接</h2>
+            </div>
+            <div class="section-divider bg-info"></div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Mastermap应用集成方案对接 -->
+                <div class="bg-white rounded-xl shadow-soft p-6 card-hover">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-info/20 text-info p-2 rounded-full mr-3">
+                            <i class="fa fa-code-fork"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800">1. Mastermap应用集成方案对接</h3>
+                    </div>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fa fa-file-word-o text-primary mt-1 mr-2"></i>
+                            <span>Mastermap应用集成方案.v.1.2 Word：<a href="manifest/Mastermap应用集成方案/Mastermap应用集成方案1.2.docx"
+                                    class="text-primary hover:underline">查看附件</a></span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-file-html-o text-primary mt-1 mr-2"></i>
+                            <span>Mastermap应用集成方案.v.1.2 Html：<a href="manifest/Mastermap应用集成方案/Mastermap应用集成方案1.2.html"
+                                    class="text-primary hover:underline">查看附件</a></span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-file-text-o text-primary mt-1 mr-2"></i>
+                            <span>ReactNative与Flutter综合报告：<a
+                                    href="manifest/Mastermap应用集成方案/ReactNative与Flutter综合报告.html"
+                                    class="text-primary hover:underline">查看附件</a></span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-file-text-o text-primary mt-1 mr-2"></i>
+                            <span>ReactNative与Flutter市场调研：<a
+                                    href="manifest/Mastermap应用集成方案/ReactNative与Flutter市场调研.html"
+                                    class="text-primary hover:underline">查看附件</a></span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-file-text-o text-primary mt-1 mr-2"></i>
+                            <span>为什么选择ReactNative：<a href="manifest/Mastermap应用集成方案/为什么选择ReactNative.html"
+                                    class="text-primary hover:underline">查看附件</a></span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-file-text-o text-primary mt-1 mr-2"></i>
+                            <span>为什么选择Flutter：<a href="manifest/Mastermap应用集成方案/为什么选择Flutter.html"
+                                    class="text-primary hover:underline">查看附件</a></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- MasterMap工作细节沟通 -->
+                <div class="bg-white rounded-xl shadow-soft p-6 card-hover">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-accent/20 text-accent p-2 rounded-full mr-3">
+                            <i class="fa fa-comments"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800">2. MasterMap工作细节沟通</h3>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="text-gray-600">具体沟通内容及问题清单：<a href="#"
+                                class="text-primary hover:underline">xxxx（查看附件）</a></p>
+                    </div>
+                </div>
+
+                <!-- 自动化测试实施计划报告 -->
+                <div class="bg-white rounded-xl shadow-soft p-6 card-hover">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-success/20 text-success p-2 rounded-full mr-3">
+                            <i class="fa fa-check-square-o"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800">3. 自动化测试实施计划报告</h3>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="text-gray-600">实施计划详情及问题清单：<a href="#"
+                                class="text-primary hover:underline">xxxx（查看附件）</a></p>
+                    </div>
+                </div>
+
+                <!-- DataTransfer项目细节对接 -->
+                <div class="bg-white rounded-xl shadow-soft p-6 card-hover">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-warning/20 text-warning p-2 rounded-full mr-3">
+                            <i class="fa fa-database"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800">4. DataTransfer项目细节对接</h3>
+                    </div>
+                    <p class="text-gray-600 mb-3"><strong>目的：</strong>摸清产品应用场景和底层逻辑，讨论产品细节</p>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="text-gray-600">问题清单：<a href="manifest/DataTransfer问题清单v1.1.pdf"
+                                class="text-primary hover:underline">DataTransfer问题清单（查看附件）</a></p>
+                    </div>
+                </div>
+
+                <!-- Travel遗留问题与产品落地 -->
+                <div class="bg-white rounded-xl shadow-soft p-6 card-hover md:col-span-2">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-danger/20 text-danger p-2 rounded-full mr-3">
+                            <i class="fa fa-plane"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800">5. Travel遗留问题与产品落地</h3>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <p class="text-gray-600"><i
+                                    class="fa fa-question-circle text-warning mr-2"></i>生产环境是否有必要使用容器</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <p class="text-gray-600"><i
+                                    class="fa fa-question-circle text-warning mr-2"></i>如何推进项目落地，内容如何持续输出，用户体验如何跟进</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <p class="text-gray-600"><i
+                                    class="fa fa-question-circle text-warning mr-2"></i>内容反应有些深奥、如何优化内容</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第三部分：学习交流 -->
+        <section class="mb-16">
+            <div class="flex items-center mb-6">
+                <div class="bg-accent text-white p-3 rounded-lg mr-4">
+                    <i class="fa fa-book text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">三、学习交流</h2>
+            </div>
+            <div class="section-divider bg-accent"></div>
+
+            <!-- 学习领域说明 -->
+            <div class="bg-white rounded-xl shadow-soft p-6 mb-8 card-hover">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">学习领域规划</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-gray-600 mb-4">根据团队发展需求，构建全方位学习体系，涵盖技术研发、产品设计、行业动态等多个维度，确保团队能力全面提升。</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-accent mr-2"></div>
+                                <span class="text-gray-700">AI与前沿技术</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-primary mr-2"></div>
+                                <span class="text-gray-700">后端技术栈</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-success mr-2"></div>
+                                <span class="text-gray-700">前端技术栈</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-warning mr-2"></div>
+                                <span class="text-gray-700">硬件开发</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-teal mr-2"></div>
+                                <span class="text-gray-700">产品与业务</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-5 rounded-lg">
+                        <h4 class="font-semibold mb-3 text-gray-800">学习目标</h4>
+                        <ul class="text-gray-600 space-y-2 text-sm">
+                            <li><i class="fa fa-check text-success mr-2"></i>掌握核心技术栈，提升专业能力</li>
+                            <li><i class="fa fa-check text-success mr-2"></i>培养跨领域学习能力，适应多项目需求</li>
+                            <li><i class="fa fa-check text-success mr-2"></i>了解行业前沿动态，把握技术发展趋势</li>
+                            <li><i class="fa fa-check text-success mr-2"></i>提升产品思维，增强业务理解能力</li>
+                            <li><i class="fa fa-check text-success mr-2"></i>建立知识分享机制，促进团队共同成长</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 学习交流卡片网格 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-6">
+                <!-- MasterMap中的AI技术 -->
+                <div class="bg-white rounded-xl shadow-soft p-6 text-center card-hover">
+                    <div class="bg-accent/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-brain text-accent text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">MasterMap中的AI技术</h3>
+                    <p class="text-gray-500 text-sm">深入研究AI技术的应用场景与实现原理</p>
+                </div>
+
+                <!-- 瞬动机器人研发计划 -->
+                <div class="bg-white rounded-xl shadow-soft p-6 text-center card-hover">
+                    <div class="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-robot text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">瞬动机器人研发</h3>
+                    <p class="text-gray-500 text-sm">学习机器人研发技术，参与项目规划实施</p>
+                </div>
+
+                <!-- 中国AI发展研究报告 -->
+                <div class="bg-white rounded-xl shadow-soft p-6 text-center card-hover">
+                    <div class="bg-success/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-line-chart text-success text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">中国AI发展研究</h3>
+                    <p class="text-gray-500 text-sm">关注行业动态，分析技术趋势与市场机会</p>
+                </div>
+
+                <!-- Acias产品/技术学习 -->
+                <div class="bg-white rounded-xl shadow-soft p-6 text-center card-hover">
+                    <div class="bg-warning/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-laptop text-warning text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">Acias产品技术学习</h3>
+                    <p class="text-gray-500 text-sm">系统学习产品特性与核心技术</p>
+                </div>
+
+                <!-- 后端学习 -->
+                <div class="bg-white rounded-xl shadow-soft p-6 text-center card-hover">
+                    <div class="bg-cyan/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-server text-cyan text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">后端技术栈学习</h3>
+                    <p class="text-gray-500 text-sm">深入学习服务架构、数据库、API设计与性能优化</p>
+                </div>
+
+                <!-- 前端学习 -->
+                <div class="bg-white rounded-xl shadow-soft p-6 text-center card-hover">
+                    <div class="bg-purple/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-code text-purple text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">前端技术栈学习</h3>
+                    <p class="text-gray-500 text-sm">学习框架应用、组件设计、响应式开发与性能优化</p>
+                </div>
+
+                <!-- 硬件开发交流 -->
+                <div class="bg-white rounded-xl shadow-soft p-6 text-center card-hover">
+                    <div class="bg-danger/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-microchip text-danger text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">硬件开发交流</h3>
+                    <p class="text-gray-500 text-sm">分享硬件开发经验，解决嵌入式系统与硬件适配难题</p>
+                </div>
+
+                <!-- 国内外技术分享 -->
+                <div class="bg-white rounded-xl shadow-soft p-6 text-center card-hover">
+                    <div class="bg-indigo/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-globe text-indigo text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">国内外技术分享</h3>
+                    <p class="text-gray-500 text-sm">跟踪国际前沿技术，分享行业最佳实践与案例分析</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第四部分：成长与发展 -->
+        <section class="mb-10">
+            <div class="flex items-center mb-6">
+                <div class="bg-success text-white p-3 rounded-lg mr-4">
+                    <i class="fa fa-rocket text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800">四、成长与发展</h2>
+            </div>
+            <div class="section-divider bg-success"></div>
+
+            <div class="bg-white rounded-xl shadow-soft p-8">
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- 发挥西安团队优势 -->
+                    <div class="border-t-4 border-success pt-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                            <i class="fa fa-lightbulb-o text-success mr-2"></i>发挥西安团队优势
+                        </h3>
+                        <p class="text-gray-600">把握中国AI创业机会，充分挖掘团队技术潜力与创新能力，结合国内市场需求，打造核心竞争力。</p>
+                    </div>
+
+                    <!-- 创业团队激励计划 -->
+                    <div class="border-t-4 border-primary pt-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                            <i class="fa fa-trophy text-primary mr-2"></i>创业团队激励计划
+                        </h3>
+                        <p class="text-gray-600">制定年度创业计划与明确业绩目标，建立基于辛苦付出与贡献值的创业激励方案，激发团队积极性。</p>
+                    </div>
+
+                    <!-- 按能力快速承接项目 -->
+                    <div class="border-t-4 border-accent pt-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                            <i class="fa fa-briefcase text-accent mr-2"></i>快速承接项目
+                        </h3>
+                        <p class="text-gray-600">根据团队成员能力特点合理分工，提升快速响应与执行能力，高效承接各类项目任务，实现能力与业务同步增长。</p>
+                    </div>
+                </div>
+
+                <!-- 团队成长路径 -->
+                <div class="mt-10">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">团队成长路径规划</h3>
+                    <div class="grid md:grid-cols-6 gap-2">
+                        <div class="bg-blue-50 p-4 rounded-lg text-center">
+                            <h4 class="font-semibold text-primary text-sm mb-2">Q1</h4>
+                            <p class="text-gray-600 text-xs">基础能力建设<br>规范流程建立</p>
+                        </div>
+                        <div class="bg-blue-100 p-4 rounded-lg text-center">
+                            <h4 class="font-semibold text-primary text-sm mb-2">Q2</h4>
+                            <p class="text-gray-600 text-xs">技术能力提升<br>协作效率优化</p>
+                        </div>
+                        <div class="bg-blue-200 p-4 rounded-lg text-center">
+                            <h4 class="font-semibold text-primary text-sm mb-2">Q3</h4>
+                            <p class="text-gray-600 text-xs">项目经验积累<br>业务能力增强</p>
+                        </div>
+                        <div class="bg-blue-300 p-4 rounded-lg text-center">
+                            <h4 class="font-semibold text-primary text-sm mb-2">Q4</h4>
+                            <p class="text-gray-600 text-xs">核心竞争力形成<br>项目交付成熟</p>
+                        </div>
+                        <div class="bg-blue-400 p-4 rounded-lg text-center text-white">
+                            <h4 class="font-semibold text-sm mb-2">Q1+1</h4>
+                            <p class="text-white text-xs">行业影响力提升<br>创新能力突破</p>
+                        </div>
+                        <div class="bg-blue-500 p-4 rounded-lg text-center text-white">
+                            <h4 class="font-semibold text-sm mb-2">Q2+1</h4>
+                            <p class="text-white text-xs">全面能力成熟<br>可持续发展</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-lg font-semibold mb-2">团队建设与工作推进报告</h3>
+                    <p class="text-gray-400 text-sm">持续优化 · 共同成长</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fa fa-file-pdf-o text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fa fa-print text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fa fa-share-alt text-xl"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-6 pt-6 text-center text-gray-400 text-sm">
+                © 2025 项目团队 版权所有 | 报告更新时间：2025年11月14日
+            </div>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button id="backToTop"
+        class="fixed bottom-6 right-6 bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300">
+        <i class="fa fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // 返回顶部功能
+        const backToTopBtn = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.remove('opacity-0', 'invisible');
+                backToTopBtn.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopBtn.classList.remove('opacity-100', 'visible');
+                backToTopBtn.classList.add('opacity-0', 'invisible');
+            }
+        });
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

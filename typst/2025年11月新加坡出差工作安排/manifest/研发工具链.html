@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>工具推荐表</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            margin: 30px;
+            background-color: #f8f9fa;
+        }
+        .tool-table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            border-radius: 10px;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        th {
+            background: linear-gradient(135deg, #2c3e50, #1a2530);
+            color: white;
+            font-weight: 600;
+            text-align: left;
+            padding: 16px 20px;
+            font-size: 18px;
+        }
+        td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #e3e7ed;
+            transition: background 0.3s;
+        }
+        tr:hover td {
+            background-color: #f0f4ff;
+        }
+        .design { background-color: #e8f4ff; }
+        .manage { background-color: #e6f7ed; }
+        .knowledge { background-color: #fff8e6; }
+        .file { background-color: #f0e6ff; }
+        .chart { background-color: #e6f4ff; }
+        .ai { background-color: #ffe6e6; }
+        .rating { color: #FF9800; font-size: 18px; }
+        .category-header {
+            font-weight: bold;
+            font-size: 17px;
+            color: #1a237e;
+        }
+        strong {
+            color: #d32f2f;
+            background-color: rgba(255,235,238,0.4);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .divider {
+            height: 4px;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <table class="tool-table">
+        <thead>
+            <tr>
+                <th>类别</th>
+                <th>工具名称</th>
+                <th>评分</th>
+                <th>推荐理由（重点标注选择标准）</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 产品设计 -->
+            <tr class="design">
+                <td rowspan="3" class="category-header">产品设计</td>
+                <td>Penpot</td>
+                <td class="rating">★★★★★</td>
+                <td>开源UI/UX设计协作平台；<strong>开源、可自建部署、支持多用户协作、支持离线工作</strong>（自建部署后断网可本地操作）</td>
+            </tr>
+            <tr class="design">
+                <td>Axure</td>
+                <td class="rating">★★★★</td>
+                <td>专业原型设计工具（适合复杂交互）；支持多用户协作、涉及设计非代码类可离线工作；（非开源、需一次性付费、不支持自建部署，不符合核心标准，仅作补充推荐）</td>
+            </tr>
+            <tr class="design">
+                <td>墨刀</td>
+                <td class="rating">★★★★</td>
+                <td>轻量化原型设计与协作工具；支持多用户实时协作、提供离线编辑功能（需提前缓存）；（非开源、以云端服务为主、支持私有部署版本（付费），作为补充推荐）</td>
+            </tr>
+            <!-- 任务管理 -->
+            <tr class="manage">
+                <td rowspan="2" class="category-header">任务管理&代码写作工具</td>
+                <td>GitLab</td>
+                <td class="rating">★★★★★</td>
+                <td>集成项目管理、代码托管、CI/CD、知识库等多功能；<strong>开源、可自建部署、支持LDAP/SSO、支持多用户协作、涉及代码为离线服务</strong></td>
+            </tr>
+            <tr class="manage">
+                <td>Jira</td>
+                <td class="rating">★★★★</td>
+                <td>敏捷项目跟踪工具；支持多用户协作、离线访问本地部署实例；（非开源、多为付费云端/自建、不支持核心标准，仅作补充推荐）</td>
+            </tr>
+            
+            <!-- 知识库 -->
+            <tr class="knowledge">
+                <td rowspan="2" class="category-header">知识库</td>
+                <td>MinDoc</td>
+                <td class="rating">★★★★★</td>
+                <td>轻量型在线文档与知识库系统；<strong>开源、可自建部署、支持多用户协作、免费、离线可访问本地部署的文档</strong></td>
+            </tr>
+            <tr class="knowledge">
+                <td>Hugo</td>
+                <td class="rating">★★★★</td>
+                <td>静态网站生成器（适合知识库/博客）；<strong>开源、可自建部署、支持多用户协作（通过Git版本控制）、免费、全离线生成与访问</strong></td>
+            </tr>
+            
+            <!-- 文件共享 -->
+            <tr class="file">
+                <td class="category-header">文件共享</td>
+                <td>Cloudreve</td>
+                <td class="rating">★★★★★</td>
+                <td>多存储协议文件共享管理系统；<strong>开源、可自建部署、支持多用户协作、免费、本地部署后支持离线文件管理</strong></td>
+            </tr>
+            
+            <!-- 图表绘制 -->
+            <tr class="chart">
+                <td rowspan="2" class="category-header">图表绘制工具</td>
+                <td>Draw.io （开源版）</td>
+                <td class="rating">★★★★★</td>
+                <td>全功能图表绘制工具（可自建部署或用桌面版）；<strong>开源、可自建部署、支持多用户协作、免费、桌面版/自建版支持离线工作</strong></td>
+            </tr>
+            <tr class="chart">
+                <td>PlantUML</td>
+                <td class="rating">★★★★★</td>
+                <td>文本驱动UML图表工具；<strong>开源、可自建部署、支持多用户协作（通过版本控制）、免费、纯离线生成图表</strong></td>
+            </tr>
+            
+            <!-- AI工具 -->
+            <tr class="ai">
+                <td rowspan="2" class="category-header">AI 工具</td>
+                <td>Qoder（阿里）</td>
+                <td class="rating">★★★★★</td>
+                <td>企业级AI辅助编程工具；<strong>可自建部署、支持多用户协作、涉及代码为离线服务</strong>（本地推理，断网可用）</td>
+            </tr>
+            <tr class="ai">
+                <td>Copilot</td>
+                <td class="rating">★★★★</td>
+                <td>AI辅助编程工具（代码补全/建议）；支持多用户协作、涉及代码但依赖云端服务；（非开源、不支持自建部署/离线工作，不符合核心标准，仅作补充推荐）</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="divider"></div>
+    <p style="text-align: right; color: #6c757d; margin-top: 10px;">
+        更新日期：2025年11月14日 17:41（农历乙巳蛇年九月廿五）
+    </p>
+</body>
+</html>

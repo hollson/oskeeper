@@ -1,0 +1,29 @@
+stages:
+  - compile_pdf
+  - package
+
+compile_pdf:
+  stage: compile_pdf
+  image:
+    name: ghcr.io/typst/typst:latest
+    entrypoint: [""]
+  before_script:
+    - mkdir -p pdfs/
+  script:
+    - for f in *.typ; do typst compile --font-path fonts/ "$f" "pdfs/${f%.typ}.pdf"; done
+  artifacts:
+    paths:
+      - "pdfs/"
+
+package:
+  stage: package
+  needs:
+    - job: compile_pdf
+      artifacts: true
+  script:
+    - mkdir documentation/
+    - cp  pdfs/*.pdf documentation/
+    - tar -cf documentation.tar documentation/
+  artifacts:
+    paths:
+      - documentation.tar

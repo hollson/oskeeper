@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>国内外AI应用大模型对比方案</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto my-8 p-6 md:p-10 bg-white rounded-xl shadow-2xl">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900">国内外AI应用大模型对比方案</h1>
+            <p class="text-gray-500 mt-3 text-lg">全球Top 10大模型应用层、费用及部署分析</p>
+        </header>
+
+        <!-- 摘要表格 -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 border-b-4 border-blue-500 pb-3 mb-6">核心模型摘要</h2>
+            <div class="overflow-x-auto rounded-lg shadow-md">
+                <table class="min-w-full leading-normal">
+                    <thead>
+                        <tr class="border-b-2 border-gray-200 bg-gray-800 text-left text-xs font-semibold text-gray-100 uppercase tracking-wider">
+                            <th class="px-5 py-3">模型 (Model)</th>
+                            <th class="px-5 py-3">开发商 (Developer)</th>
+                            <th class="px-5 py-3">核心特点</th>
+                            <th class="px-5 py-3">所属</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white">
+                        <tr>
+                            <td class="px-5 py-4 border-b border-gray-200">GPT-4o</td>
+                            <td class="px-5 py-4 border-b border-gray-200">OpenAI</td>
+                            <td class="px-5 py-4 border-b border-gray-200">顶尖性能、多模态实时交互、高性价比</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="bg-blue-200 text-blue-800 py-1 px-3 rounded-full text-xs">国际</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4 border-b border-gray-200">Gemini 1.5 Pro</td>
+                            <td class="px-5 py-4 border-b border-gray-200">Google</td>
+                            <td class="px-5 py-4 border-b border-gray-200">百万级超长上下文、视频理解、深度集成谷歌生态</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="bg-blue-200 text-blue-800 py-1 px-3 rounded-full text-xs">国际</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4 border-b border-gray-200">Claude 3 Opus</td>
+                            <td class="px-5 py-4 border-b border-gray-200">Anthropic</td>
+                            <td class="px-5 py-4 border-b border-gray-200">卓越的复杂任务处理能力、企业级可靠性、强调安全</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="bg-blue-200 text-blue-800 py-1 px-3 rounded-full text-xs">国际</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4 border-b border-gray-200">Llama 3</td>
+                            <td class="px-5 py-4 border-b border-gray-200">Meta</td>
+                            <td class="px-5 py-4 border-b border-gray-200">最强开源模型、易于微调和私有化部署</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="bg-blue-200 text-blue-800 py-1 px-3 rounded-full text-xs">国际</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4 border-b border-gray-200">Mixtral 8x22B</td>
+                            <td class="px-5 py-4 border-b border-gray-200">Mistral AI</td>
+                            <td class="px-5 py-4 border-b border-gray-200">开源、混合专家模型(MoE)、高效率、高性价比</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="bg-blue-200 text-blue-800 py-1 px-3 rounded-full text-xs">国际</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4 border-b border-gray-200">文心一言 4.0 (ERNIE 4.0)</td>
+                            <td class="px-5 py-4 border-b border-gray-200">百度 (Baidu)</td>
+                            <td class="px-5 py-4 border-b border-gray-200">中文理解能力强、深度融合百度生态、企业解决方案</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs">国内</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4 border-b border-gray-200">通义千问 2.5 (Qwen 2.5)</td>
+                            <td class="px-5 py-4 border-b border-gray-200">阿里巴巴 (Alibaba)</td>
+                            <td class="px-5 py-4 border-b border-gray-200">多模态、代码能力强、深度融合阿里云与钉钉</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs">国内</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4 border-b border-gray-200">智谱 GLM-4 (Zhipu GLM-4)</td>
+                            <td class="px-5 py-4 border-b border-gray-200">智谱AI (Zhipu AI)</td>
+                            <td class="px-5 py-4 border-b border-gray-200">性能均衡、支持私有化部署、中文能力优秀</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs">国内</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4 border-b border-gray-200">Kimi</td>
+                            <td class="px-5 py-4 border-b border-gray-200">月之暗面 (Moonshot AI)</td>
+                            <td class="px-5 py-4 border-b border-gray-200">业界领先的超长上下文(200万字)、文档分析与总结能力</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs">国内</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-5 py-4 border-b-0">腾讯混元 (Hunyuan)</td>
+                            <td class="px-5 py-4 border-b-0">腾讯 (Tencent)</td>
+                            <td class="px-5 py-4 border-b-0">深度融合腾讯生态(微信/QQ/会议)、社交与文娱场景</td>
+                            <td class="px-5 py-4 border-b-0"><span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs">国内</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 详细分析 -->
+        <section>
+            <h2 class="text-3xl font-bold text-gray-800 border-b-4 border-green-500 pb-3 mb-8">模型详细分析</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                <!-- GPT-4o -->
+                <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">GPT-4o</h3>
+                            <p class="text-gray-500">by OpenAI</p>
+                        </div>
+                        <span class="bg-blue-200 text-blue-800 py-1 px-4 rounded-full text-sm font-semibold">国际</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">应用层分析:</h4>
+                            <ul class="list-disc list-inside text-gray-600 mt-2 space-y-1">
+                                <li><strong>顶尖通用能力:</strong> 在文本理解、推理、代码生成和多语言方面处于行业领先地位。</li>
+                                <li><strong>实时多模态:</strong> 能够实时处理和响应音频、视觉和文本的任意组合，延迟极低，适用于实时翻译、虚拟助手等。</li>
+                                <li><strong>高性价比:</strong> 价格比GPT-4 Turbo便宜50%，速度更快，API限额更高，大幅降低了应用门槛。</li>
+                                <li><strong>应用场景:</strong> 智能客服、内容创作、代码助手、教育辅导、数据分析、情感陪伴。</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">费用分析 (API):</h4>
+                            <table class="min-w-full text-sm mt-2 bg-gray-50 rounded">
+                                <thead><tr class="text-left"><th class="p-2">类型</th><th class="p-2">价格 (每百万Tokens)</th></tr></thead>
+                                <tbody>
+                                    <tr class="border-t"><td class="p-2">输入 (Input)</td><td class="p-2">$5.00 USD</td></tr>
+                                    <tr class="border-t"><td class="p-2">输出 (Output)</td><td class="p-2">$15.00 USD</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">部署分析:</h4>
+                            <p class="text-gray-600 mt-2">主要通过 <strong>OpenAI官方API</strong> 和 <strong>Microsoft Azure OpenAI服务</strong> 进行云端调用。Azure提供更强的企业级合规性、安全性和私有网络支持。对于有极高数据安全需求的大型企业，可通过与微软合作探讨私有化部署的可能性。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">自主部署与蒸馏分析:</h4>
+                            <p class="text-gray-600 mt-2">作为<strong>闭源模型</strong>，GPT-4o <strong>不支持</strong>自主部署。其服务条款明确<strong>禁止</strong>使用API输出训练其他模型，因此无法作为教师模型进行知识蒸馏。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gemini 1.5 Pro -->
+                <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">Gemini 1.5 Pro</h3>
+                            <p class="text-gray-500">by Google</p>
+                        </div>
+                        <span class="bg-blue-200 text-blue-800 py-1 px-4 rounded-full text-sm font-semibold">国际</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">应用层分析:</h4>
+                            <ul class="list-disc list-inside text-gray-600 mt-2 space-y-1">
+                                <li><strong>百万级上下文窗口:</strong> 能够一次性处理约1500页文档或1小时视频，在长文档问答、代码库分析等场景中优势巨大。</li>
+                                <li><strong>原生多模态:</strong> 从零开始构建的多模态能力，对视频、音频的理解能力尤为突出。</li>
+                                <li><strong>谷歌生态集成:</strong> 与Google搜索、Workspace、Vertex AI等深度集成，可实现强大的功能扩展和自动化流程。</li>
+                                <li><strong>应用场景:</strong> 视频内容分析与摘要、海量文档审查、复杂代码库理解、学术研究。</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">费用分析 (API):</h4>
+                            <table class="min-w-full text-sm mt-2 bg-gray-50 rounded">
+                                <thead><tr class="text-left"><th class="p-2">类型 (上下文≤128K)</th><th class="p-2">价格 (每百万Tokens)</th></tr></thead>
+                                <tbody>
+                                    <tr class="border-t"><td class="p-2">输入 (Input)</td><td class="p-2">$3.50 USD</td></tr>
+                                    <tr class="border-t"><td class="p-2">输出 (Output)</td><td class="p-2">$10.50 USD</td></tr>
+                                </tbody>
+                            </table>
+                             <p class="text-xs text-gray-500 mt-1">*上下文>128K时价格翻倍。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">部署分析:</h4>
+                            <p class="text-gray-600 mt-2">主要通过 <strong>Google AI Platform (Vertex AI)</strong> 提供API服务。开发者可以在Google Cloud上构建和扩展应用。Google也为大型企业提供基于云的私有化解决方案，如在VPC中部署，以保证数据隔离和安全。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">自主部署与蒸馏分析:</h4>
+                            <p class="text-gray-600 mt-2"><strong>闭源模型</strong>，<strong>不支持</strong>自主部署。Google的服务条款同样<strong>禁止</strong>将其输出用于训练竞争性模型，因此知识蒸馏不可行。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Claude 3 Opus -->
+                <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">Claude 3 Opus</h3>
+                            <p class="text-gray-500">by Anthropic</p>
+                        </div>
+                        <span class="bg-blue-200 text-blue-800 py-1 px-4 rounded-full text-sm font-semibold">国际</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">应用层分析:</h4>
+                            <ul class="list-disc list-inside text-gray-600 mt-2 space-y-1">
+                                <li><strong>顶级推理能力:</strong> 在研究生水平的推理、数学和编程等复杂任务上表现可与GPT-4o媲美甚至超越。</li>
+                                <li><strong>企业级可靠性:</strong> 专为企业工作流程设计，提供高准确性和可靠性，减少模型“幻觉”。</li>
+                                <li><strong>安全与伦理:</strong> 采用“宪法AI”技术，在安全和伦理方面有更强的保障，适合金融、法律、医疗等高风险领域。</li>
+                                <li><strong>应用场景:</strong> 财务报表分析、法律合同审查、科学研究、自动化工作流、战略分析。</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">费用分析 (API):</h4>
+                            <table class="min-w-full text-sm mt-2 bg-gray-50 rounded">
+                                <thead><tr class="text-left"><th class="p-2">类型</th><th class="p-2">价格 (每百万Tokens)</th></tr></thead>
+                                <tbody>
+                                    <tr class="border-t"><td class="p-2">输入 (Input)</td><td class="p-2">$15.00 USD</td></tr>
+                                    <tr class="border-t"><td class="p-2">输出 (Output)</td><td class="p-2">$75.00 USD</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">部署分析:</h4>
+                            <p class="text-gray-600 mt-2">通过 <strong>Anthropic官方API</strong>、<strong>Amazon Bedrock</strong> 和 <strong>Google Vertex AI</strong> 提供服务。多云平台支持为企业提供了灵活的选择。同样，针对大型企业客户提供私有化部署选项，确保数据完全在客户环境中处理。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">自主部署与蒸馏分析:</h4>
+                            <p class="text-gray-600 mt-2"><strong>闭源模型</strong>，<strong>不支持</strong>自主部署。Anthropic的服务条款明确<strong>禁止</strong>使用模型输出训练其他AI模型，因此无法进行知识蒸馏。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Llama 3 -->
+                <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">Llama 3</h3>
+                            <p class="text-gray-500">by Meta</p>
+                        </div>
+                        <span class="bg-blue-200 text-blue-800 py-1 px-4 rounded-full text-sm font-semibold">国际</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">应用层分析:</h4>
+                            <ul class="list-disc list-inside text-gray-600 mt-2 space-y-1">
+                                <li><strong>最强开源模型:</strong> 70B版本性能接近GPT-4级别，是目前最强大的开源大模型，拥有庞大的开发者社区。</li>
+                                <li><strong>高度可定制:</strong> 开放的权重使其非常适合进行微调(Fine-tuning)，以适应特定领域的任务，构建专用模型。</li>
+                                <li><strong>成本效益:</strong> 对于有能力自行部署的团队，长期使用成本远低于商业API。</li>
+                                <li><strong>应用场景:</strong> 学术研究、需要高度定制化的聊天机器人、内部知识库、个人AI助手、离线应用。</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">费用分析 (API):</h4>
+                            <p class="text-gray-600 mt-2">模型本身免费。API费用取决于第三方托管平台 (如 Replicate, Groq, Together AI 等)，价格极具竞争力。例如，在某些平台上，70B模型的费用约为 <strong>$0.6/百万输入Tokens</strong> 和 <strong>$0.8/百万输出Tokens</strong>。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">部署分析:</h4>
+                            <p class="text-gray-600 mt-2">部署方式极其灵活。可以通过 <strong>Hugging Face、Replicate</strong> 等平台快速调用API，也可以在 <strong>AWS, Azure, Google Cloud</strong> 等主流云服务商上自行部署，或在本地服务器/个人电脑上进行 <strong>完全私有化部署</strong> (On-Premise)。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">自主部署与蒸馏分析:</h4>
+                            <p class="text-gray-600 mt-2">作为<strong>开源模型</strong>，Llama 3 <strong>完全支持</strong>自主部署。用户可以自由下载模型权重在本地或私有云运行。其友好的许可证<strong>允许</strong>将其作为教师模型进行知识蒸馏，创造更小的定制化模型。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mixtral -->
+                <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">Mixtral 8x22B</h3>
+                            <p class="text-gray-500">by Mistral AI</p>
+                        </div>
+                        <span class="bg-blue-200 text-blue-800 py-1 px-4 rounded-full text-sm font-semibold">国际</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">应用层分析:</h4>
+                            <ul class="list-disc list-inside text-gray-600 mt-2 space-y-1">
+                                <li><strong>混合专家模型 (MoE):</strong> 开源的MoE架构，推理时只激活部分专家，实现了性能和效率的极佳平衡。</li>
+                                <li><strong>高性价比:</strong> 以较低的计算成本提供了与更大模型相媲美的性能，特别是在代码和多语言任务上。</li>
+                                <li><strong>开发者友好:</strong> 开放的Apache 2.0许可证使其对商业应用非常友好。</li>
+                                <li><strong>应用场景:</strong> 代码生成与补全、实时聊天应用、需要快速响应的自动化流程、多语言内容生成。</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">费用分析 (API):</h4>
+                             <table class="min-w-full text-sm mt-2 bg-gray-50 rounded">
+                                <thead><tr class="text-left"><th class="p-2">类型</th><th class="p-2">价格 (每百万Tokens)</th></tr></thead>
+                                <tbody>
+                                    <tr class="border-t"><td class="p-2">输入 (Input)</td><td class="p-2">$2.00 USD</td></tr>
+                                    <tr class="border-t"><td class="p-2">输出 (Output)</td><td class="p-2">$6.00 USD</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">部署分析:</h4>
+                            <p class="text-gray-600 mt-2">通过 <strong>Mistral AI官方API</strong>、<strong>Microsoft Azure</strong> 等平台提供API服务。作为开源模型，它同样支持在各大云平台或本地服务器上进行 <strong>私有化部署</strong>，为企业提供了数据控制的灵活性。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">自主部署与蒸馏分析:</h4>
+                            <p class="text-gray-600 mt-2"><strong>开源模型</strong> (Apache 2.0许可证)，<strong>完全支持</strong>自主部署。用户可以自由地在任何环境中部署。许可证非常宽松，<strong>完全允许</strong>将其用于知识蒸馏，是构建定制化高效模型的绝佳基础。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 文心一言 4.0 -->
+                <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">文心一言 4.0</h3>
+                            <p class="text-gray-500">by 百度 (Baidu)</p>
+                        </div>
+                        <span class="bg-green-200 text-green-800 py-1 px-4 rounded-full text-sm font-semibold">国内</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">应用层分析:</h4>
+                            <ul class="list-disc list-inside text-gray-600 mt-2 space-y-1">
+                                <li><strong>中文能力顶尖:</strong> 在中文的理解、生成、古文、诗词等方面有深厚积累，表现优于多数国际模型。</li>
+                                <li><strong>百度生态融合:</strong> 与百度搜索、文库、地图等深度打通，能利用实时信息和庞大数据源，提供更丰富的回答。</li>
+                                <li><strong>企业级解决方案:</strong> 通过百度智能云千帆大模型平台，提供代码助手、知识库构建等一系列企业级应用。</li>
+                                <li><strong>应用场景:</strong> 中文内容创作、市场营销文案、企业知识管理、智能公文写作、数字人。</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">费用分析 (API - ERNIE 4.0):</h4>
+                            <table class="min-w-full text-sm mt-2 bg-gray-50 rounded">
+                                <thead><tr class="text-left"><th class="p-2">类型</th><th class="p-2">价格 (每百万Tokens)</th></tr></thead>
+                                <tbody>
+                                    <tr class="border-t"><td class="p-2">输入 (Input)</td><td class="p-2">¥120.00 RMB</td></tr>
+                                    <tr class="border-t"><td class="p-2">输出 (Output)</td><td class="p-2">¥120.00 RMB</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">部署分析:</h4>
+                            <p class="text-gray-600 mt-2">主要通过 <strong>百度智能云千帆大模型平台</strong> 提供公有云API服务。该平台提供模型微调、评估、部署等一站式工具链。同时，百度也为政府和大型企业提供包括 <strong>私有化部署（本地化）</strong> 和 <strong>云上私有化</strong> 在内的多种部署方案。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">自主部署与蒸馏分析:</h4>
+                            <p class="text-gray-600 mt-2"><strong>闭源模型</strong>，但提供企业级<strong>私有化部署方案</strong>。公有API服务条款禁止蒸馏。在私有化部署场景下，是否可用于内部蒸馏取决于企业与百度的合同条款，通常<strong>受限</strong>。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 通义千问 2.5 -->
+                <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">通义千问 2.5</h3>
+                            <p class="text-gray-500">by 阿里巴巴 (Alibaba)</p>
+                        </div>
+                        <span class="bg-green-200 text-green-800 py-1 px-4 rounded-full text-sm font-semibold">国内</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">应用层分析:</h4>
+                            <ul class="list-disc list-inside text-gray-600 mt-2 space-y-1">
+                                <li><strong>性价比极高:</strong> 核心模型API价格极具竞争力，甚至免费，大幅降低了国内企业的AI应用成本。</li>
+                                <li><strong>强大的代码能力:</strong> 集成了专门的代码模型，代码生成、解释和调试能力在国内模型中领先。</li>
+                                <li><strong>阿里生态集成:</strong> 与阿里云、钉钉、淘宝等深度融合，在办公协同、电商、云计算等场景有天然优势。</li>
+                                <li><strong>应用场景:</strong> 智能编码助手、企业智能客服、钉钉AI助理、电商营销内容生成、法律文书分析。</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">费用分析 (API - Qwen-Max):</h4>
+                            <table class="min-w-full text-sm mt-2 bg-gray-50 rounded">
+                                <thead><tr class="text-left"><th class="p-2">类型</th><th class="p-2">价格 (每百万Tokens)</th></tr></thead>
+                                <tbody>
+                                    <tr class="border-t"><td class="p-2">输入 (Input)</td><td class="p-2">¥120.00 RMB</td></tr>
+                                    <tr class="border-t"><td class="p-2">输出 (Output)</td><td class="p-2">¥120.00 RMB</td></tr>
+                                </tbody>
+                            </table>
+                             <p class="text-xs text-gray-500 mt-1">*Qwen-Long等多个主力模型输入价格大幅下调甚至免费。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">部署分析:</h4>
+                            <p class="text-gray-600 mt-2">主要通过 <strong>阿里云灵积平台(DashScope)</strong> 提供API服务。阿里同样开源了Qwen系列多个版本(7B, 72B等)，支持开发者进行 <strong>完全私有化部署</strong>。此外，也提供基于阿里云的专有云和混合云部署方案。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">自主部署与蒸馏分析:</h4>
+                            <p class="text-gray-600 mt-2">其模型家族(通义千问)包含大量<strong>开源版本</strong>，这些版本<strong>完全支持</strong>自主部署和知识蒸馏。顶级的闭源版本(如Qwen-Max)则不支持自主部署，且API使用条款禁止蒸馏。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 智谱 GLM-4 -->
+                <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">智谱 GLM-4</h3>
+                            <p class="text-gray-500">by 智谱AI (Zhipu AI)</p>
+                        </div>
+                        <span class="bg-green-200 text-green-800 py-1 px-4 rounded-full text-sm font-semibold">国内</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">应用层分析:</h4>
+                            <ul class="list-disc list-inside text-gray-600 mt-2 space-y-1">
+                                <li><strong>性能均衡强大:</strong> 作为清华系AI公司，技术实力雄厚，GLM-4在中文和英文任务上都有非常均衡且强大的表现。</li>
+                                <li><strong>强大的工具调用(Function Call):</strong> 支持根据用户意图自主规划、调用外部工具（如代码解释器、网络搜索）完成复杂任务。</li>
+                                <li><strong>灵活的部署选项:</strong> 是国内为数不多同时提供公有API和成熟私有化部署方案的厂商。</li>
+                                <li><strong>应用场景:</strong> 智能体(Agent)开发、数据分析、金融风控、教育、工业领域的智能助手。</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">费用分析 (API):</h4>
+                            <table class="min-w-full text-sm mt-2 bg-gray-50 rounded">
+                                <thead><tr class="text-left"><th class="p-2">类型</th><th class="p-2">价格 (每百万Tokens)</th></tr></thead>
+                                <tbody>
+                                    <tr class="border-t"><td class="p-2">输入 (Input)</td><td class="p-2">¥100.00 RMB</td></tr>
+                                    <tr class="border-t"><td class="p-2">输出 (Output)</td><td class="p-2">¥100.00 RMB</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">部署分析:</h4>
+                            <p class="text-gray-600 mt-2">提供 <strong>公有云API服务</strong>，同时以其 <strong>软硬一体的私有化解决方案</strong> 为核心优势之一，支持将模型部署在企业本地服务器或指定的云环境中，满足金融、政务等领域对数据安全和自主可控的严格要求。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">自主部署与蒸馏分析:</h4>
+                            <p class="text-gray-600 mt-2"><strong>闭源模型</strong>，但以其成熟的<strong>私有化部署方案</strong>为核心优势之一。公有API禁止蒸馏。在私有化部署后，企业内部进行模型蒸馏是技术上可行的，但需遵循合同约定，通常<strong>受限</strong>。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kimi -->
+                <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">Kimi</h3>
+                            <p class="text-gray-500">by 月之暗面 (Moonshot AI)</p>
+                        </div>
+                        <span class="bg-green-200 text-green-800 py-1 px-4 rounded-full text-sm font-semibold">国内</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">应用层分析:</h4>
+                            <ul class="list-disc list-inside text-gray-600 mt-2 space-y-1">
+                                <li><strong>无损长上下文:</strong> 核心技术壁垒，支持高达200万汉字的无损上下文输入，在长文阅读、分析、总结方面无出其右。</li>
+                                <li><strong>信息处理利器:</strong> 能够快速阅读和理解大量文档、网页、代码库，并进行精准的问答和信息提取。</li>
+                                <li><strong>用户体验优秀:</strong> C端产品Kimi智能助手以其流畅的体验和强大的长文本能力获得了大量用户。</li>
+                                <li><strong>应用场景:</strong> 法律/金融/医疗领域长篇报告分析、论文阅读和润色、代码库整体分析、小说创作、个人知识库问答。</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">费用分析 (API):</h4>
+                            <table class="min-w-full text-sm mt-2 bg-gray-50 rounded">
+                                <thead><tr class="text-left"><th class="p-2">类型</th><th class="p-2">价格 (每百万Tokens)</th></tr></thead>
+                                <tbody>
+                                    <tr class="border-t"><td class="p-2">输入 (Input)</td><td class="p-2">¥12.00 RMB</td></tr>
+                                    <tr class="border-t"><td class="p-2">输出 (Output)</td><td class="p-2">¥12.00 RMB</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">部署分析:</h4>
+                            <p class="text-gray-600 mt-2">目前主要通过 <strong>官方提供的公有云API</strong> 进行服务。由于其技术独特性和创业公司属性，私有化部署通常需要与官方进行深度商务洽谈，主要面向战略合作伙伴和大型企业客户。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">自主部署与蒸馏分析:</h4>
+                            <p class="text-gray-600 mt-2"><strong>闭源模型</strong>，目前<strong>不支持</strong>任何形式的自主部署。其服务条款<strong>禁止</strong>使用输出训练其他模型，因此知识蒸馏不可行。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 腾讯混元 -->
+                <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">腾讯混元</h3>
+                            <p class="text-gray-500">by 腾讯 (Tencent)</p>
+                        </div>
+                        <span class="bg-green-200 text-green-800 py-1 px-4 rounded-full text-sm font-semibold">国内</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">应用层分析:</h4>
+                            <ul class="list-disc list-inside text-gray-600 mt-2 space-y-1">
+                                <li><strong>生态集成:</strong> 全面融入腾讯会议、腾讯文档、微信、QQ等数十个核心产品，拥有庞大的内生应用场景。</li>
+                                <li><strong>文生图能力强:</strong> 在图像生成方面表现突出，支持文生图、图生图等多种功能。</li>
+                                <li><strong>企业服务:</strong> 通过腾讯云对外提供服务，为企业提供内容创作、知识问答、客服等多种解决方案。</li>
+                                <li><strong>应用场景:</strong> 社交互动、游戏NPC、广告创意生成、会议纪要、在线教育、金融服务风控。</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">费用分析 (API - Hunyuan-pro):</h4>
+                            <table class="min-w-full text-sm mt-2 bg-gray-50 rounded">
+                                <thead><tr class="text-left"><th class="p-2">类型</th><th class="p-2">价格 (每百万Tokens)</th></tr></thead>
+                                <tbody>
+                                    <tr class="border-t"><td class="p-2">输入 (Input)</td><td class="p-2">¥100.00 RMB</td></tr>
+                                    <tr class="border-t"><td class="p-2">输出 (Output)</td><td class="p-2">¥100.00 RMB</td></tr>
+                                </tbody>
+                            </table>
+                            <p class="text-xs text-gray-500 mt-1">*混元-lite版本已宣布完全免费。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">部署分析:</h4>
+                            <p class="text-gray-600 mt-2">主要依托 <strong>腾讯云</strong> 提供API服务，并与腾讯云的各项服务深度整合。针对有合规和安全需求的企业，腾讯云也提供基于专有云(TCE)和混合云的 <strong>私有化部署方案</strong>，帮助企业在内网环境中使用混元大模型。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg text-gray-700">自主部署与蒸馏分析:</h4>
+                            <p class="text-gray-600 mt-2"><strong>闭源模型</strong>，但腾讯云提供企业级<strong>私有化部署方案</strong>。公有API禁止蒸馏。私有化部署客户能否进行内部蒸馏，取决于具体的商业合同，通常<strong>受限</strong>。</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 自主部署与蒸馏对比分析 -->
+        <section class="mt-16">
+            <h2 class="text-3xl font-bold text-gray-800 border-b-4 border-purple-500 pb-3 mb-6">自主部署与蒸馏能力对比分析</h2>
+            <div class="overflow-x-auto rounded-lg shadow-md">
+                <table class="min-w-full leading-normal">
+                    <thead>
+                        <tr class="border-b-2 border-gray-200 bg-gray-800 text-left text-xs font-semibold text-gray-100 uppercase tracking-wider">
+                            <th class="px-5 py-3">模型</th>
+                            <th class="px-5 py-3">自主部署能力</th>
+                            <th class="px-5 py-3">知识蒸馏可行性</th>
+                            <th class="px-5 py-3">核心优势 / 限制</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white">
+                        <tr class="bg-red-50 hover:bg-red-100">
+                            <td class="px-5 py-4 border-b border-gray-200 font-semibold">GPT-4o / Gemini / Claude 3</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="font-bold text-red-600">不支持</span> (闭源)</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="font-bold text-red-600">禁止</span> (服务条款限制)</td>
+                            <td class="px-5 py-4 border-b border-gray-200">限制：完全依赖云服务商，数据需离域处理，无法定制底层模型。</td>
+                        </tr>
+                        <tr class="bg-green-50 hover:bg-green-100">
+                            <td class="px-5 py-4 border-b border-gray-200 font-semibold">Llama 3 / Mixtral</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="font-bold text-green-600">完全支持</span> (开源)</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="font-bold text-green-600">完全支持</span> (许可证允许)</td>
+                            <td class="px-5 py-4 border-b border-gray-200">优势：数据主权、成本可控、高度可定制、可离线运行、社区生态活跃。</td>
+                        </tr>
+                        <tr class="bg-yellow-50 hover:bg-yellow-100">
+                            <td class="px-5 py-4 border-b border-gray-200 font-semibold">文心 / 混元 / GLM-4</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="font-bold text-yellow-600">企业级支持</span> (私有化方案)</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="font-bold text-yellow-600">受限</span> (需合同约定)</td>
+                            <td class="px-5 py-4 border-b border-gray-200">优势：兼顾数据安全与服务支持。限制：成本高昂，仅面向大型企业。</td>
+                        </tr>
+                        <tr class="bg-green-50 hover:bg-green-100">
+                            <td class="px-5 py-4 border-b border-gray-200 font-semibold">通义千问 (家族)</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="font-bold text-green-600">部分支持</span> (开源版本)</td>
+                            <td class="px-5 py-4 border-b border-gray-200"><span class="font-bold text-green-600">部分支持</span> (开源版本)</td>
+                            <td class="px-5 py-4 border-b border-gray-200">优势：提供开源版本，兼具灵活性和商业顶级模型的选择。</td>
+                        </tr>
+                        <tr class="bg-red-50 hover:bg-red-100">
+                            <td class="px-5 py-4 border-b-0 font-semibold">Kimi</td>
+                            <td class="px-5 py-4 border-b-0"><span class="font-bold text-red-600">不支持</span> (闭源)</td>
+                            <td class="px-5 py-4 border-b-0"><span class="font-bold text-red-600">禁止</span> (服务条款限制)</td>
+                            <td class="px-5 py-4 border-b-0">限制：技术路线独特，目前完全依赖其官方API服务。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer class="text-center mt-12 pt-6 border-t border-gray-200">
+            <p class="text-sm text-gray-500">&copy; 2024 AI模型对比分析报告。所有价格和信息仅供参考，请以各大模型官方最新发布为准。</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
+    </div>
+
+</body>
+</html>

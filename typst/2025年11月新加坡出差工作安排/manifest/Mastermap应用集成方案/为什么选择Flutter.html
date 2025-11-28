@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>为什么选择 Flutter - 特性对比解析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#02569B',
+                        secondary: '#039BE5',
+                        accent: '#4FC3F7',
+                        dark: '#1E293B',
+                        light: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .code-block {
+                @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm font-mono;
+            }
+            .section-card {
+                @apply bg-white rounded-xl shadow-md p-6 mb-8 transition-all duration-300 hover:shadow-lg;
+            }
+            .nav-item {
+                @apply py-2 px-3 rounded-md transition-all duration-200 hover:bg-primary/10 text-gray-700 hover:text-primary cursor-pointer;
+            }
+            .nav-item.active {
+                @apply bg-primary/20 text-primary font-medium border-l-4 border-primary;
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-sm sticky top-0 z-30">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-primary flex items-center">
+                <i class="fa fa-flask mr-3 text-secondary"></i>
+                Flutter 价值解析
+            </h1>
+            <div class="hidden md:flex space-x-4">
+                <a href="#conclusion" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors">
+                    核心结论
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 container mx-auto px-4 py-6">
+        <!-- 左侧目录导航 -->
+        <aside class="w-full md:w-64 lg:w-72 flex-shrink-0 mb-6 md:mb-0 md:mr-8">
+            <div class="bg-white rounded-xl shadow-md p-4 sticky top-24">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fa fa-list-ul mr-2 text-secondary"></i>目录导航
+                </h2>
+                <nav class="space-y-1 overflow-y-auto max-h-[calc(100vh-200px)] scrollbar-hide">
+                    <div class="nav-item active" data-target="intro">
+                        <i class="fa fa-home mr-2"></i>介绍
+                    </div>
+                    <div class="nav-item" data-target="pixel-control">
+                        <i class="fa fa-paint-brush mr-2"></i>像素级控制
+                    </div>
+                    <div class="nav-item" data-target="animation">
+                        <i class="fa fa-film mr-2"></i>复杂动画系统
+                    </div>
+                    <div class="nav-item" data-target="ui-components">
+                        <i class="fa fa-th mr-2"></i>UI 组件库
+                    </div>
+                    <div class="nav-item" data-target="consistency">
+                        <i class="fa fa-balance-scale mr-2"></i>渲染一致性
+                    </div>
+                    <div class="nav-item" data-target="hot-reload">
+                        <i class="fa fa-refresh mr-2"></i>热重载
+                    </div>
+                    <div class="nav-item" data-target="type-safety">
+                        <i class="fa fa-shield mr-2"></i>类型安全
+                    </div>
+                    <div class="nav-item" data-target="desktop">
+                        <i class="fa fa-desktop mr-2"></i>桌面端集成
+                    </div>
+                    <div class="nav-item" data-target="responsive">
+                        <i class="fa fa-mobile mr-2"></i>响应式布局
+                    </div>
+                    <div class="nav-item" data-target="widget-composition">
+                        <i class="fa fa-cubes mr-2"></i>Widget 组合
+                    </div>
+                    <div class="nav-item" data-target="conclusion">
+                        <i class="fa fa-check-circle mr-2"></i>核心结论
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- 右侧内容区域 -->
+        <main class="flex-1 max-w-4xl">
+            <!-- 介绍部分 -->
+            <section id="intro" class="section-card">
+                <h2 class="text-2xl font-bold text-primary mb-4">为什么选择 Flutter</h2>
+                <p class="text-gray-700 mb-6 text-lg leading-relaxed">
+                    从<span class="font-semibold text-primary">功能实现角度</span>来看，Flutter 确实有一些独特的能力是 React Native 难以或无法以同样方式实现的。
+                    这些特性让 Flutter 在特定场景下具备不可替代的优势，尤其在性能、UI 一致性和开发体验方面表现突出。
+                </p>
+                
+                <!-- 特性概览图表 -->
+                <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                    <h3 class="text-lg font-medium text-gray-800 mb-3">Flutter 核心优势分布</h3>
+                    <div class="h-64">
+                        <canvas id="featuresChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 1. 像素级精确控制与自定义绘制 -->
+            <section id="pixel-control" class="section-card">
+                <h2 class="text-2xl font-bold text-primary mb-4 flex items-center">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white mr-3 text-sm">1</span>
+                    像素级精确控制与自定义绘制
+                </h2>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Flutter 独有的 Canvas 绘制能力</h3>
+                
+                <div class="code-block mb-4">
+<pre>
+// 直接操作 Canvas 进行任意绘制
+CustomPaint(
+  painter: MyCustomPainter(),
+  size: Size.infinite,
+);
+
+class MyCustomPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    // 任意自定义绘制 - React Native 无法直接实现
+    final paint = Paint()
+      ..color = Colors.blue
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3;
+    
+    // 绘制复杂路径
+    final path = Path()
+      ..moveTo(0, size.height / 2)
+      ..quadraticBezierTo(
+        size.width / 2, size.height,
+        size.width, size.height / 2
+      );
+    
+    canvas.drawPath(path, paint);
+    
+    // 实时图形渲染 - 游戏、图表等
+    canvas.drawCircle(Offset(100, 100), 50, paint);
+  }
+}
+</pre>
+                </div>
+                
+                <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
+                    <h4 class="font-semibold text-amber-800 mb-1">React Native 的限制：</h4>
+                    <p class="text-amber-700">只能通过第三方库或原生模块间接实现，性能较差。</p>
+                </div>
+            </section>
+
+            <!-- 2. 极致性能的复杂动画系统 -->
+            <section id="animation" class="section-card">
+                <h2 class="text-2xl font-bold text-primary mb-4 flex items-center">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white mr-3 text-sm">2</span>
+                    极致性能的复杂动画系统
+                </h2>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Flutter 的隐式动画（React Native 无法直接对应）</h3>
+                
+                <div class="code-block mb-4">
+<pre>
+// 一行代码实现复杂动画 - Flutter 独有
+AnimatedContainer(
+  duration: Duration(seconds: 1),
+  curve: Curves.elasticOut, // 物理弹簧效果
+  width: _expanded ? 300.0 : 100.0,
+  height: _expended ? 300.0 : 100.0,
+  decoration: BoxDecoration(
+    borderRadius: _expanded 
+      ? BorderRadius.circular(20.0) 
+      : BorderRadius.circular(8.0),
+    color: Colors.blue,
+  ),
+  child: // ...,
+);
+
+// 物理动画系统
+SpringSimulation(
+  spring: SpringDescription(
+    mass: 1,
+    stiffness: 100,
+    damping: 10,
+  ),
+  start: 0.0,
+  end: 1.0,
+  velocity: 0.0,
+);
+</pre>
+                </div>
+                
+                <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg">
+                    <h4 class="font-semibold text-green-800 mb-1">独特价值：</h4>
+                    <p class="text-green-700">60-120fps 的物理动画，无需担心性能问题。</p>
+                </div>
+            </section>
+
+            <!-- 3. 内置的完整 UI 组件库 -->
+            <section id="ui-components" class="section-card">
+                <h2 class="text-2xl font-bold text-primary mb-4 flex items-center">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white mr-3 text-sm">3</span>
+                    内置的完整 UI 组件库
+                </h2>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Flutter Material/Cupertino 组件深度集成</h3>
+                
+                <div class="code-block mb-4">
+<pre>
+// 深度集成的 Material 组件 - 开箱即用
+Scaffold(
+  appBar: AppBar(
+    title: Text('Demo'),
+    actions: [
+      IconButton(icon: Icon(Icons.search), onPressed: () {}),
+    ],
+  ),
+  drawer: Drawer(
+    child: ListView(
+      children: [
+        DrawerHeader(child: Text('Header')),
+        ListTile(leading: Icon(Icons.home), title: Text('Home')),
+      ],
+    ),
+  ),
+  bottomNavigationBar: BottomNavigationBar(
+    items: [
+      BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+      BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+    ],
+  ),
+  floatingActionButton: FloatingActionButton(
+    onPressed: () {},
+    child: Icon(Icons.add),
+  ),
+);
+</pre>
+                </div>
+                
+                <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
+                    <h4 class="font-semibold text-amber-800 mb-1">React Native 对比：</h4>
+                    <p class="text-amber-700">需要多个第三方库组合，风格可能不一致。</p>
+                </div>
+            </section>
+
+            <!-- 4. 平台无关的渲染一致性 -->
+            <section id="consistency" class="section-card">
+                <h2 class="text-2xl font-bold text-primary mb-4 flex items-center">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white mr-3 text-sm">4</span>
+                    平台无关的渲染一致性
+                </h2>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Flutter 真正的像素级一致性</h3>
+                
+                <div class="code-block mb-4">
+<pre>
+// 在所有平台上完全一致的渲染
+Widget build(BuildContext context) {
+  return Container(
+    decoration: BoxDecoration(
+      // 精确到像素的控制
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(12.0),
+        topRight: Radius.circular(12.0),
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.2),
+          blurRadius: 8.0,
+          offset: Offset(0, 4),
+        ),
+      ],
+    ),
+    child: // ...
+  );
+}
+</pre>
+                </div>
+                
+                <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
+                    <h4 class="font-semibold text-amber-800 mb-1">React Native 问题：</h4>
+                    <p class="text-amber-700">不同平台渲染差异，需要额外适配。</p>
+                </div>
+            </section>
+
+            <!-- 5. 热重载的状态保持能力 -->
+            <section id="hot-reload" class="section-card">
+                <h2 class="text-2xl font-bold text-primary mb-4 flex items-center">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white mr-3 text-sm">5</span>
+                    热重载的状态保持能力
+                </h2>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Flutter 独特的热重载体验</h3>
+                
+                <div class="code-block mb-4">
+<pre>
+class _MyPageState extends State<MyPage> {
+  int _counter = 0;  // 热重载时状态保持
+  List<String> _items = []; // 数据状态保持
+  
+  void _incrementCounter() {
+    setState(() {
+      _counter++; // 热重载后继续计数
+    });
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('Count: $_counter'), // 热重载后数值不变
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}
+</pre>
+                </div>
+                
+                <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
+                    <h4 class="font-semibold text-amber-800 mb-1">React Native 限制：</h4>
+                    <p class="text-amber-700">热重载经常丢失状态，需要手动恢复。</p>
+                </div>
+            </section>
+
+            <!-- 6. 编译时类型安全与空安全 -->
+            <section id="type-safety" class="section-card">
+                <h2 class="text-2xl font-bold text-primary mb-4 flex items-center">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white mr-3 text-sm">6</span>
+                    编译时类型安全与空安全
+                </h2>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Dart 语言的独有优势</h3>
+                
+                <div class="code-block mb-4">
+<pre>
+// 编译时类型检查 - 避免运行时错误
+String getUserName(User user) {  // 必须传入 User 类型
+  return user.name; // 编译时确保 user 有 name 属性
+}
+
+// 空安全 - 编译时防止空指针
+String? nullableName; // 明确标识可空
+
+String getName() {
+  return nullableName!; // 编译时检查，确保不为空
+}
+
+// 异步编程的类型安全
+Future<List<User>> fetchUsers() async {
+  final response = await http.get('api/users');
+  return (response.body as List).map((json) => User.fromJson(json)).toList();
+}
+</pre>
+                </div>
+                
+                <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
+                    <h4 class="font-semibold text-amber-800 mb-1">JavaScript 对比：</h4>
+                    <p class="text-amber-700">运行时才能发现类型错误。</p>
+                </div>
+            </section>
+
+            <!-- 7. 桌面端深度功能集成 -->
+            <section id="desktop" class="section-card">
+                <h2 class="text-2xl font-bold text-primary mb-4 flex items-center">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white mr-3 text-sm">7</span>
+                    桌面端深度功能集成
+                </h2>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Flutter 独有的桌面组件</h3>
+                
+                <div class="code-block mb-4">
+<pre>
+// 桌面端专属组件
+class DesktopApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Row(
+        children: [
+          // 侧边栏导航 - 桌面端优化
+          NavigationRail(
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: (index) {
+              setState(() => _selectedIndex = index);
+            },
+            destinations: [
+              NavigationRailDestination(
+                icon: Icon(Icons.home),
+                label: Text('Home'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.settings),
+                label: Text('Settings'),
+              ),
+            ],
+          ),
+          // 内容区域
+          Expanded(child: _buildContent()),
+        ],
+      ),
+    );
+  }
+}
+</pre>
+                </div>
+            </section>
+
+            <!-- 8. 内置的响应式布局系统 -->
+            <section id="responsive" class="section-card">
+                <h2 class="text-2xl font-bold text-primary mb-4 flex items-center">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white mr-3 text-sm">8</span>
+                    内置的响应式布局系统
+                </h2>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Flutter 独特的布局约束系统</h3>
+                
+                <div class="code-block mb-4">
+<pre>
+LayoutBuilder(
+  builder: (context, constraints) {
+    // 根据父容器约束动态布局
+    if (constraints.maxWidth > 600) {
+      return _buildWideLayout(); // 平板/桌面布局
+    } else {
+      return _buildNormalLayout(); // 手机布局
+    }
+  },
+),
+
+// 内置的响应式组件
+OrientationBuilder(
+  builder: (context, orientation) {
+    return orientation == Orientation.portrait
+        ? _buildPortraitLayout()
+        : _buildLandscapeLayout();
+  },
+),
+</pre>
+                </div>
+            </section>
+
+            <!-- 9. Widget 组合的无限可能性 -->
+            <section id="widget-composition" class="section-card">
+                <h2 class="text-2xl font-bold text-primary mb-4 flex items-center">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white mr-3 text-sm">9</span>
+                    Widget 组合的无限可能性
+                </h2>
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Flutter 组件组合的灵活性</h3>
+                
+                <div class="code-block mb-4">
+<pre>
+// 任意组件的深度组合
+Widget build(BuildContext context) {
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(16),
+    child: BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.2),
+        ),
+        child: Transform(
+          transform: Matrix4.rotationZ(0.1),
+          child: Opacity(
+            opacity: 0.8,
+            child: // 更多组合...
+          ),
+        ),
+      ),
+    ),
+  );
+}
+</pre>
+                </div>
+            </section>
+
+            <!-- 核心结论 -->
+            <section id="conclusion" class="section-card bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/10">
+                <h2 class="text-2xl font-bold text-primary mb-6 flex items-center">
+                    <i class="fa fa-check-circle mr-3 text-secondary"></i>
+                    核心结论
+                </h2>
+                
+                <div class="overflow-x-auto mb-6">
+                    <table class="min-w-full bg-white rounded-lg overflow-hidden shadow-sm">
+                        <thead class="bg-primary text-white">
+                            <tr>
+                                <th class="py-3 px-4 text-left">功能类别</th>
+                                <th class="py-3 px-4 text-left">Flutter 独有特性</th>
+                                <th class="py-3 px-4 text-left">React Native 对应方案</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 font-medium">渲染控制</td>
+                                <td class="py-3 px-4">像素级自定义绘制</td>
+                                <td class="py-3 px-4">依赖原生组件或第三方库</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 font-medium">动画系统</td>
+                                <td class="py-3 px-4">内置物理动画引擎</td>
+                                <td class="py-3 px-4">需要第三方动画库</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 font-medium">UI一致性</td>
+                                <td class="py-3 px-4">真正跨平台像素一致</td>
+                                <td class="py-3 px-4">各平台渲染差异</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 font-medium">开发体验</td>
+                                <td class="py-3 px-4">状态保持的热重载</td>
+                                <td class="py-3 px-4">热重载经常丢失状态</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 font-medium">类型安全</td>
+                                <td class="py-3 px-4">编译时类型检查</td>
+                                <td class="py-3 px-4">运行时才能发现错误</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-3 px-4 font-medium">布局系统</td>
+                                <td class="py-3 px-4">基于约束的响应式布局</td>
+                                <td class="py-3 px-4">基于 flexbox 的布局</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="bg-primary/10 p-5 rounded-lg border-l-4 border-primary">
+                    <p class="text-lg font-semibold text-gray-800 mb-2">
+                        Flutter 的独特性不在于"能做什么"，而在于"如何做"——它提供了一种更可控、更一致、更高性能的实现方式。
+                    </p>
+                    <p class="text-gray-700">
+                        对于大多数业务应用，React Native 都能实现相同功能，但 Flutter 在<span class="font-semibold text-primary">性能要求极高、UI一致性要求严格、开发体验要求完美</span>的场景下具有不可替代的优势。
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer class="bg-dark text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-xl font-bold mb-2 flex items-center">
+                        <i class="fa fa-flask mr-2 text-secondary"></i>
+                        Flutter 价值解析
+                    </h3>
+                    <p class="text-gray-400">深入了解 Flutter 的商业价值与生态优势</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-6 pt-6 text-center text-gray-400">
+                <p>© 2025 Flutter 调研报告 | 瞬动数字科技-技术团队</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 导航栏点击事件
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // 移除所有激活状态
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                // 添加当前激活状态
+                this.classList.add('active');
+                
+                // 滚动到对应区域
+                const targetId = this.getAttribute('data-target');
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 滚动监听，更新导航激活状态
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section');
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                const sectionHeight = section.offsetHeight;
+                if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-target') === currentSection) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // 初始化图表
+        window.addEventListener('load', function() {
+            const ctx = document.getElementById('featuresChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['性能', 'UI一致性', '开发体验', '类型安全', '跨平台', '自定义能力'],
+                    datasets: [
+                        {
+                            label: 'Flutter',
+                            data: [95, 98, 92, 90, 88, 96],
+                            backgroundColor: 'rgba(3, 155, 229, 0.2)',
+                            borderColor: 'rgba(3, 155, 229, 1)',
+                            pointBackgroundColor: 'rgba(3, 155, 229, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(3, 155, 229, 1)'
+                        },
+                        {
+                            label: 'React Native',
+                            data: [75, 65, 85, 50, 90, 70],
+                            backgroundColor: 'rgba(251, 146, 60, 0.2)',
+                            borderColor: 'rgba(251, 146, 60, 1)',
+                            pointBackgroundColor: 'rgba(251, 146, 60, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(251, 146, 60, 1)'
+                        }
+                    ]
+                },
+                options: {
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+        });
+
+        // 代码块复制功能
+        document.querySelectorAll('.code-block').forEach(block => {
+            const copyButton = document.createElement('button');
+            copyButton.className = 'absolute top-2 right-2 bg-gray-700 text-white px-2 py-1 rounded text-xs hover:bg-gray-600 transition-colors';
+            copyButton.innerHTML = '<i class="fa fa-copy mr-1"></i> 复制';
+            copyButton.onclick = () => {
+                const code = block.querySelector('pre').textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    copyButton.innerHTML = '<i class="fa fa-check mr-1"></i> 已复制';
+                    setTimeout(() => {
+                        copyButton.innerHTML = '<i class="fa fa-copy mr-1"></i> 复制';
+                    }, 2000);
+                });
+            };
+            
+            // 为代码块添加相对定位
+            block.style.position = 'relative';
+            block.appendChild(copyButton);
+        });
+    </script>
+</body>
+</html>
