@@ -1,7 +1,7 @@
 
 
 
-### **一、Docker容器化部署（推荐，简单高效）**
+### **一、Docker容器化部署**
 Docker部署无需复杂的环境配置，适合快速搭建和管理。
 
 #### 1. 安装Docker和Docker Compose
@@ -9,7 +9,7 @@ Docker部署无需复杂的环境配置，适合快速搭建和管理。
 如果尚未安装Docker，先执行以下命令：
 ```bash
 # 更新包索引
-sudo apt update
+sudo apt update -y
 
 # 安装依赖
 sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
@@ -21,7 +21,7 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
 # 安装Docker
-sudo apt update
+sudo apt update -y
 sudo apt install -y docker-ce
 
 # 启动Docker并设置开机自启
