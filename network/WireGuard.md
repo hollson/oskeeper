@@ -4,7 +4,7 @@
 
 ## WireGuard简介
 
-**WireGuard**是一种现代、简洁、高效的开源虚拟专用层VPN协议，旨在提供比传统VPN协议（如OpenVPN、IPsec）更简单的实现、更强的安全性和更好的性能。
+**WireGuard**是一种现代、简洁、高效的开源**虚拟专用层VPN协议**，旨在提供比传统VPN协议（如OpenVPN、IPsec）更简单的实现、更强的安全性和更好的性能。
 
 
 
