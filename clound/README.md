@@ -26,18 +26,33 @@
 **安装服务：**
 
 ```shell
-$ mkdir -p /var/nextcloud
+# https://hub.docker.com/_/nextcloud
+$ mkdir -p ~/.local/nextcloud
+
+$ docker pull nextcloud
 
 $ docker run -d \
+  --name nextcloud \
   -p 8084:80 \
   -e NEXTCLOUD_ADMIN_USER=admin \
   -e NEXTCLOUD_ADMIN_PASSWORD=123456 \
-  -v /var/nextcloud/html:/var/www/html \
-  -v /var/nextcloud/config:/var/www/html/config \
-  -v /var/nextcloud/data:/var/www/html/data \
-  -v /var/nextcloud/custom_apps:/var/www/html/custom_apps \
-  nextcloud:apache
+  -v ~/.local/nextcloud/html:/var/www/html \
+  -v ~/.local/nextcloud/config:/var/www/html/config \
+  -v ~/.local/nextcloud/data:/var/www/html/data \
+  -v ~/.local/nextcloud/custom_apps:/var/www/html/custom_apps \
+  nextcloud:latest
+    
+$ docker rm -f nextcloud
 ```
+
+
+
+**初始化**
+
+![](./asset/init.png)
+
+-  建议使用postgresql，须提前准备好外部数据库。
+- 数据目录优先使用docker参数指定的目录，此处不用动。
 
 
 
@@ -50,3 +65,44 @@ _参考官方资料：https://nextcloud.com/install/#install-clients_
 
 
 ## Cloudreve
+
+https://docs.cloudreve.org/zh/overview/deploy/docker
+
+https://hub.docker.com/r/cloudreve/cloudreve
+
+https://github.com/cloudreve/Cloudreve/blob/master/README_zh-CN.md
+
+```shell
+mkdir -p ~/.local/cloudreve/data
+
+# 简单安装
+docker run -d --name cloudreve \
+    -p 8212:5212 \
+    -p 8886:6888 \
+    -p 8886:6888/udp \
+    -v ~/cloudreve/data:/cloudreve/data \
+    cloudreve/cloudreve:latest
+
+# 外部数据库（推荐）
+docker run --name cloudreve \
+    -p 8212:5212 \
+    -p 8886:6888 \
+    -p 8886:6888/udp \
+    -v ~/.local/cloudreve/data:/cloudreve/data \
+    -e CR_CONF_Database.Type=postgres \
+    -e CR_CONF_Database.Host=192.168.3.31 \
+    -e CR_CONF_Database.Port=5432 \
+    -e CR_CONF_Database.User=postgres \
+    -e CR_CONF_Database.Password=123456 \
+    -e CR_CONF_Database.Name=cloudreve \
+    -d cloudreve/cloudreve:latest
+     
+docker rm -f cloudreve
+```
+
+
+
+
+
+
+
