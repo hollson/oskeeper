@@ -104,5 +104,22 @@ docker rm -f cloudreve
 
 
 
+## Quantum
+
+[**Quantum**](https://filebrowserquantum.com/en/) 最佳免费自托管 Web 文件管理器，具有**可配置源**、**OIDC 身份验证**、**Office 文件支持**和**实时索引功能**。 
+
+**Docker安装**  参考[官方文档](https://filebrowserquantum.com/en/docs/getting-started/docker/)
+
+```shell
+docker run -d \
+  -v /path/to/your/folder:/srv \
+  -p 80:80 \
+  gtstef/filebrowser:beta
+```
+
+
+
+
+
 
 

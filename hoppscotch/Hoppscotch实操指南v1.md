@@ -1,4 +1,4 @@
-# Hoppscotch实操指南（AIO容器版）
+# Hoppscotch实操指南
 
 本文通过**All-In-One（AIO）容器**方式[快速部署Hoppscotch社区版](https://docs.hoppscotch.io/documentation/self-host/community-edition/install-and-build) ，将前端、后端、管理后台等服务集成在一个Docker容器中，简化部署流程。
 
@@ -6,9 +6,9 @@
 
 ## 一. 准备工作
 
-### 1.1 初始化数据库
+### 1.1 安装数据库
 
-- **Hoppscotch** 仅支持**Postgres**数据库, 以下是[Docker](https://docs.docker.com/engine/install/ubuntu/)安装postgreSQL的过程，若已安装则可忽略。
+- **Hoppscotch** 仅支持**Postgres**数据库, 以下是[Docker](https://docs.docker.com/engine/install/ubuntu/)安装postgreSQL的过程，**若已安装则可忽略**。
 
 ```shell
 # 创建挂载目录
@@ -34,7 +34,7 @@ docker exec -it mypostgres psql -U postgres -c "SELECT version();"
 # docker rm -f mypostgre
 ```
 
-### 1.2 安装SMTP服务
+### 1.2 安装SMTP
 
 ```shell
 # SMTP邮件认证配置
@@ -92,16 +92,6 @@ DATA_ENCRYPTION_KEY=abcdefghijklmnopqrstuvwxyz123456
 # 指定允许与你的Hoppscotch实例进行跨域通信的地址列表
 # 若要支持桌面端，必须包含 app://localhost_3200 或对应 bundle 服务器的地址
 WHITELISTED_ORIGINS=http://localhost:3170,http://localhost:3000,http://localhost:3100,app://localhost_3200,app://hoppscotch
-
-# -----------------------Mailer config-------------------------------#
-# 启动SMTP
-mailer_smtp_enable=true
-# 使用基础SMTP配置，无需自定义
-mailer_use_custom_configs=false
-#自定义发件邮箱，无需真实
-mailer_address_from=hoppscotch@gmail.com
-# 替换为你的Docker桥接IP+1025端口
-mailer_smtp_url=smtp://192.168.3.31:1025
 
 #-----------------------Frontend Config------------------------------#
 # 基础URL
@@ -195,10 +185,10 @@ docker rm -f hoppscotch
 
    | 配置项        | 填写内容             | 说明                                   |
    | ------------- | -------------------- | -------------------------------------- |
-   | Address From  | shundong@gmail.com   |                                        |
+   | Address From  | `shundong@gmail.com` |                                        |
    | SMTP Host     | 192.168.3.31         | 本地 SMTP 服务的IP                     |
    | SMTP Port     | 1025                 | MailHog 默认 SMTP 端口（无需 SSL）     |
-   | SMTP User     | admin@gmail.com      | 自定义局域网邮箱（无需真实存在）       |
+   | SMTP User     | `admin@gmail.com`    | 自定义局域网邮箱（无需真实存在）       |
    | SMTP Password | 123456               | 无需真实认证，填任意值即可             |
    | 加密方式      | 选择 “无”（或 None） | 本地 SMTP 不支持 SSL/TLS，避免配置错误 |
    

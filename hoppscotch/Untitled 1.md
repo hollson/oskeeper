@@ -27,10 +27,6 @@ docker run -d --name mailcatcher\
 
 docker rm -f mailcatcher
 
-
-
-
-
 docker run --name=mailcatcher -d \
 -p 1025:1025 \
 -p 1080:1080 \
