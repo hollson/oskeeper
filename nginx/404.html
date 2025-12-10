@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #6366f1;
+            --text-color: #1f2937;
+            --text-secondary: #6b7280;
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --border-radius: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Background decorative elements */
+        .bg-decor {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+            z-index: 0;
+            animation: float 15s ease-in-out infinite;
+        }
+        
+        .decor-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
+        }
+        
+        .decor-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -60px;
+            right: -60px;
+            animation-delay: -5s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            50% {
+                transform: translate(20px, -20px) rotate(5deg);
+            }
+        }
+        
+        .error-card {
+            position: relative;
+            z-index: 1;
+            max-width: 500px;
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            text-align: center;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .error-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .error-code {
+            font-size: 6rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+        
+        .error-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .error-message {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #4338ca 0%, #7c3aed 100%);
+        }
+        
+        @media (max-width: 640px) {
+            .error-code {
+                font-size: 4rem;
+            }
+            
+            .error-card {
+                padding: 30px 20px;
+            }
+            
+            .decor-1 {
+                width: 200px;
+                height: 200px;
+                top: -70px;
+                left: -70px;
+            }
+            
+            .decor-2 {
+                width: 150px;
+                height: 150px;
+                bottom: -40px;
+                right: -40px;
+            }
+        }
+    </style>
+
+<script>!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e="undefined"!=typeof globalThis?globalThis:e||self).__WWBridge=t()}(this,function(){"use strict";function e(e){return e&&e.__esModule&&Object.prototype.hasOwnProperty.call(e,"default")?e.default:e}var t,n={exports:{}};var r=(t||(t=1,function(e){var t=Object.prototype.hasOwnProperty,n="~";function r(){}function o(e,t,n){this.fn=e,this.context=t,this.once=n||!1}function s(e,t,r,s,a){if("function"!=typeof r)throw new TypeError("The listener must be a function");var i=new o(r,s||e,a),c=n?n+t:t;return e._events[c]?e._events[c].fn?e._events[c]=[e._events[c],i]:e._events[c].push(i):(e._events[c]=i,e._eventsCount++),e}function a(e,t){0===--e._eventsCount?e._events=new r:delete e._events[t]}function i(){this._events=new r,this._eventsCount=0}Object.create&&(r.prototype=Object.create(null),(new r).__proto__||(n=!1)),i.prototype.eventNames=function(){var e,r,o=[];if(0===this._eventsCount)return o;for(r in e=this._events)t.call(e,r)&&o.push(n?r.slice(1):r);return Object.getOwnPropertySymbols?o.concat(Object.getOwnPropertySymbols(e)):o},i.prototype.listeners=function(e){var t=n?n+e:e,r=this._events[t];if(!r)return[];if(r.fn)return[r.fn];for(var o=0,s=r.length,a=new Array(s);o<s;o++)a[o]=r[o].fn;return a},i.prototype.listenerCount=function(e){var t=n?n+e:e,r=this._events[t];return r?r.fn?1:r.length:0},i.prototype.emit=function(e,t,r,o,s,a){var i=n?n+e:e;if(!this._events[i])return!1;var c,f,p=this._events[i],u=arguments.length;if(p.fn){switch(p.once&&this.removeListener(e,p.fn,void 0,!0),u){case 1:return p.fn.call(p.context),!0;case 2:return p.fn.call(p.context,t),!0;case 3:return p.fn.call(p.context,t,r),!0;case 4:return p.fn.call(p.context,t,r,o),!0;case 5:return p.fn.call(p.context,t,r,o,s),!0;case 6:return p.fn.call(p.context,t,r,o,s,a),!0}for(f=1,c=new Array(u-1);f<u;f++)c[f-1]=arguments[f];p.fn.apply(p.context,c)}else{var l,d=p.length;for(f=0;f<d;f++)switch(p[f].once&&this.removeListener(e,p[f].fn,void 0,!0),u){case 1:p[f].fn.call(p[f].context);break;case 2:p[f].fn.call(p[f].context,t);break;case 3:p[f].fn.call(p[f].context,t,r);break;case 4:p[f].fn.call(p[f].context,t,r,o);break;default:if(!c)for(l=1,c=new Array(u-1);l<u;l++)c[l-1]=arguments[l];p[f].fn.apply(p[f].context,c)}}return!0},i.prototype.on=function(e,t,n){return s(this,e,t,n,!1)},i.prototype.once=function(e,t,n){return s(this,e,t,n,!0)},i.prototype.removeListener=function(e,t,r,o){var s=n?n+e:e;if(!this._events[s])return this;if(!t)return a(this,s),this;var i=this._events[s];if(i.fn)i.fn!==t||o&&!i.once||r&&i.context!==r||a(this,s);else{for(var c=0,f=[],p=i.length;c<p;c++)(i[c].fn!==t||o&&!i[c].once||r&&i[c].context!==r)&&f.push(i[c]);f.length?this._events[s]=1===f.length?f[0]:f:a(this,s)}return this},i.prototype.removeAllListeners=function(e){var t;return e?(t=n?n+e:e,this._events[t]&&a(this,t)):(this._events=new r,this._eventsCount=0),this},i.prototype.off=i.prototype.removeListener,i.prototype.addListener=i.prototype.on,i.prefixed=n,i.EventEmitter=i,e.exports=i}(n)),n.exports),o=e(r);return class extends o{constructor(){super(),this.onMessageFn=this.onMessage.bind(this),this.bind()}onMessage(e){if(e.data&&e.data.wwMsgType)switch(e.data.wwMsgType){case"reloadImage":this.emit("reloadImage",e.data.payload);break;case"setSandbox":this.emit("setSandbox",e.data.payload);break;case"runtimeError":this.emit("runtimeError",e.data.payload);break;case"reloadPage":this.emit("reloadPage",e.data.payload)}}bind(){window.addEventListener("message",this.onMessageFn)}dispose(){window.removeEventListener("message",this.onMessageFn)}reloadImage(e){const t={wwMsgType:"reloadImage",payload:void 0};e.postMessage(t,"*")}reloadPage(e){const t={wwMsgType:"reloadPage",payload:void 0};e.postMessage(t,"*")}setSandbox(e){const t={wwMsgType:"setSandbox",payload:void 0};e.postMessage(t,"*")}runtimeError(e,t){const n={wwMsgType:"runtimeError",payload:{error:t}};e.postMessage(n,"*")}on(e,t){return super.on(e,t)}once(e,t){return super.once(e,t)}off(e,t){return super.off(e,t)}}});
+//# sourceMappingURL=index.js.map
+</script>
+<script>
+const bridge = new window.__WWBridge();
+bridge.on('reloadImage', () => {
+    document.querySelectorAll('img').forEach((img) => {
+        const url = new URL(img.src);
+        url.searchParams.set('t', Date.now().toString());
+        img.src = url.toString();
+    });
+});
+bridge.on('reloadPage', () => {
+    window.location.reload();
+});
+</script>
+</head>
+<body>
+    <!-- Background decorative elements -->
+    <div class="bg-decor decor-1"></div>
+    <div class="bg-decor decor-2"></div>
+    
+    <div class="error-card">
+        <div class="error-code">404</div>
+        <h2 class="error-title">Page Not Found</h2>
+        <p class="error-message">Sorry, the page you're looking for doesn't exist or has been removed. Please check the URL is correct or return to the homepage to continue browsing.</p>
+        <a href="/" class="btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Back to Home
+        </a>
+    </div>
+</body>
+</html>

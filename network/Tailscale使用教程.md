@@ -75,9 +75,91 @@ tailscaleip
 
 
 
+## WebAdmin内网访问
 
 
 
+```nginx
+# 静态资源 travel-admin
+    location /admin/ {
+        autoindex off;      # 禁用目录浏览
+        server_tokens off;  # 关闭版本号显示
+
+        allow 127.0.0.1;
+        allow 100.64.0.0/10;
+        deny all;
+
+        alias /var/www/travel-admin/admin/;
+        try_files $uri $uri/ =404;
+    }
+```
+
+
+
+```nginx
+worker_processes 1;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include mime.types;
+    default_type application/octet-stream;
+    sendfile on;
+    keepalive_timeout 65;
+
+    server {
+        listen 80;
+        server_name localhost;
+
+        # ------------------------------ 基础设置 ------------------------------
+        # 安全设置
+        autoindex off; # 禁用目录浏览
+        server_tokens off; # 关闭版本号显示
+
+
+        # ----------------------------- 服务配置 -------------------------------
+        location / {
+            root html;
+            index index.html index.htm;
+        }
+
+        location /admin/ {
+            index index.html index.htm;
+            allow 127.0.0.1;
+
+            # curl -v -s -o /dev/null -H "Cache-Control: no-cache, no-store" http://192.168.3.100/admin/index.html
+            # allow 172.16.0.0/16;
+            # allow 100.64.0.0/10;
+            deny all;
+
+            # 别名, 即将/admin/指向/var/www/travel-admin/admin/目录
+            # alias /var/www/travel-admin/admin/;
+            # alias D:/program/nginx/html/admin;
+        }
+
+        # ----------------------------- 错误页配置 -----------------------------
+        error_page 404 /404.html;
+        error_page 403 /403.html;
+        error_page 500 502 503 504 /50x.html;
+
+        location = /404.html {
+            root html;
+            internal;
+        }
+
+        location = /403.html {
+            root html;
+            internal;
+        }
+
+        location = /50x.html {
+            root html;
+        }
+    }
+}
+```
 
 
 
