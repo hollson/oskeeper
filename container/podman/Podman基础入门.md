@@ -19,31 +19,60 @@
 
 ## 二、安装 Podman
 
-**CentOS/RHEL 8/9**
+### 2.3 Linux
 
 ```bash
+# CentOS/RHEL
 sudo yum install -y podman
 podman --version
-```
 
-**Ubuntu/Debian**
-
-```bash
 # Ubuntu 20.04+ / Debian 11+
 sudo apt update && sudo apt install -y podman
 podman --version
 ```
 
-**macOS**
-```shell
-brew install podman
-podman machine init
-podman machine start
-```
+### 2.3 MacOS
 
-**Windows**
+> [**官网**](https://podman.io/) 提供了两种方式安装podman:
+
+- **Podman Desktop【推荐】** :  桌面管理器，可集中管理**Podman/Compose、Machine、镜像和容器**等。
+- **Podman Cli**：即通过**安装器**安装Podman应用 (不提供桌面管理器)。
+
+![podman](desktop_setting.png)
+
+### 2.3 Windows
+
 - 通过 WSL2 安装（推荐）：在 WSL2 中执行 Linux 对应发行版的安装命令；
 - 或通过 Chocolatey：`choco install podman`，并初始化虚拟机。
+
+### 2.4 测试Podman
+
+```shell
+$ podman pull quay.io/podman/hello
+
+$ podman run quay.io/podman/hello
+!... Hello Podman World ...!
+
+         .--"--.
+       / -     - \
+      / (O)   (O) \
+   ~~~| -=(,Y,)=- |
+    .---. /`  \   |~~
+ ~/  o  o \~~~~.----. ~~
+  | =(X)= |~  / (O (O) \
+   ~~~~~~~  ~| =(Y_)=-  |
+  ~~~~    ~~~|   U      |~~
+
+Project:   https://github.com/containers/podman
+Website:   https://podman.io
+Desktop:   https://podman-desktop.io
+Documents: https://docs.podman.io
+YouTube:   https://youtube.com/@Podman
+X/Twitter: @Podman_io
+Mastodon:  @Podman_io@fosstodon.org
+```
+
+
 
 
 

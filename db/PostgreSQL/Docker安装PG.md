@@ -1,21 +1,23 @@
 ```shell
 # 创建挂载目录
-mkdir -p /home/${USER}/.local/postgres
+$ mkdir -p $HOME/.local/postgres
+
+# 拉取镜像
+$ docker pull postgres
 
 # 安装PGSQL
-docker run --name mypostgres \
+$ docker run --name mypostgres \
   -e POSTGRES_PASSWORD=123456 \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_DB=postgres \
   -e POSTGRES_HOST_AUTH_METHOD=md5 \
   -e POSTGRES_INITDB_ARGS="--data-checksums" \
   -p 5432:5432 \
-  -v /home/${USER}/.local/postgres:/var/lib/postgresql \
+  -v $HOME/.local/postgres:/var/lib/postgresql \
   --restart always \
   -d postgres:latest \
   -c listen_addresses='*'
 
-  
 # 验证
 docker ps -a
 docker exec -it mypostgres psql -U postgres -c "SELECT version();"
