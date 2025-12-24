@@ -83,24 +83,25 @@ docker run -d --name cloudreve \
     -v ~/cloudreve/data:/cloudreve/data \
     cloudreve/cloudreve:latest
 
-# 外部数据库（推荐）
+# 指定宿主机(docker0)地址
 docker run --name cloudreve \
     -p 8212:5212 \
     -p 8886:6888 \
     -p 8886:6888/udp \
     -v ~/.local/cloudreve/data:/cloudreve/data \
     -e CR_CONF_Database.Type=postgres \
-    -e CR_CONF_Database.Host=192.168.3.31 \
+    -e CR_CONF_Database.Host=172.17.0.1 \
     -e CR_CONF_Database.Port=5432 \
     -e CR_CONF_Database.User=postgres \
     -e CR_CONF_Database.Password=123456 \
     -e CR_CONF_Database.Name=cloudreve \
-    -d cloudreve/cloudreve:latest
-     
+    -d cloudreve/cloudreve:latest    
+
+# 删除
 docker rm -f cloudreve
 ```
 
-
+请注册一个账户，首个注册的账户会被设置为管理员。
 
 
 
