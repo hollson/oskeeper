@@ -1,0 +1,22 @@
+ClickHouse Local 模式说明
+=======================
+
+1. 数据文件问题说明：
+   - 在ClickHouse Local模式下，数据文件只在执行实际的clickhouse-local命令时创建
+   - 当系统中没有安装clickhouse-local时，程序会模拟执行SQL语句但不会创建实际数据文件
+   - 要查看实际数据文件，需要安装ClickHouse并执行真实的命令
+
+2. 如何安装ClickHouse：
+   - 访问 https://clickhouse.com/docs/en/getting-started/install/
+   - 下载并安装适合您系统的版本
+   - 确保'clickhouse-local'命令在系统PATH中
+
+3. 实际使用示例：
+   - 创建表：clickhouse-local --query="CREATE TABLE users (id UInt32, name String) ENGINE=Memory;"
+   - 插入数据：clickhouse-local --query="INSERT INTO users VALUES (1, 'John');"
+   - 查询数据：clickhouse-local --query="SELECT * FROM users;"
+
+4. 本项目特点：
+   - 提供了类似SQLAlchemy的接口用于ClickHouse Local模式
+   - 展示了如何在没有服务器的情况下使用ClickHouse
+   - 代码结构兼容服务器模式和本地模式

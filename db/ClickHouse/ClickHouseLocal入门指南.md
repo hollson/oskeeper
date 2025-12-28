@@ -1,9 +1,10 @@
 # ClickHouse Local 极简实操指南
+
 [**ClickHouse Local**](https://clickhouse.com/docs/zh/operations/utilities/clickhouse-local) 是 ClickHouse 官方的轻量级本地数据处理工具，直接在本地就能用SQL分析**CSV、JSON、Parquet**等格式文件。
 
 
 
-## 一、安装 ClickHouseLocal
+## 一、安装CK
 
 ### 1.1 Linux/MacOS 系统
 
@@ -20,9 +21,7 @@ $ mv clickhouse ~/.local/bin/
 # CSVWithNames:逗号分隔,如xxx.csv
 # TSVWithNames:制表符分隔,如xxx.tsv
 $ alias ck='clickhouse'
-$ alias ckl='clickhouse local'
-$ alias ckc='clickhouse local --input-format CSVWithNames --output-format PrettyCompact'
-$ alias ckt='clickhouse local --input-format TSVWithNames --output-format PrettyCompact'
+$ alias ckl='clickhouse local --output-format PrettyCompact'
 ```
 ### 1.2  Windows 系统
 
@@ -30,7 +29,7 @@ $ alias ckt='clickhouse local --input-format TSVWithNames --output-format Pretty
 
 
 
-### 1.3 ClickHouse 命令
+### 1.3 安装验证
 
 ```shell
 $ clickhouse -V
@@ -42,13 +41,40 @@ $ clickhouse local --query "SELECT version()"
 
 
 
+<br/>
+
+
+
+## 二、基础入门
+
+### 1.3 ClickHouse 命令
+
+
+
 
 
 <br/>
 
 
 
-## 二、用 SQL 操作本地文件
+## 2.5 常用场景速查
+
+| 场景                | 核心命令模板                                                                 |
+|---------------------|------------------------------------------------------------------------------|
+| 查Nginx日志（JSON） | `clickhouse local --file access.log --input-format JSONEachRow --query "SELECT remote_addr, COUNT(*) FROM table GROUP BY remote_addr"` |
+| CSV转Parquet        | `clickhouse local --file 数据.csv --input-format CSVWithNames --query "SELECT * FROM table" --output-format Parquet > 数据.parquet` |
+| 统计文件行数        | `clickhouse local --file 大文件.tsv --input-format TSV --query "SELECT COUNT(*) FROM table"` |
+| 按条件筛选并导出    | `clickhouse local --file 数据.tsv --input-format TSVWithNames --query "SELECT * FROM table WHERE age > 30" --output-format CSV > 筛选结果.csv` |
+
+
+
+<br/>
+
+
+
+
+
+## 三、实战演练
 
 ### 2.1 数据格式
 
@@ -56,7 +82,7 @@ $ clickhouse local --query "SELECT version()"
 
 #### 示例1：TSV文件测试
 
-- 新建文本文件 `user.tsv`（TSV 是制表符分隔，用记事本/VSCode 编辑），并执行查询：
+- 新建文本文件 `user.tsv`（TSV 是制表符分隔，用记事本/VSCode 编辑），输入格式为**TSVWithNames**：
 
 ```
 id	name	age	city	salary
@@ -67,8 +93,8 @@ id	name	age	city	salary
 5	孙七	27	北京	11000
 ```
 ```shell
-# 简化查询
-$ ckt -F user.tsv -q "SELECT * FROM table"
+# 简化命令
+$ ckl -F user.tsv -q "SELECT * FROM table"
 ┌─id─┬─name─┬─age─┬─city─┬─salary─┐
 │  1 │ 张三  │  25 │ 北京 │ 10000  │
 │  2 │ 李四  │  30 │ 上海 │ 15000  │
@@ -85,7 +111,7 @@ $ clickhouse local --file user.tsv --input-format TSVWithNames --output-format P
 
 #### 示例2：CSV文件测试
 
-- 新建文本文件 `user.csv`,  并执行查询：
+- 新建文本文件 `user.csv`,  输入格式为**CSVWithNames**：
 
 ```csv
 id,name,age,city,salary
@@ -97,25 +123,28 @@ id,name,age,city,salary
 ```
 
 ```shell
-$ ck -F user.csv -q "SELECT * FROM table"
-$ ckc -F user.csv -q "SELECT * FROM table"
+# 简化查询
+$ ckl -F user.csv -q "SELECT * FROM table"
+
+# 完整命令
+$ clickhouse local --file user.csv --input-format CSVWithNames --output-format PrettyCompact --query "SELECT * FROM table"
 ```
 
 
 
 #### 示例3：Json文件测试
 
-先准备 `user.json`（每行一个JSON，复制粘贴）：
+先准备 `user.json`（每行一个JSON，复制粘贴），输入格式为**JSONEachRow**：：
 ```json
 {"id":1,"name":"张三","age":25,"city":"北京","salary":10000}
 {"id":2,"name":"李四","age":30,"city":"上海","salary":15000}
 ```
-执行查询（只改 `--input-format` 为 `JSONEachRow`）：
 ```bash
-clickhouse local --file test_data.json \
---input-format JSONEachRow \
---output-format PrettyCompact \
---query "SELECT name, city FROM table WHERE age > 28"
+# 简化查询
+$ ckl -F user.json -q "SELECT name, city FROM table WHERE age > 28"
+
+# 完整命令
+$ clickhouse local --file user.json --input-format JSONEachRow --query "SELECT name, city FROM table WHERE age > 28"
 ```
 
 
@@ -193,7 +222,7 @@ clickhouse local --file 大文件.tsv \
 
 
 
-## 性能测试
+### 性能测试
 
 **ClickHouse**为我们提供了多个[示例数据集](https://clickhouse.com/docs/getting-started/example-datasets) ，
 
@@ -207,16 +236,8 @@ clickhouse local --file 大文件.tsv \
 
 
 
-## 四、常用场景速查（直接抄命令）
+## 四、进阶参考
 
-| 场景                | 核心命令模板                                                                 |
-|---------------------|------------------------------------------------------------------------------|
-| 查Nginx日志（JSON） | `clickhouse local --file access.log --input-format JSONEachRow --query "SELECT remote_addr, COUNT(*) FROM table GROUP BY remote_addr"` |
-| CSV转Parquet        | `clickhouse local --file 数据.csv --input-format CSVWithNames --query "SELECT * FROM table" --output-format Parquet > 数据.parquet` |
-| 统计文件行数        | `clickhouse local --file 大文件.tsv --input-format TSV --query "SELECT COUNT(*) FROM table"` |
-| 按条件筛选并导出    | `clickhouse local --file 数据.tsv --input-format TSVWithNames --query "SELECT * FROM table WHERE age > 30" --output-format CSV > 筛选结果.csv` |
-
-## 五、进阶参考（需要时再看）
 - 支持的文件格式：[ClickHouse 官方格式说明（中文）](https://clickhouse.com/docs/zh/interfaces/formats)；
 - SQL语法：和ClickHouse服务端完全一样，参考 [ClickHouse SQL语法（中文）](https://clickhouse.com/docs/zh/sql-reference)；
 - 官方文档：[ClickHouse Local 官方指南（中文）](https://clickhouse.com/docs/zh/operations/utilities/clickhouse-local)。
