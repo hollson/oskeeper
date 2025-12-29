@@ -1,15 +1,73 @@
-### ClickHouse安装指南
+# ClickHouse入门指南
 
-#### 一、安装方式对比
+## 一. ClickHouse概要
 
-| 特性         | ClickHouse                    | ClickHouse Local                 |
-| ------------ | ----------------------------- | -------------------------------- |
-| **定位**     | 完整数据库服务端              | 轻量级单机查询工具               |
-| **依赖**     | 需要独立服务进程              | 无需服务端，直接运行查询         |
-| **适用场景** | 生产环境数据分析              | 快速本地测试、临时数据处理       |
-| **数据存储** | 支持多种表引擎（MergeTree等） | 仅支持File引擎，数据与主服务隔离 |
+[**ClickHouse**](https://clickhouse.com/docs/zh) 是一个
 
-#### 二、Linux安装实操（CentOS/RHEL）
+
+
+特点：
+
+
+
+#### 二、Linux安装实操
+
+### 2.1 Debian/Ubuntu
+
+https://clickhouse.com/docs/zh/install/debian_ubuntu
+
+```shell
+# Install prerequisite packages
+sudo apt-get install -y apt-transport-https ca-certificates curl gnupg
+
+# Download the ClickHouse GPG key and store it in the keyring
+curl -fsSL 'https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key' | sudo gpg --dearmor -o /usr/share/keyrings/clickhouse-keyring.gpg
+
+# Get the system architecture
+ARCH=$(dpkg --print-architecture)
+
+# Add the ClickHouse repository to apt sources
+echo "deb [signed-by=/usr/share/keyrings/clickhouse-keyring.gpg arch=${ARCH}] https://packages.clickhouse.com/deb stable main" | sudo tee /etc/apt/sources.list.d/clickhouse.list
+
+# Update apt package lists
+sudo apt-get update
+
+
+
+sudo apt-get install -y clickhouse-server clickhouse-client -y
+sudo service clickhouse-server start
+clickhouse-client
+clickhouse-client --password
+```
+
+
+
+```shell
+$ ll /usr/bin/|grep click
+lrwxrwxrwx 1 root root      10 Dec 18 18:39 ch -> clickhouse*
+lrwxrwxrwx 1 root root      10 Dec 18 18:39 chc -> clickhouse*
+lrwxrwxrwx 1 root root      10 Dec 18 18:39 chdig -> clickhouse*
+lrwxrwxrwx 1 root root      10 Dec 18 18:39 chl -> clickhouse*
+-r-xr-xr-x 1 root root    727M Dec 18 18:39 clickhouse*
+lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-benchmark -> /usr/bin/clickhouse*
+lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-chdig -> /usr/bin/clickhouse*
+lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-client -> /usr/bin/clickhouse*
+lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-compressor -> /usr/bin/clickhouse*
+lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-disks -> /usr/bin/clickhouse*
+lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-extract-from-config -> /usr/bin/clickhouse*
+lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-format -> /usr/bin/clickhouse*
+lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-git-import -> /usr/bin/clickhouse*
+lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-keeper -> /usr/bin/clickhouse*
+lrwxrwxrwx 1 root root      10 Dec 18 18:42 clickhouse-keeper-client -> clickhouse*
+lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-keeper-converter -> /usr/bin/clickhouse*
+lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-local -> /usr/bin/clickhouse*
+lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-obfuscator -> /usr/bin/clickhouse*
+lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-server -> /usr/bin/clickhouse*
+```
+
+
+
+
 
 **1. 官方RPM包安装（推荐）**
 
@@ -18,12 +76,10 @@
 sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo https://packages.clickhouse.com/rpm/clickhouse.repo
 
-# 安装服务端和客户端
-sudo yum install -y clickhouse-server clickhouse-client
-
-# 启动服务
+# 安装服务端和客户端，并启动
+sudo yum install -y clickhouse-server clickhouse-client		
 sudo systemctl start clickhouse-server
-sudo systemctl enable clickhouse-server  # 设置开机自启
+sudo systemctl enable clickhouse-server
 
 # 验证安装
 clickhouse-client --query "SELECT version()"
@@ -196,132 +252,97 @@ clickhouse-local --query "
 
 
 
-
-
-
-
 ---
 
+根据 ClickHouse 官方文档的安装逻辑（Debian/Ubuntu 环境通过 `deb` 包安装），默认目录、自定义目录配置方式如下，结合官方规范和实操细节整理：
 
+### 一、默认目录位置（deb 包安装后）
+通过官方 `deb` 包安装的 ClickHouse，核心目录遵循 Linux 标准布局，默认路径如下：
 
-是的，你的理解完全正确！**`clickhouse-server` 和 `clickhouse-client` 本质上是 `clickhouse` 主程序的软链接**，它们本身不包含任何独立代码，所有功能（包括服务模式和本地文件模式）均由 `clickhouse` 主程序通过不同的启动参数实现。以下是详细说明：
+| 目录类型       | 默认路径                          | 说明                                  |
+|----------------|-----------------------------------|---------------------------------------|
+| 数据目录       | `/var/lib/clickhouse/`            | 核心数据存储目录，包含数据库、表数据等（默认权限归 `clickhouse` 用户） |
+| 配置目录       | `/etc/clickhouse-server/`         | 主配置文件目录，核心配置文件为 `config.xml`；用户自定义配置可放在 `config.d/` 子目录（推荐通过子目录扩展，避免修改主配置） |
+| 日志目录       | `/var/log/clickhouse-server/`     | 服务日志（`clickhouse-server.log`）、错误日志（`clickhouse-server.err.log`）等 |
+| 临时文件目录   | `/var/lib/clickhouse/tmp/`        | 临时数据、查询中间结果存储            |
+|  pid 文件目录   | `/var/run/clickhouse-server/`     | 服务进程 ID 文件（`clickhouse-server.pid`） |
 
-------
+### 二、自定义目录配置（指定数据、配置、日志路径）
 
-### **1. 软链接的本质：参数驱动的功能切换**
+ClickHouse 通过主配置文件 `config.xml` 或自定义配置文件（推荐）修改目录，**不建议直接修改主配置**，优先通过 `config.d/` 子目录添加自定义配置（避免升级覆盖）。
 
-- **`clickhouse-server`** 和 **`clickhouse-client`** 是安装时自动创建的软链接（或符号链接），指向同一个 `clickhouse` 二进制文件。
+#### 操作步骤：
 
-- **核心机制**：通过传递不同的命令行参数，`clickhouse` 主程序会切换到对应的功能模式：
+1. **创建自定义配置文件**（推荐方式）
+   在配置扩展目录创建自定义配置（如 `custom-paths.xml`），优先级高于主配置：
+   ```bash
+   sudo vim /etc/clickhouse-server/config.d/custom-paths.xml
+   ```
 
-    - **服务模式**：通过 `server` 参数启动后台服务。
+2. **配置自定义目录参数**
+   在文件中添加以下内容，替换 `<自定义路径>` 为实际目录（需确保 `clickhouse` 用户有读写权限）：
+   ```xml
+   <yandex>
+       <!-- 自定义数据目录（核心） -->
+       <path>/<自定义路径>/clickhouse/data/</path>
+       
+       <!-- 自定义临时文件目录 -->
+       <tmp_path>/<自定义路径>/clickhouse/tmp/</tmp_path>
+       
+       <!-- 自定义日志目录 -->
+       <log>/<自定义路径>/clickhouse/logs/clickhouse-server.log</log>
+       <errorlog>/<自定义路径>/clickhouse/logs/clickhouse-server.err.log</errorlog>
+       
+       <!-- 自定义 pid 文件路径 -->
+       <pid_file>/<自定义路径>/clickhouse/run/clickhouse-server.pid</pid_file>
+       
+       <!-- （可选）自定义用户配置目录（默认无需修改） -->
+       <users_config>/etc/clickhouse-server/users.xml</users_config>
+       <users_dir>/etc/clickhouse-server/users.d/</users_dir>
+   </yandex>
+   ```
 
-        ```bash
-        clickhouse-server --config-file=/etc/clickhouse-server/config.xml
-        # 等价于：
-        clickhouse server --config-file=/etc/clickhouse-server/config.xml
-        ```
+3. **创建目录并授权**
+   手动创建自定义路径的目录，赋予 `clickhouse` 用户所有权（否则服务启动失败）：
+   ```bash
+   # 示例：假设自定义路径为 /data/clickhouse
+   sudo mkdir -p /data/clickhouse/{data,tmp,logs,run}
+   sudo chown -R clickhouse:clickhouse /data/clickhouse/
+   sudo chmod -R 755 /data/clickhouse/
+   ```
 
-    - **客户端模式**：通过 `client` 参数启动交互式终端。
+4. **重启 ClickHouse 生效**
+   ```bash
+   sudo service clickhouse-server restart
+   # 验证服务状态
+   sudo service clickhouse-server status
+   ```
 
-        ```bash
-        clickhouse-client --host=localhost --user=default
-        # 等价于：
-        clickhouse client --host=localhost --user=default
-        ```
+#### 关键说明：
+- 配置优先级：`/etc/clickhouse-server/config.d/*.xml` > `/etc/clickhouse-server/config.xml`，新增配置会覆盖主配置的默认值。
+- 目录权限必须正确：所有自定义目录的所有者和组必须是 `clickhouse`（deb 包安装时自动创建的系统用户），否则服务无法读写数据/日志。
+- 若需修改配置目录本身（默认 `/etc/clickhouse-server/`）：需在启动命令中通过 `--config-file` 指定自定义配置文件路径（如 `sudo clickhouse-server --config-file /<自定义配置目录>/config.xml`），但不推荐（破坏默认规范）。
 
-    - **本地模式**：通过 `local` 参数直接处理本地文件。
+### 三、验证自定义目录是否生效
+1. 查看服务日志，确认目录加载成功：
+   ```bash
+   grep "Path:" /var/log/clickhouse-server/clickhouse-server.log  # 旧日志路径（若已修改，查看新日志路径）
+   # 或直接查看新日志目录下的日志，确认无权限错误
+   ```
 
-        ```bash
-        clickhouse local --query="SELECT * FROM file('data.csv', 'CSV')"
-        ```
+2. 通过客户端查询系统表验证数据目录：
+   ```bash
+   clickhouse-client  # 若设密码，加 --password
+   ```
+   执行 SQL：
+   ```sql
+   SELECT * FROM system.settings WHERE name LIKE '%path%';
+   ```
+   结果中 `path` 字段应显示自定义的目录路径。
 
-------
-
-### **2. 为什么需要软链接？**
-
-- **用户体验优化**：
-    - 软链接提供了语义化的入口（如 `clickhouse-server` 明确表示启动服务），避免用户手动记忆参数。
-    - 符合 Unix/Linux 工具设计惯例（如 `mysql` 和 `mysqld` 的关系）。
-- **兼容性支持**：
-    - 部分脚本或工具可能硬编码了 `clickhouse-server` 或 `clickhouse-client` 的路径，软链接确保这些工具能正常工作。
-
-------
-
-### **3. 功能完整性的验证**
-
-#### **（1）直接调用主程序替代软链接**
-
-- **启动服务端**：
-
-    ```bash
-    # 使用软链接
-    clickhouse-server --config-file=/etc/clickhouse-server/config.xml
-    
-    # 直接调用主程序
-    /usr/bin/clickhouse server --config-file=/etc/clickhouse-server/config.xml
-    ```
-
-    两者效果完全一致。
-
-- **启动客户端**：
-
-    ```bash
-    # 使用软链接
-    clickhouse-client --query="SELECT version()"
-    
-    # 直接调用主程序
-    /usr/bin/clickhouse client --query="SELECT version()"
-    ```
-
-    同样无差别。
-
-#### **（2）查看主程序支持的参数**
-
-通过 `--help` 可以看到 `clickhouse` 支持的所有模式：
-
-```bash
-clickhouse --help
-# 输出片段：
-#   server - Run server.
-#   client - Run client.
-#   local - Run local query processor.
-#   benchmark - Run benchmark.
-#   extract-from-config - Extract part of config.
-```
-
-这进一步证明所有功能均由主程序实现。
-
-------
-
-### **4. 特殊情况：`clickhouse-keeper` 和 `clickhouse-copier`**
-
-- **例外说明**：
-
-    - 在较新版本中，`clickhouse-keeper`（替代 ZooKeeper 的元数据管理工具）和 `clickhouse-copier`（数据迁移工具）**可能是独立的二进制文件**（非软链接）。
-    - 这是因为它们的功能复杂度较高，独立编译能减少主程序的体积和依赖。
-
-- **验证方法**：
-
-    ```bash
-    ls -l $(which clickhouse-keeper clickhouse-copier)
-    # 若输出为独立路径（非指向clickhouse），则说明是独立二进制文件。
-    ```
-
-------
-
-### **5. 总结**
-
-| **组件**             | **本质**              | **功能来源**                 | **是否必须存在**           |
-| -------------------- | --------------------- | ---------------------------- | -------------------------- |
-| `clickhouse`         | 主程序二进制文件      | 包含所有核心功能             | 是                         |
-| `clickhouse-server`  | 软链接 → `clickhouse` | 通过 `server` 参数启动服务   | 是（语义化需求）           |
-| `clickhouse-client`  | 软链接 → `clickhouse` | 通过 `client` 参数启动客户端 | 是（语义化需求）           |
-| `clickhouse-local`   | 通过 `local` 参数调用 | 主程序内置功能               | 否（可通过主程序直接调用） |
-| `clickhouse-keeper`* | 可能独立二进制文件    | 替代 ZooKeeper 的元数据管理  | 视版本而定                 |
-
-**关键结论**：
-
-- **99% 的功能由 `clickhouse` 主程序实现**，软链接仅提供便捷入口。
-- **Local 模式无需软链接**，直接通过 `clickhouse local` 调用即可。
-- **独立二进制文件（如 `clickhouse-keeper`）是例外**，需根据版本确认。
+### 四、补充注意事项
+1. 生产环境建议：数据目录、日志目录单独挂载磁盘（避免磁盘占满影响系统），且确保磁盘有足够空间和 IO 性能。
+2. 若修改目录后服务启动失败，优先检查：
+   - 目录是否存在、权限是否正确（`ls -ld /<自定义路径>/clickhouse/`）。
+   - 配置文件语法是否正确（XML 标签是否闭合，可通过 `clickhouse-server --config-file /etc/clickhouse-server/config.d/custom-paths.xml --check-config` 验证）。
+3. 升级 ClickHouse 时：自定义配置文件（`config.d/` 下）不会被覆盖，主配置文件可能被更新，因此优先使用扩展配置目录而非修改主配置。
