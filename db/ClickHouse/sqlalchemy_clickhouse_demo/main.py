@@ -32,13 +32,8 @@ def main():
     print("   示例: clickhouse-local --query='SELECT 1'")
     print()
     
-    user_input = input("是否要继续查看SQLAlchemy模式的演示? (y/n): ")
-    if user_input.lower() != 'y':
-        print("\n有关实际ClickHouse Local操作，请使用以下命令:")
-        print("  clickhouse-local --query='CREATE TABLE users (id UInt32, name String) ENGINE=Memory'")
-        print("  clickhouse-local --query='INSERT INTO users VALUES (1, \"John\")'")
-        print("  clickhouse-local --query='SELECT * FROM users'")
-        return
+    print("自动继续演示...")
+    # 自动继续演示，无需用户输入
 
     # 显示Local模式下的操作
     print("\n3. 在ClickHouse Local模式下创建表...")

@@ -4,9 +4,10 @@ import tempfile
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
-from config import CLICKHOUSE_LOCAL_MODE, LOCAL_DATA_PATH
+from config import CLICKHOUSE_LOCAL_MODE, CHDB_MODE, LOCAL_DATA_PATH, DATABASE_URL
 from models.base import Base
 import logging
+import sys
 
 # 配置日志
 logging.basicConfig(level=logging.INFO)
@@ -17,6 +18,22 @@ def ensure_local_directory():
     if not os.path.exists(LOCAL_DATA_PATH):
         os.makedirs(LOCAL_DATA_PATH, exist_ok=True)
         logger.info(f"已创建本地数据目录: {LOCAL_DATA_PATH}")
+
+# 导入chdb（如果启用chdb模式）
+chdb_available = False
+chdb_platform_supported = sys.platform not in ['win32', 'cygwin']  # chdb不支持Windows
+
+if CHDB_MODE:
+    if chdb_platform_supported:
+        try:
+            import chdb
+            chdb_available = True
+            logger.info("chdb模块已加载")
+        except ImportError:
+            logger.warning("chdb模块未安装。请运行 'pip install chdb' 来安装。")
+            chdb_available = False
+    else:
+        logger.warning("chdb在Windows平台上不可用。chdb仅支持macOS和Linux。")
 
 def test_clickhouse_local():
     """测试clickhouse-local命令是否可用"""
@@ -55,15 +72,39 @@ def execute_local_query(query):
         if os.path.exists(temp_sql_file):
             os.remove(temp_sql_file)
 
+def execute_chdb_query(query):
+    """使用chdb执行查询"""
+    if not chdb_available:
+        raise Exception("chdb模块不可用。chdb仅在macOS和Linux上支持。")
+    
+    try:
+        # 创建内存连接并执行查询
+        conn = chdb.connect(':memory:')
+        cur = conn.cursor()
+        cur.execute(query)
+        
+        # 对于SELECT查询，获取结果
+        if query.strip().upper().startswith('SELECT'):
+            result = cur.fetchall()
+            # 获取列名
+            columns = [desc[0] for desc in cur.description] if cur.description else []
+            return {'columns': columns, 'data': result}
+        else:
+            # 对于非SELECT查询，返回执行状态
+            return {'status': 'success', 'message': 'Query executed successfully'}
+    except Exception as e:
+        logger.error(f"chdb查询执行失败: {e}")
+        raise
+
 # 对于真正的ClickHouse Local模式，我们需要以不同于服务器的方式工作
 # 由于我们想要类似SQLite的功能，我们将创建一个自定义方法
-if CLICKHOUSE_LOCAL_MODE:
+if CLICKHOUSE_LOCAL_MODE or CHDB_MODE:
     ensure_local_directory()
     
-    # 检查clickhouse-local是否可用
-    if test_clickhouse_local():
+    # 检查clickhouse-local是否可用（仅在CLICKHOUSE_LOCAL_MODE模式下）
+    if CLICKHOUSE_LOCAL_MODE and test_clickhouse_local():
         logger.info("ClickHouse Local可用")
-    else:
+    elif CLICKHOUSE_LOCAL_MODE:
         logger.warning("未找到clickhouse-local命令。您可能需要安装ClickHouse。")
         logger.info("对于ClickHouse Local模式，请安装ClickHouse并确保'clickhouse-local'在您的PATH中")
 
@@ -71,21 +112,40 @@ if CLICKHOUSE_LOCAL_MODE:
 class LocalSession:
     def __init__(self):
         self.queries = []
-        self.has_clickhouse = test_clickhouse_local()
+        self.has_clickhouse = test_clickhouse_local() if CLICKHOUSE_LOCAL_MODE else False
+        self.has_chdb = chdb_available if CHDB_MODE else False
+        self.chdb_platform_supported = chdb_platform_supported if CHDB_MODE else False
     
     def execute(self, query):
-        """使用clickhouse-local执行查询"""
-        if not self.has_clickhouse:
-            # 如果clickhouse-local不可用，记录将要执行的查询
-            logger.info(f"将执行查询: {query}")
-            return f"如果安装了clickhouse-local，查询结果将在此处: {query}"
+        """根据当前模式执行查询"""
+        if CHDB_MODE:
+            if not self.has_chdb or not self.chdb_platform_supported:
+                # 如果chdb不可用或平台不支持，记录将要执行的查询
+                logger.info(f"将执行chdb查询: {query}")
+                return f"如果在支持的平台上安装了chdb，查询结果将在此处: {query}"
+            else:
+                try:
+                    result = execute_chdb_query(query)
+                    return result
+                except Exception as e:
+                    logger.error(f"chdb查询执行失败: {e}")
+                    raise
+        elif CLICKHOUSE_LOCAL_MODE:
+            if not self.has_clickhouse:
+                # 如果clickhouse-local不可用，记录将要执行的查询
+                logger.info(f"将执行查询: {query}")
+                return f"如果安装了clickhouse-local，查询结果将在此处: {query}"
+            else:
+                try:
+                    result = execute_local_query(query)
+                    return result
+                except Exception as e:
+                    logger.error(f"查询执行失败: {e}")
+                    raise
         else:
-            try:
-                result = execute_local_query(query)
-                return result
-            except Exception as e:
-                logger.error(f"查询执行失败: {e}")
-                raise
+            # 如果都不是，记录查询
+            logger.info(f"将执行查询: {query}")
+            return f"模拟查询结果: {query}"
     
     def query(self, model_class):
         """为模型返回一个模拟查询对象"""
@@ -93,7 +153,10 @@ class LocalSession:
     
     def add(self, obj):
         """添加对象 - 将转换为INSERT语句"""
-        if not self.has_clickhouse:
+        if CHDB_MODE and (not self.has_chdb or not self.chdb_platform_supported):
+            logger.info(f"将添加对象: {obj}")
+            return
+        elif CLICKHOUSE_LOCAL_MODE and not self.has_clickhouse:
             logger.info(f"将添加对象: {obj}")
             return
         
@@ -126,7 +189,10 @@ class LocalSession:
     
     def delete(self, obj):
         """删除对象"""
-        if not self.has_clickhouse:
+        if CHDB_MODE and (not self.has_chdb or not self.chdb_platform_supported):
+            logger.info(f"将删除对象: {obj}")
+            return
+        elif CLICKHOUSE_LOCAL_MODE and not self.has_clickhouse:
             logger.info(f"将删除对象: {obj}")
             return
         
@@ -142,7 +208,9 @@ class LocalQuery:
         self.model_class = model_class
         self.table_name = getattr(model_class, '__tablename__', 'unknown')
         self.conditions = []
-        self.has_clickhouse = session.has_clickhouse
+        self.has_chdb = session.has_chdb if CHDB_MODE else False
+        self.chdb_platform_supported = session.chdb_platform_supported if CHDB_MODE else False
+        self.has_clickhouse = session.has_clickhouse if CLICKHOUSE_LOCAL_MODE else False
     
     def filter(self, *conditions):
         """添加过滤条件"""
@@ -157,16 +225,33 @@ class LocalQuery:
         if self.conditions:
             query += " WHERE " + " AND ".join(self.conditions)
         
-        if not self.has_clickhouse:
-            logger.info(f"将执行查询: {query}")
-            return []  # 当clickhouse-local不可用时返回空列表
+        if CHDB_MODE:
+            if not self.has_chdb or not self.chdb_platform_supported:
+                logger.info(f"将执行查询: {query}")
+                return []  # 当chdb不可用时返回空列表
+            else:
+                try:
+                    result = self.session.execute(query)
+                    # 解析结果 - 为演示简化
+                    if isinstance(result, dict) and 'data' in result:
+                        return result['data']  # 返回chdb查询结果
+                    return []  # 返回空列表或模拟对象
+                except Exception:
+                    return []
+        elif CLICKHOUSE_LOCAL_MODE:
+            if not self.has_clickhouse:
+                logger.info(f"将执行查询: {query}")
+                return []  # 当clickhouse-local不可用时返回空列表
+            else:
+                try:
+                    result = self.session.execute(query)
+                    # 解析结果 - 为演示简化
+                    return []  # 返回空列表或模拟对象
+                except Exception:
+                    return []
         else:
-            try:
-                result = self.session.execute(query)
-                # 解析结果 - 为演示简化
-                return []  # 返回空列表或模拟对象
-            except Exception:
-                return []
+            logger.info(f"将执行查询: {query}")
+            return []
     
     def first(self):
         """获取第一条记录"""
@@ -175,16 +260,33 @@ class LocalQuery:
             query += " WHERE " + " AND ".join(self.conditions)
         query += " LIMIT 1"
         
-        if not self.has_clickhouse:
-            logger.info(f"将执行查询: {query}")
-            return None  # 当clickhouse-local不可用时返回None
+        if CHDB_MODE:
+            if not self.has_chdb or not self.chdb_platform_supported:
+                logger.info(f"将执行查询: {query}")
+                return None  # 当chdb不可用时返回None
+            else:
+                try:
+                    result = self.session.execute(query)
+                    # 解析结果 - 为演示简化
+                    if isinstance(result, dict) and 'data' in result and result['data']:
+                        return result['data'][0]  # 返回第一个结果
+                    return None  # 返回模拟对象
+                except Exception:
+                    return None
+        elif CLICKHOUSE_LOCAL_MODE:
+            if not self.has_clickhouse:
+                logger.info(f"将执行查询: {query}")
+                return None  # 当clickhouse-local不可用时返回None
+            else:
+                try:
+                    result = self.session.execute(query)
+                    # 解析结果 - 为演示简化
+                    return None  # 返回模拟对象
+                except Exception:
+                    return None
         else:
-            try:
-                result = self.session.execute(query)
-                # 解析结果 - 为演示简化
-                return None  # 返回模拟对象
-            except Exception:
-                return None
+            logger.info(f"将执行查询: {query}")
+            return None
 
 def get_db():
     """
@@ -198,9 +300,48 @@ def get_db():
 
 def create_tables():
     """
-    使用clickhouse-local在数据库中创建所有表
+    使用当前数据库模式在数据库中创建所有表
     """
-    if CLICKHOUSE_LOCAL_MODE:
+    if CHDB_MODE:
+        logger.info("在chdb模式下创建表")
+        
+        # 检查chdb是否可用
+        has_chdb = chdb_available and chdb_platform_supported
+        
+        for table_name, table in Base.metadata.tables.items():
+            # 生成CREATE TABLE语句
+            columns_def = []
+            for column in table.columns:
+                col_type = str(column.type)
+                # 将SQLAlchemy类型转换为ClickHouse类型
+                if 'INTEGER' in col_type.upper():
+                    ch_type = 'Int32'
+                elif 'VARCHAR' in col_type.upper() or 'STRING' in col_type.upper():
+                    ch_type = 'String'
+                elif 'DATETIME' in col_type.upper():
+                    ch_type = 'DateTime'
+                elif 'FLOAT' in col_type.upper() or 'REAL' in col_type.upper():
+                    ch_type = 'Float64'
+                elif 'BOOLEAN' in col_type.upper():
+                    ch_type = 'UInt8'
+                else:
+                    ch_type = 'String'  # 默认回退
+                
+                nullable = '' if not column.nullable else ''
+                columns_def.append(f"{column.name} {ch_type}{nullable}")
+            
+            if columns_def:
+                create_query = f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(columns_def)}) ENGINE=Memory;"
+                
+                if has_chdb:
+                    try:
+                        execute_chdb_query(create_query)
+                        logger.info(f"已创建表: {table_name}")
+                    except Exception as e:
+                        logger.error(f"创建表失败 {table_name}: {e}")
+                else:
+                    logger.info(f"将创建表: {create_query}")
+    elif CLICKHOUSE_LOCAL_MODE:
         logger.info("在ClickHouse Local模式下创建表")
         
         # 检查clickhouse-local是否可用
@@ -224,7 +365,7 @@ def create_tables():
                     ch_type = 'UInt8'
                 else:
                     ch_type = 'String'  # 默认回退
-            
+                
                 nullable = '' if not column.nullable else ''
                 columns_def.append(f"{column.name} {ch_type}{nullable}")
             
@@ -251,7 +392,24 @@ def drop_tables():
     """
     删除数据库中的所有表
     """
-    if CLICKHOUSE_LOCAL_MODE:
+    if CHDB_MODE:
+        logger.info("在chdb模式下删除表")
+        
+        # 检查chdb是否可用
+        has_chdb = chdb_available and chdb_platform_supported
+        
+        for table_name in Base.metadata.tables.keys():
+            drop_query = f"DROP TABLE IF EXISTS {table_name};"
+            
+            if has_chdb:
+                try:
+                    execute_chdb_query(drop_query)
+                    logger.info(f"已删除表: {table_name}")
+                except Exception as e:
+                    logger.error(f"删除表失败 {table_name}: {e}")
+            else:
+                logger.info(f"将删除表: {drop_query}")
+    elif CLICKHOUSE_LOCAL_MODE:
         logger.info("在ClickHouse Local模式下删除表")
         
         # 检查clickhouse-local是否可用
@@ -279,9 +437,29 @@ def drop_tables():
 def test_connection():
     """
     测试数据库连接
-    在Local模式下，这会测试clickhouse-local是否可用
+    根据当前模式测试连接
     """
-    if CLICKHOUSE_LOCAL_MODE:
+    if CHDB_MODE:
+        if chdb_platform_supported:
+            if chdb_available:
+                logger.info("chdb可用")
+                # 尝试简单的查询来测试功能
+                try:
+                    result = execute_chdb_query("SELECT 1 as test")
+                    logger.info("基本chdb查询测试成功")
+                    return True
+                except Exception as e:
+                    logger.error(f"基本chdb查询测试失败: {e}")
+                    return False
+            else:
+                logger.warning("chdb模块不可用，但在演示模式下继续")
+                logger.info("要使用chdb功能，请安装chdb模块: pip install chdb")
+                return True  # 返回True以允许演示继续
+        else:
+            logger.warning("chdb在当前平台（Windows）上不可用，但在演示模式下继续")
+            logger.info("chdb仅支持macOS和Linux平台")
+            return True  # 返回True以允许演示继续
+    elif CLICKHOUSE_LOCAL_MODE:
         is_available = test_clickhouse_local()
         if is_available:
             logger.info("ClickHouse Local可用")

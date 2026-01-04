@@ -2,3 +2,4 @@
 SQLAlchemy>=1.4.0
 clickhouse-sqlalchemy>=0.2.0
 clickhouse-driver>=0.2.0
+chdb>=1.0.0
