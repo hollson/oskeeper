@@ -1,348 +1,246 @@
-# ClickHouse入门指南
+# ClickHouse Local 极简实操指南
 
-## 一. ClickHouse概要
-
-[**ClickHouse**](https://clickhouse.com/docs/zh) 是一个
+[**ClickHouse Local**](https://clickhouse.com/docs/zh/operations/utilities/clickhouse-local) 是 ClickHouse 官方的轻量级本地数据处理工具，直接在本地就能用SQL分析**CSV、JSON、Parquet**等格式文件。
 
 
 
-特点：
+## 一、安装CK
+
+### 1.1 Linux/MacOS 系统
+
+```bash
+# 下载ClickHouse客户端（包含 local 工具）
+$ curl https://clickhouse.com/ | sh
+$ ./clickhouse local --version
+$ ./clickhouse -V
+
+# [选] 安装到目标目录
+$ mv clickhouse ~/.local/bin/
+
+# 添加别名
+# CSVWithNames:逗号分隔,如xxx.csv
+# TSVWithNames:制表符分隔,如xxx.tsv
+$ alias ck='clickhouse'
+$ alias ckl='clickhouse local --output-format PrettyCompact'
+```
+### 1.2  Windows 系统
+
+> [**ClickHouse 官方下载页**](https://clickhouse.com/docs/zh/install/#binary-tarballs) 下载并安装。
 
 
 
-#### 二、Linux安装实操
-
-### 2.1 Debian/Ubuntu
-
-https://clickhouse.com/docs/zh/install/debian_ubuntu
+### 1.3 安装验证
 
 ```shell
-# Install prerequisite packages
-sudo apt-get install -y apt-transport-https ca-certificates curl gnupg
-
-# Download the ClickHouse GPG key and store it in the keyring
-curl -fsSL 'https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key' | sudo gpg --dearmor -o /usr/share/keyrings/clickhouse-keyring.gpg
-
-# Get the system architecture
-ARCH=$(dpkg --print-architecture)
-
-# Add the ClickHouse repository to apt sources
-echo "deb [signed-by=/usr/share/keyrings/clickhouse-keyring.gpg arch=${ARCH}] https://packages.clickhouse.com/deb stable main" | sudo tee /etc/apt/sources.list.d/clickhouse.list
-
-# Update apt package lists
-sudo apt-get update
-
-
-
-sudo apt-get install -y clickhouse-server clickhouse-client -y
-sudo service clickhouse-server start
-clickhouse-client
-clickhouse-client --password
+$ clickhouse -V
+$ clickhouse --help
+$ clickhouse local --help
+$ clickhouse --query "SELECT version()"
+$ clickhouse local --query "SELECT version()"
 ```
 
 
+
+<br/>
+
+
+
+## 二、基础入门
+
+### 1.3 ClickHouse 命令
+
+
+
+
+
+<br/>
+
+
+
+## 2.5 常用场景速查
+
+| 场景                | 核心命令模板                                                                 |
+|---------------------|------------------------------------------------------------------------------|
+| 查Nginx日志（JSON） | `clickhouse local --file access.log --input-format JSONEachRow --query "SELECT remote_addr, COUNT(*) FROM table GROUP BY remote_addr"` |
+| CSV转Parquet        | `clickhouse local --file 数据.csv --input-format CSVWithNames --query "SELECT * FROM table" --output-format Parquet > 数据.parquet` |
+| 统计文件行数        | `clickhouse local --file 大文件.tsv --input-format TSV --query "SELECT COUNT(*) FROM table"` |
+| 按条件筛选并导出    | `clickhouse local --file 数据.tsv --input-format TSVWithNames --query "SELECT * FROM table WHERE age > 30" --output-format CSV > 筛选结果.csv` |
+
+
+
+<br/>
+
+
+
+
+
+## 三、实战演练
+
+### 2.1 数据格式
+
+**ClickHouse** 支持大多数已知的文本和二进制[**数据格式**](https://clickhouse.com/docs/zh/interfaces/formats)，从而可以轻松集成到几乎任何现有的数据管道中，充分发挥 ClickHouse 的优势。
+
+#### 示例1：TSV文件测试
+
+- 新建文本文件 `user.tsv`（TSV 是制表符分隔，用记事本/VSCode 编辑），输入格式为**TSVWithNames**：
+
+```
+id	name	age	city	salary
+1	张三	25	北京	10000
+2	李四	30	上海	15000
+3	王五	28	广州	12000
+4	赵六	35	深圳	20000
+5	孙七	27	北京	11000
+```
+```shell
+# 简化命令
+$ ckl -F user.tsv -q "SELECT * FROM table"
+┌─id─┬─name─┬─age─┬─city─┬─salary─┐
+│  1 │ 张三  │  25 │ 北京 │ 10000  │
+│  2 │ 李四  │  30 │ 上海 │ 15000  │
+│  3 │ 王五  │  28 │ 广州 │ 12000  │
+│  4 │ 赵六  │  35 │ 深圳 │ 20000  │
+│  5 │ 孙七  │  27 │ 北京 │ 11000  │
+└────┴──────┴─────┴──────┴────────┘
+
+# 完整命令
+$ clickhouse local --file user.tsv --input-format TSVWithNames --output-format PrettyCompact --query "SELECT * FROM table"
+```
+
+
+
+#### 示例2：CSV文件测试
+
+- 新建文本文件 `user.csv`,  输入格式为**CSVWithNames**：
+
+```csv
+id,name,age,city,salary
+1,张三,25,北京,10000
+2,李四,30,上海,15000
+3,王五,28,广州,12000
+4,赵六,35,深圳,20000
+5,孙七,27,北京,11000
+```
 
 ```shell
-$ ll /usr/bin/|grep click
-lrwxrwxrwx 1 root root      10 Dec 18 18:39 ch -> clickhouse*
-lrwxrwxrwx 1 root root      10 Dec 18 18:39 chc -> clickhouse*
-lrwxrwxrwx 1 root root      10 Dec 18 18:39 chdig -> clickhouse*
-lrwxrwxrwx 1 root root      10 Dec 18 18:39 chl -> clickhouse*
--r-xr-xr-x 1 root root    727M Dec 18 18:39 clickhouse*
-lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-benchmark -> /usr/bin/clickhouse*
-lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-chdig -> /usr/bin/clickhouse*
-lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-client -> /usr/bin/clickhouse*
-lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-compressor -> /usr/bin/clickhouse*
-lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-disks -> /usr/bin/clickhouse*
-lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-extract-from-config -> /usr/bin/clickhouse*
-lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-format -> /usr/bin/clickhouse*
-lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-git-import -> /usr/bin/clickhouse*
-lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-keeper -> /usr/bin/clickhouse*
-lrwxrwxrwx 1 root root      10 Dec 18 18:42 clickhouse-keeper-client -> clickhouse*
-lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-keeper-converter -> /usr/bin/clickhouse*
-lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-local -> /usr/bin/clickhouse*
-lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-obfuscator -> /usr/bin/clickhouse*
-lrwxrwxrwx 1 root root      19 Dec 29 17:05 clickhouse-server -> /usr/bin/clickhouse*
+# 简化查询
+$ ckl -F user.csv -q "SELECT * FROM table"
+
+# 完整命令
+$ clickhouse local --file user.csv --input-format CSVWithNames --output-format PrettyCompact --query "SELECT * FROM table"
 ```
 
 
 
+#### 示例3：Json文件测试
+
+先准备 `user.json`（每行一个JSON，复制粘贴），输入格式为**JSONEachRow**：：
+```json
+{"id":1,"name":"张三","age":25,"city":"北京","salary":10000}
+{"id":2,"name":"李四","age":30,"city":"上海","salary":15000}
+```
+```bash
+# 简化查询
+$ ckl -F user.json -q "SELECT name, city FROM table WHERE age > 28"
+
+# 完整命令
+$ clickhouse local --file user.json --input-format JSONEachRow --query "SELECT name, city FROM table WHERE age > 28"
+```
 
 
-**1. 官方RPM包安装（推荐）**
+#### 示例4：Parquet文件测试
+
+如果有 `test_data.parquet` 文件，直接执行：
+```bash
+clickhouse local --file test_data.parquet \
+--input-format Parquet \
+--output-format PrettyCompact \
+--query "SELECT * FROM table LIMIT 10"
+```
+
+
+
+### 2.2 复杂查询
+
+- **筛选数据：**查北京的用户，按薪资降序
 
 ```bash
-# 添加官方存储库
-sudo yum install -y yum-utils
-sudo yum-config-manager --add-repo https://packages.clickhouse.com/rpm/clickhouse.repo
-
-# 安装服务端和客户端，并启动
-sudo yum install -y clickhouse-server clickhouse-client		
-sudo systemctl start clickhouse-server
-sudo systemctl enable clickhouse-server
-
-# 验证安装
-clickhouse-client --query "SELECT version()"
+clickhouse local --file test_data.tsv --input-format TSVWithNames --output-format PrettyCompact \
+--query "SELECT name, age, salary FROM table WHERE city = '北京' ORDER BY salary DESC"
 ```
 
-**2. 关键目录结构**
-
-```
-/etc/clickhouse-server/
-├── config.xml        # 主配置文件（监听地址、端口等）
-├── users.xml         # 用户权限配置
-└── metrika.xml       # 集群配置（如需集群部署）
-
-/var/lib/clickhouse/  # 数据存储目录
-/var/log/clickhouse-server/  # 日志目录
-/usr/bin/             # 包含clickhouse-server、clickhouse-client等可执行文件
-```
-
-**3. 配置修改示例**
-
-```xml
-<!-- 修改/etc/clickhouse-server/config.xml -->
-<listen_host>::</listen_host>  # 允许所有IP访问
-<log>/data/clickhouse/logs/clickhouse-server.log</log>  # 自定义日志路径
-```
-
-#### 三、macOS安装实操
-
-**1. 使用Homebrew安装**
+- **分组统计: ** 按城市算平均薪资、人数
 
 ```bash
-# 安装Homebrew（如未安装）
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# 添加ClickHouse源并安装
-brew tap clickhouse/clickhouse
-brew install clickhouse
-
-# 启动服务
-brew services start clickhouse
-
-# 验证安装
-clickhouse-client --query "SELECT 1"
+clickhouse local --file test_data.tsv --input-format TSVWithNames --output-format PrettyCompact \
+--query "SELECT city, COUNT(*) as 人数, AVG(salary) as 平均薪资 FROM table GROUP BY city"
 ```
 
-**2. 通过Docker快速体验**
+- **聚合查询：** 计算总和/最大值/最小值
 
 ```bash
-# 拉取镜像
-docker pull clickhouse/clickhouse-server
-
-# 启动容器
-docker run -d --name some-clickhouse-server --ulimit nofile=262144:262144 clickhouse/clickhouse-server
-
-# 进入客户端
-docker exec -it some-clickhouse-server clickhouse-client
+clickhouse local --file test_data.tsv --input-format TSVWithNames --output-format PrettyCompact \
+--query "SELECT SUM(salary) as 薪资总和, MAX(salary) as 最高薪资, MIN(salary) as 最低薪资 FROM table"
 ```
 
-#### 四、ClickHouse Local安装与使用
 
-**1. 安装方式**
 
-- **Linux/macOS通用**：通过ClickHouse客户端包自动安装
+### 2.3 压缩导出
 
-    ```bash
-    # 安装clickhouse-client后即可使用
-    clickhouse-local --query "SELECT * FROM table_name"
-    ```
+比如把统计结果导出为CSV，或把TSV转成Parquet（节省空间）：
 
-- **独立下载**（如需单独使用）
+#### 1. 导出为CSV（带列名）
+```bash
+clickhouse local --file test_data.tsv --input-format TSVWithNames \
+--query "SELECT city, 人数, 平均薪资 FROM (SELECT city, COUNT(*) as 人数, AVG(salary) as 平均薪资 FROM table GROUP BY city)" \
+--output-format CSVWithNames > 城市薪资统计.csv
+```
+执行后，文件夹里会多出 `城市薪资统计.csv`，直接用Excel打开即可。
 
-    ```bash
-    # 下载预编译二进制包（示例）
-    wget https://builds.clickhouse.com/master/amd64/clickhouse
-    chmod +x clickhouse
-    ./clickhouse local --help
-    ```
-
-**2. 核心功能演示**
+#### 2. 转成Parquet（推荐，压缩比高）
 
 ```bash
-# 示例1：查询CSV文件
-echo -e "1,Alice\n2,Bob" > data.csv
-clickhouse-local --query "SELECT * FROM file('data.csv', 'CSV', 'id UInt32, name String')"
-
-# 示例2：生成测试数据并查询
-clickhouse-local --query "
-    CREATE TABLE test (date Date, id UInt32) ENGINE = Memory;
-    INSERT INTO test SELECT toDate('2025-01-01') + number, number FROM numbers(10);
-    SELECT * FROM test ORDER BY id
-"
+clickhouse local --file test_data.tsv --input-format TSVWithNames \
+--query "SELECT * FROM table WHERE city = '北京'" \
+--output-format Parquet > 北京用户数据.parquet
 ```
 
-#### 五、安装后验证清单
 
-1. **服务状态检查**
 
-    ```bash
-    # Linux
-    sudo systemctl status clickhouse-server
-    
-    # macOS（Homebrew）
-    brew services list | grep clickhouse
-    ```
+### 示例6：处理大文件（提速小技巧）
 
-2. **基础查询测试**
-
-    ```bash
-    clickhouse-client --query "
-      CREATE TABLE IF NOT EXISTS test_table (
-          id UInt32,
-          name String,
-          dt DateTime DEFAULT now()
-      ) ENGINE = Memory;
-      INSERT INTO test_table VALUES (1, 'Test', now());
-      SELECT * FROM test_table FORMAT Vertical;
-    "
-    ```
-
-3. **端口监听确认**
-
-    ```bash
-    netstat -tulnp | grep 9000  # 默认TCP端口
-    netstat -tulnp | grep 8123  # 默认HTTP端口
-    ```
-
-#### 六、常见问题处理
-
-1. **权限错误**
-
-    - 现象：`Cannot open file /var/lib/clickhouse/data/...`
-
-    - 解决：
-
-        ```bash
-        sudo chown -R clickhouse:clickhouse /var/lib/clickhouse/
-        sudo chmod -R 755 /var/lib/clickhouse/
-        ```
-
-2. **线程数警告**
-
-    - 现象：`Maximum number of threads is lower than 30000`
-
-    - 解决：
-
-        ```xml
-        <!-- 修改/etc/clickhouse-server/config.xml -->
-        <max_threads>32768</max_threads>
-        ```
-
-        重启服务后生效。
-
-3. **远程连接失败**
-
-    - 检查：
-
-        ```xml
-        <!-- 确保config.xml中包含 -->
-        <listen_host>0.0.0.0</listen_host>
-        ```
-
-    - 防火墙放行：
-
-        ```bash
-        sudo firewall-cmd --add-port=9000/tcp --permanent
-        sudo firewall-cmd --reload
-        ```
+如果文件是GB级的，加 `--max_threads` 指定线程数（比如8线程），利用多核提速：
+```bash
+clickhouse local --file 大文件.tsv \
+--input-format TSVWithNames \
+--max_threads 8 \
+--output-format PrettyCompact \
+--query "SELECT city, COUNT(*) FROM table GROUP BY city"
+```
 
 
 
 
 
----
+### 性能测试
 
-根据 ClickHouse 官方文档的安装逻辑（Debian/Ubuntu 环境通过 `deb` 包安装），默认目录、自定义目录配置方式如下，结合官方规范和实操细节整理：
+**ClickHouse**为我们提供了多个[示例数据集](https://clickhouse.com/docs/getting-started/example-datasets) ，
 
-### 一、默认目录位置（deb 包安装后）
-通过官方 `deb` 包安装的 ClickHouse，核心目录遵循 Linux 标准布局，默认路径如下：
 
-| 目录类型       | 默认路径                          | 说明                                  |
-|----------------|-----------------------------------|---------------------------------------|
-| 数据目录       | `/var/lib/clickhouse/`            | 核心数据存储目录，包含数据库、表数据等（默认权限归 `clickhouse` 用户） |
-| 配置目录       | `/etc/clickhouse-server/`         | 主配置文件目录，核心配置文件为 `config.xml`；用户自定义配置可放在 `config.d/` 子目录（推荐通过子目录扩展，避免修改主配置） |
-| 日志目录       | `/var/log/clickhouse-server/`     | 服务日志（`clickhouse-server.log`）、错误日志（`clickhouse-server.err.log`）等 |
-| 临时文件目录   | `/var/lib/clickhouse/tmp/`        | 临时数据、查询中间结果存储            |
-|  pid 文件目录   | `/var/run/clickhouse-server/`     | 服务进程 ID 文件（`clickhouse-server.pid`） |
 
-### 二、自定义目录配置（指定数据、配置、日志路径）
+我们以**纽约图书馆目录**([New York Public Library "What's on the Menu?" Dataset](https://s3.amazonaws.com/menusdata.nypl.org/gzips/2021_08_01_07_01_17_data.tgz))
 
-ClickHouse 通过主配置文件 `config.xml` 或自定义配置文件（推荐）修改目录，**不建议直接修改主配置**，优先通过 `config.d/` 子目录添加自定义配置（避免升级覆盖）。
 
-#### 操作步骤：
 
-1. **创建自定义配置文件**（推荐方式）
-   在配置扩展目录创建自定义配置（如 `custom-paths.xml`），优先级高于主配置：
-   ```bash
-   sudo vim /etc/clickhouse-server/config.d/custom-paths.xml
-   ```
 
-2. **配置自定义目录参数**
-   在文件中添加以下内容，替换 `<自定义路径>` 为实际目录（需确保 `clickhouse` 用户有读写权限）：
-   ```xml
-   <yandex>
-       <!-- 自定义数据目录（核心） -->
-       <path>/<自定义路径>/clickhouse/data/</path>
-       
-       <!-- 自定义临时文件目录 -->
-       <tmp_path>/<自定义路径>/clickhouse/tmp/</tmp_path>
-       
-       <!-- 自定义日志目录 -->
-       <log>/<自定义路径>/clickhouse/logs/clickhouse-server.log</log>
-       <errorlog>/<自定义路径>/clickhouse/logs/clickhouse-server.err.log</errorlog>
-       
-       <!-- 自定义 pid 文件路径 -->
-       <pid_file>/<自定义路径>/clickhouse/run/clickhouse-server.pid</pid_file>
-       
-       <!-- （可选）自定义用户配置目录（默认无需修改） -->
-       <users_config>/etc/clickhouse-server/users.xml</users_config>
-       <users_dir>/etc/clickhouse-server/users.d/</users_dir>
-   </yandex>
-   ```
 
-3. **创建目录并授权**
-   手动创建自定义路径的目录，赋予 `clickhouse` 用户所有权（否则服务启动失败）：
-   ```bash
-   # 示例：假设自定义路径为 /data/clickhouse
-   sudo mkdir -p /data/clickhouse/{data,tmp,logs,run}
-   sudo chown -R clickhouse:clickhouse /data/clickhouse/
-   sudo chmod -R 755 /data/clickhouse/
-   ```
 
-4. **重启 ClickHouse 生效**
-   ```bash
-   sudo service clickhouse-server restart
-   # 验证服务状态
-   sudo service clickhouse-server status
-   ```
 
-#### 关键说明：
-- 配置优先级：`/etc/clickhouse-server/config.d/*.xml` > `/etc/clickhouse-server/config.xml`，新增配置会覆盖主配置的默认值。
-- 目录权限必须正确：所有自定义目录的所有者和组必须是 `clickhouse`（deb 包安装时自动创建的系统用户），否则服务无法读写数据/日志。
-- 若需修改配置目录本身（默认 `/etc/clickhouse-server/`）：需在启动命令中通过 `--config-file` 指定自定义配置文件路径（如 `sudo clickhouse-server --config-file /<自定义配置目录>/config.xml`），但不推荐（破坏默认规范）。
+## 四、进阶参考
 
-### 三、验证自定义目录是否生效
-1. 查看服务日志，确认目录加载成功：
-   ```bash
-   grep "Path:" /var/log/clickhouse-server/clickhouse-server.log  # 旧日志路径（若已修改，查看新日志路径）
-   # 或直接查看新日志目录下的日志，确认无权限错误
-   ```
+- 支持的文件格式：[ClickHouse 官方格式说明（中文）](https://clickhouse.com/docs/zh/interfaces/formats)；
+- SQL语法：和ClickHouse服务端完全一样，参考 [ClickHouse SQL语法（中文）](https://clickhouse.com/docs/zh/sql-reference)；
+- 官方文档：[ClickHouse Local 官方指南（中文）](https://clickhouse.com/docs/zh/operations/utilities/clickhouse-local)。
 
-2. 通过客户端查询系统表验证数据目录：
-   ```bash
-   clickhouse-client  # 若设密码，加 --password
-   ```
-   执行 SQL：
-   ```sql
-   SELECT * FROM system.settings WHERE name LIKE '%path%';
-   ```
-   结果中 `path` 字段应显示自定义的目录路径。
-
-### 四、补充注意事项
-1. 生产环境建议：数据目录、日志目录单独挂载磁盘（避免磁盘占满影响系统），且确保磁盘有足够空间和 IO 性能。
-2. 若修改目录后服务启动失败，优先检查：
-   - 目录是否存在、权限是否正确（`ls -ld /<自定义路径>/clickhouse/`）。
-   - 配置文件语法是否正确（XML 标签是否闭合，可通过 `clickhouse-server --config-file /etc/clickhouse-server/config.d/custom-paths.xml --check-config` 验证）。
-3. 升级 ClickHouse 时：自定义配置文件（`config.d/` 下）不会被覆盖，主配置文件可能被更新，因此优先使用扩展配置目录而非修改主配置。
+## 总结
+ClickHouse Local 最大的优势是「轻量化」——不用装服务、不用配配置文件，拿到文件就能用SQL查。新手先掌握「读文件→查数据→写文件」这三步，就能覆盖80%的日常场景，遇到问题对照「避坑指南」改参数即可。
