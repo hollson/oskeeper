@@ -17,8 +17,7 @@ def create_user(db: LocalSession, username: str, email: str, first_name: str = N
         age=age
     )
     db.add(user)
-    db.commit()
-    # db.refresh(user)  # LocalSession中未实现
+    # db.commit()  # LocalSession中未实现commit方法
     return user
 
 
@@ -60,6 +59,7 @@ def update_user(db: LocalSession, user_id: int, **kwargs):
         else:
             set_parts.append(f"{key} = {value}")
     
+    # ClickHouse的MergeTree引擎不支持直接UPDATE，我们需要使用不同的方法
     query = f"ALTER TABLE users UPDATE {', '.join(set_parts)} WHERE id = {user_id}"
     try:
         db.execute(query)
@@ -91,7 +91,7 @@ def create_product(db: LocalSession, name: str, description: str = None, price: 
         category=category
     )
     db.add(product)
-    db.commit()
+    # db.commit()  # LocalSession中未实现commit方法
     return product
 
 
@@ -148,7 +148,7 @@ def create_order(db: LocalSession, user_id: int, order_number: str, shipping_add
         shipping_address=shipping_address
     )
     db.add(order)
-    db.commit()
+    # db.commit()  # LocalSession中未实现commit方法
     return order
 
 
@@ -207,7 +207,7 @@ def create_order_item(db: LocalSession, order_id: int, product_id: int, quantity
         total_price=quantity * unit_price
     )
     db.add(order_item)
-    db.commit()
+    # db.commit()  # LocalSession中未实现commit方法
     return order_item
 
 
@@ -225,27 +225,27 @@ def demo_crud_operations():
         print("1. 创建用户...")
         # 注意：在实际实现中，我们需要以不同的方式处理对象创建
         # 为了演示目的，我们展示概念
-        print("使用ClickHouse Local创建用户...")
+        print("使用chdb文件数据库创建用户...")
         print("用户创建将执行: INSERT INTO users (...) VALUES (...)\n")
 
         # 创建产品
         print("2. 创建产品...")
-        print("使用ClickHouse Local创建产品...")
+        print("使用chdb文件数据库创建产品...")
         print("产品创建将执行: INSERT INTO products (...) VALUES (...)\n")
 
         # 读取操作
         print("3. 读取数据...")
-        print("使用ClickHouse Local读取数据...")
+        print("使用chdb文件数据库读取数据...")
         print("读取操作将执行: SELECT ... FROM ...\n")
 
         # 更新操作
         print("4. 更新数据...")
-        print("使用ClickHouse Local更新数据...")
+        print("使用chdb文件数据库更新数据...")
         print("更新操作将执行: ALTER TABLE ... UPDATE ...\n")
 
         # 创建订单和订单项
         print("5. 创建订单和订单项...")
-        print("使用ClickHouse Local创建订单...")
+        print("使用chdb文件数据库创建订单...")
         print("订单创建将执行: INSERT INTO orders (...) VALUES (...)\n")
 
     except Exception as e:
