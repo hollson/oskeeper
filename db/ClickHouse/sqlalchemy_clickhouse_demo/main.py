@@ -28,7 +28,7 @@ def main():
 
     print("2. 在chdb文件数据库模式下运行...")
     print("   本演示展示如何使用chdb作为文件数据库，类似SQLite")
-    print("   数据将持久化到 ./data/clickhouse_local.db 文件中")
+    print("   数据将持久化到 ./data/master.chdb 文件中")
     print()
 
     print("自动继续演示...")
@@ -55,7 +55,7 @@ def main():
 
     print("\n" + "=" * 45)
     print("演示成功完成!")
-    print("数据已持久化到 ./data/clickhouse_local.db 文件中")
+    print("数据已持久化到 ./data/master.chdb 文件中")
     print("您可以查看'data'目录中的数据库文件。")
 
 

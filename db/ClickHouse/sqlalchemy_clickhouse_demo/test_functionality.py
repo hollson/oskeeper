@@ -69,7 +69,7 @@ def test_basic_functionality():
 
     # 验证数据文件是否创建
     print("\n4. 验证数据文件...")
-    db_file = os.path.join(LOCAL_DATA_PATH, "clickhouse_local.db")
+    db_file = os.path.join(LOCAL_DATA_PATH, "master.chdb")
     if os.path.exists(db_file):
         file_size = os.path.getsize(db_file)
         print(f"✓ 数据库文件已创建: {db_file}, 大小: {file_size} 字节")

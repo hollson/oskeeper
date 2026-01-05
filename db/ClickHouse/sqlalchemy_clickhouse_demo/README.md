@@ -2,6 +2,24 @@
 
 本项目演示了如何使用 chdb（ClickHouse 的本地嵌入式版本）作为文件数据库，提供类似 SQLite 的体验，同时保持 SQLAlchemy 风格的代码结构。数据持久化到本地文件，适合时间序列数据处理和临时数据分析。
 
+## 系统要求和先决条件
+
+在运行项目之前，请确保系统已安装以下组件：
+
+- Python 3.8+
+- Python venv 模块 (Debian/Ubuntu: `sudo apt install python3-venv`)
+- pip (Python 包管理器)
+
+### VMware 共享文件夹用户特别注意
+
+如果您在 VMware 共享文件夹中运行此项目（如 `/mnt/hgfs/`），请先安装 `python3-venv` 包：
+
+```bash
+sudo apt install python3-venv
+```
+
+这是因为 VMware 共享文件夹不支持符号链接，而 Python 虚拟环境需要这些功能。
+
 ## 项目结构
 
 ```
@@ -31,7 +49,7 @@ sqlalchemy_clickhouse_demo/
 ## 功能特性
 
 1. **chdb 文件数据库**:
-   - 数据持久化到本地文件 (`./data/clickhouse_local.db`)
+   - 数据持久化到本地文件 (`./data/master.chdb`)
    - 类似 SQLite 的使用体验
    - 支持完整的 SQL 查询功能
    - 特别适合时间序列数据处理
@@ -107,7 +125,7 @@ python chdb_demo.py
 ## 项目配置
 
 项目使用以下配置:
-- 数据库文件: `./data/clickhouse_local.db`
+- 数据库文件: `./data/master.chdb`
 - 数据目录: `./data/`
 - 临时目录: `./data/temp/`
 
