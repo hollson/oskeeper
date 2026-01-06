@@ -140,3 +140,15 @@ pip install clickhouse-connect pandas pyarrow
 3. 某些 Parquet 操作可能需要特定的 ClickHouse 配置
 4. 生产环境使用时需要考虑数据安全和权限管理
 5. 生产版 (`mergetree_demo_prod.py`) 不需要ClickHouse服务，仅展示SQL语句结构，适合轻量级部署
+
+
+
+
+
+## 数据库工具：
+
+- SQLTools + ClickHouse Driver
+
+- https://dbeaver.io/download/
+
+- https://mirrors.nju.edu.cn/github-release/dbeaver/dbeaver/  

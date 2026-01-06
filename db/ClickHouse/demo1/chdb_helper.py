@@ -23,7 +23,7 @@ class ColoredFormatter(logging.Formatter):
     # 定义不同日志级别的图标
     level_icons = {
         logging.DEBUG: "🔍",       # 调试图标
-        logging.INFO: "ℹ️ ",       # 消息图标
+        logging.INFO: "✉️",        # 消息图标
         logging.WARNING: "⚠️ ",    # 警告图标
         logging.ERROR: "❌",       # 错误图标
         logging.CRITICAL: "🚨"     # 危险图标
@@ -68,7 +68,7 @@ class ChdbPool:
     def __init__(self, db_path: str, max_connections: int = 10, timeout: int = 30):
         """
         初始化连接池
-        
+
         Args:
             db_path: 数据库路径
             max_connections: 最大连接数
@@ -151,7 +151,7 @@ class ChdbManager:
     def __init__(self, db_path: str):
         """
         初始化管理器
-        
+
         Args:
             db_path: 数据库路径
         """
@@ -161,11 +161,11 @@ class ChdbManager:
     def execute(self, query: str, params: Optional[Tuple] = None) -> List[Tuple]:
         """
         执行查询操作
-        
+
         Args:
             query: SQL查询语句
             params: 查询参数
-            
+
         Returns:
             查询结果列表
         """
@@ -184,12 +184,12 @@ class ChdbManager:
     def insert_batch(self, table_name: str, columns: str, data: List[Tuple]) -> bool:
         """
         执行批量插入
-        
+
         Args:
             table_name: 表名
             columns: 列名字符串，如 "id, name, value"
             data: 数据列表，每个元素是一个元组
-            
+
         Returns:
             是否成功
         """
@@ -216,11 +216,11 @@ class ChdbManager:
     def insert(self, query: str, params: Tuple) -> bool:
         """
         执行单条插入
-        
+
         Args:
             query: SQL插入语句
             params: 参数元组
-            
+
         Returns:
             是否成功
         """
