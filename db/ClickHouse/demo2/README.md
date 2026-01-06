@@ -1,14 +1,10 @@
 # CPU 监控系统
 
-
-
 基于 chdb (ClickHouse Local) 的 CPU 监控系统，用于实时监控和存储 CPU 使用率数据。
 
 
 
 ## 功能特性
-
-
 
 - 实时监控 CPU 整体使用率
 
@@ -28,8 +24,6 @@
 
 ## 技术栈
 
-
-
 - Python 3.12+
 
 - chdb (ClickHouse Local)
@@ -44,29 +38,18 @@
 
 ### 1. 环境准备
 
-
-
 ```bash
-
 # 创建虚拟环境
-
 python3 -m venv .venv
-
 source .venv/bin/activate
 
-
-
 # 安装依赖
-
-pip install --break-system-packages psutil chdb
-
+pip install --break-system-packages psutil chd
 ```
 
 
 
 ### 2. 运行程序
-
-
 
 ```bash
 source .venv/bin/activate
@@ -76,8 +59,6 @@ python main.py
 
 
 ## 数据存储
-
-
 
 - 数据存储在 `./master.chdb/` 目录中
 
@@ -105,8 +86,6 @@ python main.py
 
 ## 生产环境推荐
 
-
-
 - 使用 MergeTree 引擎进行时序数据存储
 
 - 推荐使用 Parquet 格式进行长期数据存储
@@ -118,8 +97,6 @@ python main.py
 
 
 ## 配置项
-
-
 
 - `COLLECT_INTERVAL`: 监控采集间隔（秒）
 
@@ -134,8 +111,6 @@ python main.py
 
 
 ## 数据结构
-
-
 
 ### CPU 监控数据包含以下字段：
 
@@ -172,8 +147,6 @@ python main.py
 
 
 ## 常见问题
-
-
 
 1. **权限问题**: 如果遇到 `externally-managed-environment` 错误，使用 `--break-system-packages` 参数安装
 
