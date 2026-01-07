@@ -1,6 +1,6 @@
 
 
-# 📖 chDB (Embedded ClickHouse) 全能开发手册
+# 📖 chDB全能开发手册
 
 ## 一、 环境安装
 

@@ -1,5 +1,7 @@
 # chdb Python 数据写入/读取实操教程
-chdb 是基于 ClickHouse 内核的轻量级嵌入式分析引擎，本文将详细讲解如何用 Python 向 chdb 写入数据、生产级存储引擎/格式选型，以及读取数据并转换为 Python 原生数据结构（如列表、字典、DataFrame）的实操方法。
+chdb 是基于 ClickHouse 内核的轻量级嵌入式分析引擎。
+
+
 
 ## 一、环境准备
 首先确保安装 chdb 和依赖库：

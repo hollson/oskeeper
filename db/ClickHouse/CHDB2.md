@@ -14,6 +14,8 @@ pip install chdb pyarrow pandas
 - DataFrame 交互：需 `pyarrow` + `pandas`
 - 扩展功能（如UDF）：内置支持，无需额外依赖
 
+
+
 ## 二、基础使用：直接执行SQL（核心API）
 chdb 最基础的用法是通过 `chdb.query()` 直接执行 SQL，适合快速查询/数据写入。
 
@@ -89,7 +91,7 @@ print("\n指标聚合结果：")
 print(agg_result)
 ```
 
-## 三、标准DB-API使用（兼容Python DB-API 2.0）
+## 三、标准DB-API使用
 chdb 提供了符合 DB-API 2.0 规范的接口（`chdb.dbapi`），适配通用数据库操作习惯，适合工程化开发。
 
 ```python
@@ -392,4 +394,3 @@ except Exception as e:
 3. 性能：chdb 为列式存储，批量插入/查询效率远高于单行操作，建议采集指标时批量写入。
 4. 依赖：使用 `DataFrame`/`Arrow` 格式需安装 `pyarrow` 和 `pandas`，版本建议 `pyarrow>=10.0.0`、`pandas>=1.5.0`。
 
-以上示例覆盖了Python操作chdb的核心场景（指标采集、存储、查询、分析、扩展），可根据实际需求调整（如增加采集频率、扩展更多指标、对接监控系统等）。
