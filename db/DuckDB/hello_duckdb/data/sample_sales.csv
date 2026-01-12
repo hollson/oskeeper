@@ -1,0 +1,6 @@
+order_id,product,category,region,sales_amount,date
+101,Tablet,Electronics,North,300.0,2023-02-01
+102,Jacket,Clothing,South,85.0,2023-02-02
+103,Blender,Home,East,120.0,2023-02-03
+104,Magazine,Education,West,15.0,2023-02-04
+105,Smartphone,Electronics,Central,650.0,2023-02-05
