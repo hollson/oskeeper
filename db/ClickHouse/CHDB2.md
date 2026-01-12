@@ -1,19 +1,4 @@
-# chdb Python 全面使用示例（CPU/内存指标采集场景）
-chdb 是基于 ClickHouse 打造的嵌入式分析引擎，Python 端提供了简洁的 API 接口，支持 SQL 查询、DB-API 规范、DataFrame 交互、UDF 扩展等能力。以下以**采集并分析CPU/内存指标**为场景，提供从基础到进阶的完整使用示例。
-
-## 一、环境准备
-### 1. 安装 chdb
-```bash
-pip install chdb
-# 如需支持DataFrame/Arrow格式，需额外安装
-pip install chdb pyarrow pandas
-```
-
-### 2. 核心依赖说明
-- 基础功能：仅需 `chdb` 包
-- DataFrame 交互：需 `pyarrow` + `pandas`
-- 扩展功能（如UDF）：内置支持，无需额外依赖
-
+# chdb Python 全面使用示例
 
 
 ## 二、基础使用：直接执行SQL（核心API）

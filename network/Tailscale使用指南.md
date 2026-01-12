@@ -1,4 +1,4 @@
-# Tailscale使用指南
+# Tailscale虚拟私有网络指南
 
 [TOC]
 
@@ -32,7 +32,7 @@
 
 ### 2.1 安装Tailscale
 
-- **1. Linux (Ubuntu/Debian)**：
+#### 2.1.1 Ubuntu/Debian
 
 ```bash
 # 安装命令
@@ -42,7 +42,7 @@ curl -fsSL https://tailscale.com/install.sh | sh
 sudo tailscale up
 ```
 
-- **2. Windows/macOS**
+#### 2.1.2 Windows/macOS
 
 从 [Tailscale 官网](https://tailscale.com/download) 下载安装客户端, 登录并选择账号。
 

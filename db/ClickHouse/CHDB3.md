@@ -1,7 +1,4 @@
-# chdb Python 数据写入/读取实操教程
-chdb 是基于 ClickHouse 内核的轻量级嵌入式分析引擎。
-
-
+# chdb Python实操教程
 
 ## 一、环境准备
 首先确保安装 chdb 和依赖库：
@@ -9,15 +6,18 @@ chdb 是基于 ClickHouse 内核的轻量级嵌入式分析引擎。
 pip install chdb pyarrow pandas  # pyarrow用于Arrow格式，pandas用于DataFrame操作
 ```
 
-## 二、核心概念：chdb 数据写入方式
+## 二、核心概念
+
 chdb 支持两种主流写入方式：
 1. **SQL INSERT 写入**：通过 DB-API 接口执行 INSERT 语句（推荐，兼容 ClickHouse 语法）；
 2. **DataFrame 直接写入**：将 Pandas DataFrame 转为 chdb 表后操作（适合Python数据场景）。
 
 
 
-## 三、生产级存储引擎/格式选型
-### 推荐存储引擎（按场景）
+## 三、存储引擎
+
+### 存储引擎
+
 | 场景                | 推荐引擎          | 特点                                                                 |
 |---------------------|-------------------|----------------------------------------------------------------------|
 | 临时/内存计算       | Memory            | 纯内存存储，读写最快，进程退出数据丢失                               |
@@ -25,24 +25,26 @@ chdb 支持两种主流写入方式：
 | 生产级持久化大表    | ReplacingMergeTree| 支持去重、排序、分区，ClickHouse 最经典的生产级引擎，兼顾读写性能     |
 | 外部数据源（如Parquet）| File(Parquet)    | 直接读写Parquet文件，适合大数据文件交互，无需导入数据                 |
 
-### 推荐数据格式（读写效率）
+### 数据格式
+
 - **写入/存储**：Parquet（列式存储，压缩比高，查询快）；
 - **交互格式**：Arrow（chdb与Python交互的最优格式，零拷贝）；
 - **通用格式**：CSV/JSON（兼容性好，适合少量数据）。
 
 
 
-## 四、实操示例：写入+读取完整流程
-### 示例1：SQL INSERT 写入（生产级 ReplacingMergeTree 引擎）
+## 四、实操示例
+
+### 示例1：MergeTree
+
 ```python
 import chdb
 from chdb import dbapi
 import tempfile
 import os
 
-# 1. 创建临时目录作为chdb数据存储路径（生产环境替换为固定路径）
-tmp_dir = tempfile.TemporaryDirectory()
-db_path = tmp_dir.name
+# 1. 数据存储路径
+db_path = "./test.chdb"
 print(f"chdb数据存储路径: {db_path}")
 
 # 2. 建立连接（指定存储路径，持久化数据）
@@ -116,7 +118,8 @@ conn.close()
 tmp_dir.cleanup()
 ```
 
-### 示例2：DataFrame 直接写入（Python 数据场景最优）
+### 示例2：DataFrame
+
 ```python
 import chdb
 import chdb.dataframe as cdf
@@ -154,7 +157,8 @@ for item in ret_list:
     print(f"品类: {item['category']}, 总价: {item['total_price']:.2f}")
 ```
 
-### 示例3：Parquet 文件写入/读取（生产级大数据场景）
+### 示例3：Parquet
+
 ```python
 import chdb
 import os

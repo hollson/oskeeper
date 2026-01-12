@@ -48,6 +48,10 @@
     - 查询分区：`SELECT * FROM system.parts WHERE table='table_name'`，监控分区状态。
 - **Optimize操作**：重写表数据优化存储，建议在业务低峰期执行，避免影响查询性能。
 
+
+
+
+
 #### **二、ClickHouse Local操作指南**
 
 **1. 核心功能**
@@ -61,24 +65,18 @@
 - **基本查询**：
 
     ```bash
-    bash
-    
     clickhouse-local --query "SELECT * FROM table_name LIMIT 10"
     ```
-
+    
 - **数据写入**：
 
     ```bash
-    bash
-    
     clickhouse-local --structure "id UInt32, name String" --input-format "CSV" --file "data.csv" --query "INSERT INTO FUNCTION remoteSecure('host:port', 'db.table', 'user', 'password') SELECT * FROM table"
     ```
-
+    
 - **数据迁移（MySQL→ClickHouse）**：
 
     ```bash
-    bash
-    
     clickhouse-local --query "INSERT INTO FUNCTION remoteSecure('HOSTNAME.clickhouse.cloud:9440', 'db.table', 'default', 'PASS') SELECT * FROM mysql('host:port', 'database', 'table', 'user', 'password')"
     ```
 
@@ -254,8 +252,6 @@ SETTINGS
 #### **1. 监控表空间占用**
 
 ```sql
-sql
-
 SELECT 
     table,
     formatReadableSize(sum(bytes_on_disk)) AS total_size
@@ -272,8 +268,6 @@ ORDER BY total_size DESC;
 - **Shell脚本示例**：
 
     ```bash
-    bash
-    
     #!/bin/bash
     THRESHOLD_GB=100
     CURRENT_SIZE=$(clickhouse-client --query "SELECT sum(bytes_on_disk) / 1024 / 1024 / 1024 FROM system.parts WHERE table = 'events' AND active" | awk '{print $1}')
@@ -295,19 +289,3 @@ ORDER BY total_size DESC;
 通过以上方法，可有效控制ClickHouse磁盘占用，确保系统长期稳定运行。
 
 
-
-
-
----
-
-格式选择
-
-- 若追求最小空间占用，优先选 **TSV**（字段简单、无特殊符号时最优）；
-
-- 若需结构化与可读性平衡，**JSON** 更合适（但体积通常较大）；
-
-- **CSV** 仅在兼容性要求高且数据不含复杂符号时考虑。
-
-- 二进制…
-
-- …
