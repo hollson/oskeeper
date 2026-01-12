@@ -2,7 +2,6 @@
 
 [TOC]
 
-<br/>
 
 
 
@@ -42,16 +41,18 @@ print(duckdb.__version__)  # 输出当前版本号
 
 ### 2.3 数据库客户端
 
-推荐使用 VSCode 插件：**DBCODE**。
+- 推荐使用 VSCode 插件：**DBCODE**。
+
+
 
 
 <br/>
 
 
 
-## 📙 三. 基础操作指南
+## 📙 三. 基础操作
 
-### 📥 3.1 创建连接与数据库
+### 3.1 创建连接
 
 ```python
 import duckdb
@@ -66,9 +67,9 @@ conn = duckdb.connect("my_database.duckdb")
 conn = duckdb.connect(":memory:")
 ```
 
-### 📝 3.2 基本数据操作
+### 3.2 基本操作
 
-#### 创建表和插入数据
+**创建表和插入数据**
 
 ```python
 # 创建表
@@ -92,7 +93,7 @@ conn.execute("""
 """)
 ```
 
-#### 从文件直接加载数据
+**从文件直接加载数据**
 
 ```python
 # 从CSV直接加载（无需预创建表）
@@ -108,9 +109,9 @@ conn.execute("""
 """)
 ```
 
-### 📊 3.3 数据查询与分析
+### 3.3 查询分析
 
-#### 基础查询
+**基础查询**
 
 ```python
 # 简单查询
@@ -123,7 +124,7 @@ result = conn.execute("""
 print(result)
 ```
 
-#### 高级分析查询
+**高级分析查询**
 
 ```python
 # 复杂聚合查询
@@ -148,7 +149,7 @@ high_value_orders = conn.execute("""
 """).df()
 ```
 
-### 📤 3.4 结果导出
+### 3.4 结果导出
 
 ```python
 # 导出为Parquet
@@ -175,11 +176,11 @@ df = conn.execute("SELECT * FROM sales").df()
 
 
 
-## 🚀 四. 高级特性与大数据处理
+## 🚀 四. 高级特性
 
-### 📥 4.1 大数据量写入
+### 4.1 批量写入
 
-#### 批量写入优化
+**量写入优化**
 
 ```python
 import pandas as pd
@@ -211,7 +212,7 @@ def bulk_insert_optimized():
     """)
 ```
 
-#### 使用COPY命令的优势
+**使用COPY命令的优势**
 
 | 操作 | DuckDB耗时 | Pandas耗时 | 备注 |
 |------|------------|------------|------|
@@ -220,9 +221,9 @@ def bulk_insert_optimized():
 | 更新10万行数据 | 1.2秒 | 5.7秒 | 事务支持 |
 | 导出为Parquet | 0.5秒 | 2.0秒 | 原生支持高效序列化 |
 
-### 🔍 4.2 高效查询优化
+### 4.2 高效查询
 
-#### 聚合查询优化
+**聚合查询优化**
 
 ```python
 # 利用向量化执行引擎的聚合查询
@@ -253,7 +254,7 @@ high_value_customers = conn.execute("""
 """).df()
 ```
 
-#### 连接查询优化
+**连接查询优化**
 
 ```python
 # 表连接查询
@@ -277,9 +278,9 @@ joined_result = conn.execute("""
 """).df()
 ```
 
-### 📝 4.3 更新与删除操作
+### 4.3 更新删除
 
-#### 事务支持的数据修改
+**事务支持的数据修改**
 
 ```python
 # 更新操作（带事务）
@@ -331,7 +332,7 @@ def delete_old_records():
     print(f"剩余行数: {remaining_rows}")
 ```
 
-### ➕ 4.4 增量写入与追加
+### 4.4 增量与追加
 
 ```python
 # 增量数据追加
@@ -362,11 +363,11 @@ def append_new_data():
 
 
 
-## 🛠️ 五. 实际应用案例
+## 🛠️ 五. 应用案例
 
-### 📊 5.1 本地销售数据分析工具
+### 5.1 销售数据分析
 
-#### 项目结构
+**项目结构**
 
 ```shell
 sales_analysis/
@@ -377,7 +378,7 @@ sales_analysis/
 └── analyze_sales.py       # 主程序
 ```
 
-#### 主程序实现
+**主程序实现**
 
 ```python
 import duckdb
@@ -442,9 +443,9 @@ if __name__ == "__main__":
     main()
 ```
 
-### 📈 5.2 大数据量分析处理案例
+### 5.2 大数据量分析
 
-#### 完整的CRUD操作示例
+**完整的CRUD操作示例**
 
 ```python
 import duckdb
@@ -508,15 +509,79 @@ def export_analysis_results():
 full_crud_demo()
 ```
 
+### 5.3 性能监控案例
+
+在性能采集场景中，一个程序持续采集指标并写入数据库，同时允许其他程序查询和分析数据。DuckDB 支持这种多连接使用模式，适合构建实时监控系统。
+
+**核心过程**：
+
+- 一个进程负责数据写入（如定时采集指标）
+- 另一个进程负责数据查询（如实时分析、报表生成）
+- 通过独立连接避免读写冲突
+
+**项目结构**
+
+```shell
+perf_monitor/
+├── data/
+│   └── system_metrics.csv    # 原始数据
+├── output/
+│   └── reports.parquet       # 分析报告
+└── perf_monitor.py           # 性能监控主程序
+```
+
+**简化示例代码**：
+
+```python
+import duckdb
+import threading
+import time
+from datetime import datetime
+
+def data_writer(db_path):
+    """数据写入函数"""
+    conn = duckdb.connect(db_path)
+    timestamp = datetime.now()
+    # 模拟写入一些指标
+    conn.execute("INSERT INTO metrics VALUES (?, ?)", [timestamp, 85.5])
+    conn.close()
+    print(f"数据已写入: {timestamp}")
+
+def data_reader(db_path):
+    """数据读取函数"""
+    conn = duckdb.connect(db_path)
+    result = conn.execute("SELECT COUNT(*) FROM metrics").fetchone()[0]
+    conn.close()
+    print(f"当前记录数: {result}")
+
+# 在不同线程中使用独立连接
+writer_thread = threading.Thread(target=data_writer, args=["monitor.duckdb"])
+reader_thread = threading.Thread(target=data_reader, args=["monitor.duckdb"])
+
+writer_thread.start()
+reader_thread.start()
+
+writer_thread.join()
+reader_thread.join()
+```
+
+**核心要点**：
+
+- 每个线程或进程应创建独立的数据库连接
+- 使用后及时关闭连接，避免连接泄漏
+- DuckDB支持事务，确保数据一致性
+- 虽然DuckDB是单线程引擎，但多连接模式下仍能有效支持读写分离场景
+
+
 
 
 <br/>
 
 
 
-## 🏆 六. 性能优化最佳实践
+## 🏆 六. 性能优化
 
-### 6.1 写入优化策略
+### 6.1 写入优化
 
 **批量写入优先**：
 
@@ -528,7 +593,7 @@ full_crud_demo()
 - 明确定义列的数据类型，避免 DuckDB 自动推断
 - 使用合适的数据类型（如 VARCHAR 长度限制）
 
-### 6.2 查询优化策略
+### 6.2 查询优化
 
 **利用向量化执行**：
 
@@ -540,17 +605,39 @@ full_crud_demo()
 - 虽然 DuckDB 没有传统索引，但其列式存储本身提供了良好的查询性能
 - 可考虑按时间分区（如 `PARTITION BY DATE(timestamp)`）加速历史数据查询
 
-### 6.3 事务与一致性
+### 6.3 事务一致性
 
 **事务支持**：
 
 - 通过 `BEGIN/COMMIT` 确保数据一致性
 - 适合需要原子性操作的场景（如金融数据更新）
 
-**并发考虑**：
+### 6.4 并发与多连接
 
-- DuckDB 主要针对单用户/单线程优化
-- 对于高并发场景，需考虑其他解决方案
+**DuckDB 并发模型**：
+
+- DuckDB 是单线程数据库引擎，但支持多连接访问
+- 不是多线程并发，而是通过独立连接实现并发访问
+- 同一进程内多个连接可以同时访问数据库，但操作是串行执行的
+
+**单连接性能**：
+
+- DuckDB 在单连接场景下性能卓越，特别适合分析型查询
+- 利用向量化执行引擎，聚合查询和过滤操作速度极快
+- 适合数据科学、BI分析等场景
+
+**多连接使用场景**：
+
+- 一个进程负责数据写入（如定时采集指标）
+- 另一个进程负责数据查询（如实时分析、报表生成）
+- 通过独立连接避免读写冲突
+
+**并发最佳实践**：
+
+- 为每个线程/任务创建独立的连接
+- 避免共享连接对象，防止并发访问问题
+- 合理管理连接生命周期，及时关闭连接
+- 对于高并发场景，考虑使用连接池或切换到支持多线程的数据库
 
 
 
@@ -558,9 +645,9 @@ full_crud_demo()
 
 
 
-## 🎓 七. 适用场景与限制
+## 🎓 七. 场景与限制
 
-### ✅ 适合场景
+### 7.1 适合场景
 
 - **单机大数据量**：GB级数据的增删改查
 - **快速聚合分析**：日志分析、用户行为分析等场景
@@ -568,7 +655,7 @@ full_crud_demo()
 - **本地分析工具**：无需部署服务器的数据分析应用
 - **ETL 流程**：高效的数据提取、转换和加载
 
-### ❌ 不适合场景
+### 7.2 不适合场景
 
 - **多机分布式写入**：需要使用 ClickHouse/Snowflake 等分布式系统
 - **高并发点查询**：DuckDB 优化目标是分析型负载，而非高并发OLTP
@@ -580,15 +667,15 @@ full_crud_demo()
 
 
 
-## 📚 附录：扩展建议
+## 📚 八. 扩展建议
 
-### 7.1 高级功能探索
+### 8.1 高级功能
 
 - **分区表**：按时间分区（如 `PARTITION BY DATE(timestamp)`）加速历史数据查询
 - **物化视图**：对常用聚合查询预计算结果
 - **并行查询**：通过 `SET parallel_enabled=true` 启用多核并行（DuckDB 0.9+）
 
-### 7.2 性能监控
+### 8.2 性能监控
 
 ```python
 # 启用查询性能分析
@@ -598,7 +685,7 @@ conn.execute("PRAGMA enable_profiling='query_profile';")
 conn.execute("EXPLAIN SELECT * FROM sales WHERE category = 'Electronics';")
 ```
 
-### 7.3 与其他工具集成
+### 8.3 工具集成
 
 - **与Jupyter Notebook集成**：直接在Notebook中进行数据分析
 - **与Streamlit集成**：构建交互式数据仪表盘

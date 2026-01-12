@@ -10,6 +10,11 @@ from data_processor import demo_data_processing
 from query_analyzer import demo_query_analysis
 from crud_demo import crud_full_demo
 from performance_test import performance_full_test
+try:
+    from perf_monitor import PerformanceMonitor, QueryAnalyzer
+    PERF_MONITOR_AVAILABLE = True
+except ImportError:
+    PERF_MONITOR_AVAILABLE = False
 
 def run_all_demos():
     """运行所有演示"""
@@ -67,6 +72,27 @@ def run_all_demos():
         performance_full_test()
     except Exception as e:
         print(f"性能测试演示出错: {e}")
+    
+    # 6. 性能监控演示
+    print("\n" + "="*60)
+    print("6️⃣  性能监控演示（多连接使用场景）")
+    print("="*60)
+    if PERF_MONITOR_AVAILABLE:
+        try:
+            # 创建性能监控器和分析器实例
+            monitor = PerformanceMonitor()
+            analyzer = QueryAnalyzer()
+            
+            # 立即采集一条数据用于演示
+            monitor.collect_metrics()
+            
+            # 运行分析
+            analyzer.run_analysis()
+            print("性能监控演示完成！")
+        except Exception as e:
+            print(f"性能监控演示出错: {e}")
+    else:
+        print("性能监控模块不可用，请确保已安装psutil和schedule依赖")
     
     print("\n" + "="*60)
     print("✅ 所有演示完成！")
