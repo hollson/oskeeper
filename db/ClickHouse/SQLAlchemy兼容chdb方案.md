@@ -1,4 +1,4 @@
-### SQLAlchemy兼容chdb改造方案
+### SQLAlchemy兼容chdb方案
 
 #### 核心结论
 chdb 本身**没有官方的 SQLAlchemy 方言（Dialect）**，但可以通过以下两种方式实现兼容：

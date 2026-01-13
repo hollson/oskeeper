@@ -1,7 +1,5 @@
 bin
 .DS_Store
-.idea
-.vscode
 _gen
 target
 *.log
@@ -10,3 +8,294 @@ temp
 logs
 .data
 release
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Golang
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.prof
+.DS_Store
+
+# C++
+*.o
+*.a
+*.so
+*.obj
+*.lib
+*.dll
+*.dylib
+*.exe
+*.out
+*.ilk
+*.pdb
+*.sdf
+*.suo
+*.tlog
+*.tlg
+*.idb
+*.pdb
+*.res
+*.aps
+*.ncb
+*.opt
+*.plg
+*.mdp
+*.bsc
+*.map
+*.exp
+*.dmp
+*.stackdump
+
+# .NET
+*.obj
+*.bin
+*.exe
+*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.opendb
+*.suo
+*.sln.docstates
+*.userprefs
+*.cache
+*.ilk
+*.meta
+*.manifest
+*.dSYM/
+*.suio
+*.idb
+*.ipch
+*.iobj
+*.blob
+*.rsp
+*.compilation-platform
+*.pidb
+*.dotCover.snapshot
+*.dotCover.SnapshotCache
+*.nupkg
+*.nuspec
+*.snk
+*.snupkg
+*.vsix
+*.vsixmanifest
+*.pkgdef
+*.pkgundef
+*.ppkg
+*.vssettings
+*.sdf.log
+*.VC.db
+*.VC.VC.opendb
+*.opensdf
+*.userosscache
+*.sln.GhostDoc.xml
+*.ref
+*.refs
+*.lock.json
+*.runtimeconfig.json
+*.deps.json
+*.config.bak
+*.cache
+*.dotCover/
+*.coveragexml
+*.coverage
+*.nunit
+*.nunit3
+*.trx
+*.vs/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.com.apple.FinderInfo
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.log
+
+# IDE
+*.swp
+*.swo
+*~
+
+# System
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Temporary folders
+tmp/
+temp/
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Build output
+obj/
+bin/
+out/
+bld/
+Build/
+Debug/
+Release/
+build/
+dist/
+publish/
+
+# Dependencies
+node_modules/
+vendor/
+
+# Environment
+.env
+.venv
+venv/
+env/
+ENV/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Testing
+testreport.xml
+coverage/
+
+# Editor files
+*.swp
+*.swo
+*~
+
+# Frontend
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+node_modules/
+.env
+.nyc_output
+coverage/
+.nyc_output/
+istanbul-reports/
+.coverage
+.coveralls.yml
+.nycrc
+
+# Bower
+bower_components/
+
+# Grunt
+.grunt/
+grunt-
+
+# Gulp
+.gulp/
+gulp-
+.gulps
+
+# Webpack
+webpack.config.js.bak
+webpack.config.js.map
+webpack-stats.json
+
+# Browser-sync
+.browser-sync-client-data
+
+# JSHint
+.jshintignore
+.jshintrc
+
+# ESLint
+.eslintignore
+.eslintrc
+.eslintcache
+
+# Prettier
+.prettierrc
+prettier.config.js
+.prettierignore
+
+# TypeScript
+*.tsbuildinfo
+*.acorn_cache
+
+# Babel
+.babelrc
+.babelrc.js
+.babelignore
+
+# Jest
+.jestrc
+jest.config.js
+coverage/
+.nyc_output/
+.jest/
+
+# Cypress
+cypress/screenshots/
+cypress/videos/
+
+# Dist builds
+dist/
+build/
+public/dist/
+
+# Assets
+*.min.js
+*.min.css
+
+# Temporary files
+.tmp/
+.temp/

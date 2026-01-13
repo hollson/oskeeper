@@ -22,13 +22,6 @@ clean:
 	@rm -rf ./vendor/*;
 	@echo "\033[31m ✅  清理完毕\033[0m";
 
-## pack@打包lib库。
-.PHONY: pack
-pack:
-	@cd ./lib && tar -zcvf sdk.tar.gz ./*;
-	@mkdir -p release && mv ./lib/sdk.tar.gz ./release;
-	@echo "\033[31m ✅  打包完毕\033[0m";
-
 
 ## commit <msg>@提交Git(格式:make commit msg=备注内容,msg为可选参数)。
 .PHONY:commit
