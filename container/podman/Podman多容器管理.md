@@ -181,25 +181,27 @@ curl http://localhost  # 应返回 "Hello from Podman Compose!"
 
 ## 六、注意事项
 
-1. **与 Podman Pod 的区别**：
+- **与 Podman Pod 的区别**：
 
-    - **Podman Compose**：管理 **独立服务**（如 Web、DB、缓存），每个容器独立网络。
-    - **Podman Pod**：管理 **紧密耦合的服务组**（如应用 + 日志代理），共享网络和存储。
+​	- **Podman Compose**：管理 **独立服务**（如 Web、DB、缓存），每个容器独立网络。
 
-2. **无根模式配置**：
+​	- **Podman Pod**：管理 **紧密耦合的服务组**（如应用 + 日志代理），共享网络和存储。
 
-    - 普通用户需分配子 UID/GID（需 root 执行）：
+- **无根模式配置**：
 
-        ```bash
-        sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 $USER
-        ```
-    
-3. **网络与存储**：
+  > 普通用户需分配子 UID/GID（需 root 执行）：
 
-    - 自定义网络（如 `app-net`）确保服务间通过服务名通信（如 `web` 可直接访问 `db:5432`）。
-    - 命名卷（如 `pgdata`）持久化数据，避免容器删除后数据丢失。
-    
-    
+	```bash
+	sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 	$USER
+	```
+
+- **网络与存储**：
+
+​	- 自定义网络（如 `app-net`）确保服务间通过服务名通信（如 `web` 可直接访问 `db:5432`）。
+
+​	- 命名卷（如 `pgdata`）持久化数据，避免容器删除后数据丢失。
+
+
 
 <br/>
 
