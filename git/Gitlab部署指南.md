@@ -74,8 +74,8 @@ server {
     server_name git.example.com;
 
     # SSL证书配置
-    ssl_certificate /var/gitlab/gitlab.crt;
-    ssl_certificate_key /var/gitlab/gitlab.key;
+    ssl_certificate /var/gitlab/ssl.crt;
+    ssl_certificate_key /var/gitlab/ssl.key;
     # 注意：.csr文件是证书请求文件，不需要在Nginx中配置
 
     # SSL安全配置（推荐）
@@ -159,10 +159,10 @@ sudo sed -i 's/git.example.com/git.mafool.com/g' /etc/nginx/conf.d/gitlab.conf
 ```bash
 sudo mkdir -p /var/gitlab
 sudo openssl req -x509 -nodes -days 730 -newkey rsa:4096 \
-  -keyout /var/gitlab/gitlab.key -out /var/gitlab/gitlab.crt \
+  -keyout /var/gitlab/ssl.key -out /var/gitlab/ssl.crt \
   -subj "/C=CN/ST=Beijing/L=Beijing/O=GitLab/OU=IT/CN=git.mafool.com" -sha256
-sudo chmod 600 /var/gitlab/gitlab.key
-sudo chmod 644 /var/gitlab/gitlab.crt
+sudo chmod 600 /var/gitlab/ssl.key
+sudo chmod 644 /var/gitlab/ssl.crt
 ```
 - **重启Nginx**
 ```bash
