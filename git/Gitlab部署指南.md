@@ -55,14 +55,12 @@ sudo docker restart gitlab
 
 ### 1.3 配置Nginx
 
-- **创建nginx配置**
-
 ```bash
 sudo vim /etc/nginx/conf.d/gitlab.conf
 ```
 
 ```nginx
-# 完整模板，仅需要替换“192.168.X.X”和“git.example.com”即可
+# 这是完整模板，仅需要替换 192.168.X.X 和 git.example.com 即可
 server {
     listen 80;
     server_name git.example.com;
@@ -151,13 +149,12 @@ server {
 ```
 - **替换IP和域名**
 ```bash
-# 替换IP和域名，如：
+# 👉替换IP和域名，如：
 sudo sed -i 's/192.168.X.X/192.168.1.100/g' /etc/nginx/conf.d/gitlab.conf
 sudo sed -i 's/git.example.com/git.mafool.com/g' /etc/nginx/conf.d/gitlab.conf
 ```
 - **创建自签名证书**
 ```bash
-sudo mkdir -p /var/gitlab
 sudo openssl req -x509 -nodes -days 730 -newkey rsa:4096 \
   -keyout /var/gitlab/ssl.key -out /var/gitlab/ssl.crt \
   -subj "/C=CN/ST=Beijing/L=Beijing/O=GitLab/OU=IT/CN=git.mafool.com" -sha256
