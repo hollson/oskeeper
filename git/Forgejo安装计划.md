@@ -18,6 +18,9 @@
 - Nginx域名：hub.shundong.xyz
 
 ## Forgejo安装要求
+
+- 使用docker或二进制安装（最求简单快捷、对系统侵入性小，可随手安装或卸载）
+
 - 不使用systemd 
 - 为了方便操作，无需创建forgejo独立用户和用户组
 - 系统已安装了git，ssh，wget、nc等，无需重复安装
