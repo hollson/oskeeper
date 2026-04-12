@@ -1,73 +1,5 @@
 
 [toc]
-`i 交互,忽略大小,f 强制,h 人性化,r 递归,l 列表`
-
-
-```sh
-open .  # 打开当前目录
-open -a vscode ./a.txt  # vs打开a.txt文件
-```
-
-<br/>
-```txt
-# 应用程序：
-# 不同操作系统的具体差异很大，如macos和centos中很大一部分命令位置都不一致
-/bin           #Binary的缩写, 普通用户和管理员都可执行的【通用用户程序】,如：ls，mkdir。
-/usr/bin       #系统自带的一些可执行程序。即【系统应用程序】,如：grep，sed，find，gcc。
-/usr/local/bin #用户【自编译应用程序】, 如：wget、vim、redis-server。
-
-/sbin     #系统管理员使用的系统管理程序，如：ifconfig,iptables。
-/usr/sbin #超级用户使用的比较高级的管理程序和系统守护程序，如：useradd,shutdown,sysctl。
-
-# 系统配置：
-/etc   #【系统管理】所需要的配置文件和子目录。
-
-# 安装目录：
-/usr     #用户的很多应用程序和文件都放在这个目录下，类似于windows下的program files目录。
-/usr/src #内核源代码默认的放置目录。
-/opt     #额外安装软件的目录。如在此目录安装一个ORACLE数据库。
-
-# 用户目录
-/root   #系统管理员root的主目录。
-/home   #用户的家目录。
-
-
-# 数据目录
-/srv #该目录存放一些服务启动之后需要提取的数据。
-/srv ：主要用来存储本机或本服务器提供的服务或数据。（用户主动生产的数据、对外提供服务）
-
-/var #这个目录中存放着在不断扩充着的东西，我们习惯将那些经常被修改的目录放在这个目录下。包括各种日志文件。
-/var ：系统产生的不可自动销毁的缓存文件、日志记录。（系统和程序运行后产生的数据、不对外提供服务、只能用户手动清理）（包括mail、数据库文件、日志文件）
-
-/tmp #这个目录是用来存放一些临时文件的。
-/tmp ：保存在使用完毕后可随时销毁的缓存文件。（有可能是由系统或程序产生、也有可能是用户主动放入的临时数据、系统会自动清理）
-
-/run #是一个临时文件系统，存储系统启动以来的信息。当系统重启时，这个目录下的文件应该被删掉或清除。如果你的系统上有 /var/run 目录，应该让它指向 run。
-
-/proc #这个目录是一个虚拟的目录，它是系统内存的映射，我们可以通过直接访问这个目录来获取系统信息。
-# 这个目录的内容不在硬盘上而是在内存里，我们也可以直接修改里面的某些文件，比如可以通过下面的命令来屏蔽主机的ping命令，使别人无法ping你的机器：
-`echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all`
-
-# 系统保留
-/boot #这里存放的是启动Linux时使用的一些核心文件，包括一些连接文件以及镜像文件。
-/dev #dev是Device(设备)的缩写, 该目录下存放的是Linux的外部设备，在Linux中访问设备的方式和访问文件的方式是相同的。
-/media #linux系统会自动识别一些设备，例如U盘、光驱等等，当识别后，linux会把识别的设备挂载到这个目录下。
-/mnt #系统提供该目录是为了让用户临时挂载别的文件系统的，我们可以将光驱挂载在/mnt/上，然后进入该目录就可以查看光驱里的内容了。
-/lib #这个目录里存放着系统最基本的动态连接共享库，其作用类似于Windows里的DLL文件。几乎所有的应用程序都需要用到这些共享库。
-/lost+found #这个目录一般情况下是空的，当系统非法关机后，这里就存放了一些文件。
-
-/selinux #这个目录是Redhat/CentOS所特有的目录，Selinux是一个安全机制，类似于windows的防火墙，但是这套机制比较复杂，这个目录就是存放selinux相关的文件的。
-/sys #这是linux2.6内核的一个很大的变化。该目录下安装了2.6内核中新出现的一个文件系统 sysfs 。
-#sysfs文件系统集成了下面3种文件系统的信息：针对进程信息的proc文件系统、针对设备的devfs文件系统以及针对伪终端的devpts文件系统。
-#该文件系统是内核设备树的一个直观反映。
-#当一个内核对象被创建的时候，对应的文件和目录也在内核对象子系统中被创建。
-
-#在 Linux 系统中，有几个目录是比较重要的，平时需要注意不要误删除或者随意更改内部文件。
-/etc #上边也提到了，这个是系统中的配置文件，如果你更改了该目录下的某个文件可能会导致系统不能启动。
-/bin, /sbin, /usr/bin, /usr/sbin: #这是系统预设的执行文件的放置目录，比如 ls 就是在/bin/ls 目录下的。值得提出的是，bin, /usr/bin 是给系统用户使用的指令（除root外的通用户），而/sbin, /usr/sbin 则是给root使用的指令。
-/var： #这是一个非常重要的目录，系统上跑了很多程序，那么每个程序都会有相应的日志产生，而这些日志就被记录到这个目录下，具体在/var/log 目录下，另外mail的预设放置也是在这里。
-```
-
 ◆ 安装和登录命令：login、shutdown、halt、reboot、install、mount、umount、chsh、exit、last；
 ◆ 文件处理命令：file、mkdir、grep、dd、find、mv、ls、diff、cat、ln；
 ◆ 系统管理相关命令：df、top、free、quota、at、lp、adduser、[groupadd](#groupadd)、kill、crontab；
@@ -75,9 +7,14 @@ open -a vscode ./a.txt  # vs打开a.txt文件
 ◆ 系统安全相关命令：passwd、su、umask、chgrp、chmod、chown、chattr、sudo ps、who；
 ◆ 其它命令：tar、unzip、gunzip、unarj、mtools、man、unendcode、uudecode。
 
+
+
 <br/>
 
+
+
 # 1. 命令帮助
+
 **命令大全：** https://www.runoob.com/linux/linux-command-manual.html
 
 ```shell
@@ -99,7 +36,7 @@ $ type lua  #外部独立安装
 
 
 
-#2. 系统信息
+# 2. 系统信息
 **系统版本：**
 
 ```shell
